@@ -5,6 +5,9 @@ using UnityEngine;
 public class Bar : BoardObject
 {
     TaskManager TaskManager { get => TaskManager.Instance; }
+    public GameObject customerPrefab; //**** move to objectPool later
+    public Transform spawnAt;
+
     // Customer
     [field: SerializeField] public Customer Customer { get; set; }
     [field: SerializeField] public Transform ServicePosition { get; set; }
@@ -15,7 +18,19 @@ public class Bar : BoardObject
 
     // Events
 
+    // Mono
+    private void Start()
+    {
+        SpawnNewCustomer();
+    }
+
     // Method
+    public void SpawnNewCustomer()
+    {
+        var spawnPoint = BoardManager.GetCellCenterWorld(BoardManager.GetCellPos(spawnAt.position));
+        Instantiate(customerPrefab,spawnPoint,Quaternion.identity);
+    }
+
     public void AddNewCustomer(Customer customer)
     {
         Customer = customer;

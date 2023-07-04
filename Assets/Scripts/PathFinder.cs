@@ -34,7 +34,7 @@ public class PathFinder
         }
     }
 
-    public static bool TryFindPath(IMoveable moveableObject,Vector3Int startCell, Vector3Int targetCell, out List<Vector3Int> resultPath)
+    public static bool TryFindPath(IMoveable moveableObject,Vector3Int startCell, Vector3Int targetCell,List<Vector3Int> dirs, out List<Vector3Int> resultPath)
     {
         resultPath = new();
 
@@ -48,8 +48,6 @@ public class PathFinder
         var toSearch = new List<Node>() { startNode };
         var processed = new List<Node>();
 
-        List<Vector3Int> directions = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-
         while (toSearch.Count > 0)
         {
             Debug.Log("Looping");
@@ -61,7 +59,7 @@ public class PathFinder
             processed.Add(currentNode);
             toSearch.Remove(currentNode);
 
-            foreach (var direction in directions)
+            foreach (var direction in dirs)
             {
                 var nextPos = currentNode.CellPosition + direction;
                 if (moveableObject.CanMoveTo(nextPos))
