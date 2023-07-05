@@ -6,40 +6,38 @@ using Sirenix.OdinInspector;
 
 public class Customer : BoardObject,PathFinder.IMoveable
 {
-    [field:SerializeField] public Tilemap PathTilemap { get; set; }
-    [SerializeField] List<Vector3Int> path;
-    public List<Vector3Int> Path
-    {
-        get => path;
+    [field: SerializeField] public Tilemap PathTilemap { get; set; }
+    [field: SerializeField] public List<Vector3Int> Path { get; set; }
+
+    [SerializeField] List<Vector3Int> waypoints;
+    public List<Vector3Int> WayPoints {
+        get => waypoints; 
         set
         {
-            path = value;
-            OnNewPath?.Invoke();
+            waypoints = value;
+            OnNewWaypoints?.Invoke();
         }
     }
+
     // Events
-    public System.Action OnNewPath;
-    public void OnNewPathHandle()
+    public System.Action OnNewWaypoints;
+    public void OnNewWaypointsHandle()
     {
-        //CurrentState =
+        CurrentState = moveState;
     }
-    /*
+    
     // State
     enum CustomerStates { Idle, Move, Ordered }
 
-    [SerializeField] CustomerStates currentState;
-    CustomerStates CurrentState
+    public CustomerIdleState idleState;
+    public CustomerMoveState moveState;
+
+    [SerializeField] IState currentState;
+    IState CurrentState
     {
         get => currentState;
         set
         {
-            switch (value)
-            {
-                case CustomerStates.Move:
-                    ;
-                    
-
-            }
             if (value != null)
             {
                 CurrentState?.ExitState();
@@ -48,12 +46,20 @@ public class Customer : BoardObject,PathFinder.IMoveable
             }
         }
     }
-    */
+
     // Monobehaviour
+    private void Awake()
+    {
+        idleState = new CustomerIdleState();
+        moveState = new CustomerMoveState(this);
+
+        OnNewWaypoints += OnNewWaypointsHandle;
+    }
+
     private void Start()
     {
         Debug.Log("Test()");
-       // CurrentState = new CustomerIdleState();
+        CurrentState = idleState;
     }
 
     public bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
@@ -66,6 +72,17 @@ public class Customer : BoardObject,PathFinder.IMoveable
         {
             Path = path;
         }
+        if(PathFinder.TryFindWaypoint(this,startCell,targetCell,dirs,out List<Vector3Int> wayPoints))
+        {
+            WayPoints = wayPoints;
+            CurrentState = moveState;
+        }
+    }
+
+    [Button]
+    public void DebugGetPath()
+    {
+        GetPath(new Vector3Int(-8,-15,0),new Vector3Int(-6,-6,0));
     }
 
     public void GetOrder()
@@ -83,9 +100,56 @@ public class Customer : BoardObject,PathFinder.IMoveable
 
     public class CustomerMoveState : IState
     {
-        public void EnterState(){}
+        Customer Customer { get; }
+        Vector3 startPos;
+        Vector3 targetPos;
+        float distance;
+        readonly float speed = 1f;
+        float duration;
+        float timeElapsed;
+        
+        public CustomerMoveState(Customer customer)
+        {
+            Customer = customer;
+        }
+
+        public void EnterState(){
+            Debug.Log("MoveState Started");
+            Customer.StartCoroutine(MoveRoutine());
+        }
         public void UpdateState(){}
         public void ExitState(){}
+        
+        IEnumerator MoveRoutine()
+        {
+            startPos = Customer.transform.position;
+            targetPos = BoardManager.Instance.GetCellCenterWorld(Customer.WayPoints[0]);
+            Customer.WayPoints.RemoveAt(0);
+
+            // reset value
+            distance = Vector3.Distance(startPos, targetPos);
+            duration = distance / speed;
+            timeElapsed = 0;
+
+            while(timeElapsed < duration)
+            {
+                Customer.transform.position = Vector3.Lerp(startPos, targetPos, timeElapsed / duration);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            Customer.transform.position = targetPos;
+
+            if(Customer.WayPoints.Count == 0)
+            {
+                Customer.CurrentState = Customer.idleState;
+            }
+            else
+            {
+                // self transition
+                Customer.CurrentState = Customer.moveState;
+            }
+        }
 
     }
     #endregion

@@ -20,7 +20,7 @@ public class PathFinder
         public Node(Vector3Int cellPosition, int g, Vector3Int targetCell)
         {
             CellPosition = cellPosition;
-            Path = new List<Vector3Int>();
+            Path = new List<Vector3Int>() { cellPosition};
             G = g;
             H = Mathf.Abs(cellPosition.x - targetCell.x) + Mathf.Abs(cellPosition.y - targetCell.y);
         }
@@ -50,7 +50,6 @@ public class PathFinder
 
         while (toSearch.Count > 0)
         {
-            Debug.Log("Looping");
             Node currentNode = toSearch[0];
             foreach (var t in toSearch)
                 if (t.F < currentNode.F || t.F == currentNode.F && t.H < currentNode.H)
@@ -88,7 +87,41 @@ public class PathFinder
             }
         }
 
-        Debug.Log("not found");
+        Debug.Log($"not found : ({processed.Count}) processed node");
         return false;
+    }
+
+    public static bool TryFindWaypoint(IMoveable moveableObject, Vector3Int startCell, Vector3Int targetCell, List<Vector3Int> dirs, out List<Vector3Int> resultWayPoints)
+    {
+        resultWayPoints = new List<Vector3Int>();
+
+        if(TryFindPath(moveableObject,startCell,targetCell,dirs,out List<Vector3Int> resultPath))
+        {
+            Vector3Int currentDir = new();
+            resultWayPoints.Add(resultPath[0]);
+
+            for (int i = 0; i < resultPath.Count - 1; i++)
+            {
+                var newDir = resultPath[i + 1] - resultPath[i];
+
+                Debug.Log($"{currentDir} : {newDir}");
+
+                if (newDir == currentDir)
+                {
+                    resultWayPoints[^1] = resultPath[i + 1];
+                }
+                else
+                {
+                    resultWayPoints.Add(resultPath[i + 1]);
+                    currentDir = newDir;
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
