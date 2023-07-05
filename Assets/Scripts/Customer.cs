@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 public class Customer : BoardObject,PathFinder.IMoveable
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
-    [field: SerializeField] public List<Vector3Int> Path { get; set; }
+    [field: SerializeField] public Bar Bar { get; set; }
 
     [SerializeField] List<Vector3Int> waypoints;
     public List<Vector3Int> WayPoints {
@@ -16,6 +16,23 @@ public class Customer : BoardObject,PathFinder.IMoveable
         {
             waypoints = value;
             OnNewWaypoints?.Invoke();
+        }
+    }
+    
+    public void Initialized(Bar bar)
+    {
+        Bar = bar;
+        PathTilemap = Bar.PathTile;
+
+        var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+
+        if (PathFinder.TryFindWaypoint(this, Bar.SpawnCell, Bar.ServiceCell, dirs, out List<Vector3Int> waypoints))
+        {
+            WayPoints = waypoints;
+        }
+        else
+        {
+            Debug.LogError($"can't move from {Bar.SpawnCell} to {Bar.ServiceCell}");
         }
     }
 
@@ -68,10 +85,6 @@ public class Customer : BoardObject,PathFinder.IMoveable
     public void GetPath(Vector3Int startCell,Vector3Int targetCell)
     {
         List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-        if (PathFinder.TryFindPath(this,startCell,targetCell, dirs, out List<Vector3Int> path))
-        {
-            Path = path;
-        }
         if(PathFinder.TryFindWaypoint(this,startCell,targetCell,dirs,out List<Vector3Int> wayPoints))
         {
             WayPoints = wayPoints;
@@ -142,6 +155,11 @@ public class Customer : BoardObject,PathFinder.IMoveable
 
             if(Customer.WayPoints.Count == 0)
             {
+                if(Customer.CellPosition == Customer.Bar.ServiceCell)
+                {
+                    Customer.Bar.CustomerArrived(Customer);
+                }
+
                 Customer.CurrentState = Customer.idleState;
             }
             else

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 
-public class TaskManager : MonoBehaviour
+public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
-    public Queue<ITask> Tasks { get; private set; }
-    public Queue<Worker> AvailableWorker { get; private set; }
+    [OdinSerialize] public List<ITask> Tasks { get; private set; }
+    [OdinSerialize] public Queue<Worker> AvailableWorker { get; private set; }
 
     private void Awake()
     {
@@ -19,7 +21,8 @@ public class TaskManager : MonoBehaviour
             Instance = this;
         }
 
-        Tasks = new Queue<ITask>();
+        Tasks = new List<ITask>();
+        AvailableWorker = new Queue<Worker>();
     }
 
     public void AddTasks(ITask newTask)
@@ -32,7 +35,7 @@ public class TaskManager : MonoBehaviour
             }
             else
             {
-                Tasks.Enqueue(newTask);
+                Tasks.Add(newTask);
             }
         }
     }
@@ -41,7 +44,11 @@ public class TaskManager : MonoBehaviour
     {
         if(worker != null)
         {
-            if (Tasks.TryDequeue(out ITask task))
+            // TODO : loop to find task that can execute
+
+            ITask task = Tasks.Find(task => task.CanExecute);
+
+            if(task != null)
             {
                 worker.SetTask(task);
             }

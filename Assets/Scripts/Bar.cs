@@ -9,6 +9,7 @@ public class Bar : BoardObject
     TaskManager TaskManager { get => TaskManager.Instance; }
     public GameObject customerPrefab; //**** move to objectPool later
     public Transform spawnAt;
+    public Vector3Int SpawnCell { get => BoardManager.GetCellPos(spawnAt.position); }
     public Tilemap PathTile;
 
     // Customer
@@ -32,21 +33,12 @@ public class Bar : BoardObject
     [Button]
     public void SpawnNewCustomer()
     {
-        var spawnCell = BoardManager.GetCellPos(spawnAt.position);
-        var spawnPoint = BoardManager.GetCellCenterWorld(spawnCell);
+        var spawnPoint = BoardManager.GetCellCenterWorld(SpawnCell);
+
         var clone = Instantiate(customerPrefab,spawnPoint,Quaternion.identity);
         if(clone.TryGetComponent(out Customer customer))
         {
-            customer.PathTilemap = PathTile;
-            var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-            if (PathFinder.TryFindWaypoint(customer, spawnCell, ServiceCell, dirs,out List<Vector3Int> waypoints))
-            {
-                customer.WayPoints = waypoints;
-            }
-            else
-            {
-                Debug.LogError($"can't move from {spawnCell} to {ServiceCell}");
-            }
+            customer.Initialized(this);
         }
         else
         {
@@ -54,7 +46,7 @@ public class Bar : BoardObject
         }
     }
 
-    public void AddNewCustomer(Customer customer)
+    public void CustomerArrived(Customer customer)
     {
         Customer = customer;
         TaskManager.AddTasks(new GetOrderTask(this));
@@ -63,10 +55,13 @@ public class Bar : BoardObject
     public class GetOrderTask : ITask
     {
         Bar Bar { get; } 
+
         public GetOrderTask(Bar bar)
         {
             Bar = bar;
         }
+
+        public bool CanExecute { get => true; }
 
         public void Execute()
         {
