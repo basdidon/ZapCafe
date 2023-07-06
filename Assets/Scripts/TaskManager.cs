@@ -9,6 +9,7 @@ public class TaskManager : SerializedMonoBehaviour
     public static TaskManager Instance { get; private set; }
     [OdinSerialize] public List<ITask> Tasks { get; private set; }
     [OdinSerialize] public Queue<Worker> AvailableWorker { get; private set; }
+    [OdinSerialize] public List<TaskObject> TaskObjects { get; set; }
 
     private void Awake()
     {
@@ -31,7 +32,7 @@ public class TaskManager : SerializedMonoBehaviour
         {
             if(AvailableWorker.TryDequeue(out Worker worker))
             {
-                worker.SetTask(newTask);
+                worker.Task = newTask;
             }
             else
             {
@@ -50,13 +51,33 @@ public class TaskManager : SerializedMonoBehaviour
 
             if(task != null)
             {
-                worker.SetTask(task);
+                worker.Task = task;
+                Tasks.Remove(task);
             }
             else
             {
                 AvailableWorker.Enqueue(worker);
-                worker.CurrentState = new WorkerIdle();
             }
         }
+    }
+
+    public void AddTaskObject(TaskObject taskObject)
+    {
+        if (!TaskObjects.Contains(taskObject))
+        {
+            TaskObjects.Add(taskObject);
+        }
+    }
+
+    public List<TaskObject> FindTaskObjectByType<T>()
+    {
+        return TaskObjects.FindAll(taskObject => (taskObject is T) && (taskObject.Worker == null));
+    }
+
+    [Button]
+    public void CountBar()
+    {
+        var result =  FindTaskObjectByType<Bar>();
+        Debug.Log(result.Count);
     }
 }

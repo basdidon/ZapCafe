@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 
-public class Bar : BoardObject
+public abstract class TaskObject:BoardObject
+{
+    [OdinSerialize] public Worker Worker { get; set; }
+    public bool IsAvailable { get => Worker == null; }
+    public abstract Vector3Int WorkingCell { get; }
+}
+
+public class Bar : TaskObject
 {
     TaskManager TaskManager { get => TaskManager.Instance; }
     public GameObject customerPrefab; //**** move to objectPool later
@@ -18,14 +26,13 @@ public class Bar : BoardObject
     public Vector3Int ServiceCell { get => BoardManager.GetCellPos(ServicePoint.position); }
 
     // Worker
-    [field: SerializeField] public Worker Worker { get; set; }
     [field: SerializeField] public Transform WorkingPoint { get; set; }
-
-    // Events
+    public override Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
     // Mono
     private void Start()
     {
+        TaskManager.AddTaskObject(this);
         SpawnNewCustomer();
     }
 
@@ -52,20 +59,24 @@ public class Bar : BoardObject
         TaskManager.AddTasks(new GetOrderTask(this));
     }
 
-    public class GetOrderTask : ITask
+    public class GetOrderTask : ITask 
     {
-        Bar Bar { get; } 
+        public TaskObject TaskObject { get; }
 
         public GetOrderTask(Bar bar)
         {
-            Bar = bar;
+            TaskObject = bar;
         }
 
         public bool CanExecute { get => true; }
 
+        public float Duration => 5f;
+
         public void Execute()
         {
-            //Bar.StartCoroutine(GetOrder());
+            Debug.Log("Task execute()");
+            //TaskObject.Customer.GetOrder();
+            //WorkableObject.StartCoroutine(GetOrder());
         }
         /*
         IEnumerator GetOrder()

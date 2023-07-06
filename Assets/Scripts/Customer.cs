@@ -4,20 +4,10 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Sirenix.OdinInspector;
 
-public class Customer : BoardObject,PathFinder.IMoveable
+public class Customer : Charecter
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
     [field: SerializeField] public Bar Bar { get; set; }
-
-    [SerializeField] List<Vector3Int> waypoints;
-    public List<Vector3Int> WayPoints {
-        get => waypoints; 
-        set
-        {
-            waypoints = value;
-            OnNewWaypoints?.Invoke();
-        }
-    }
     
     public void Initialized(Bar bar)
     {
@@ -36,139 +26,51 @@ public class Customer : BoardObject,PathFinder.IMoveable
         }
     }
 
-    // Events
-    public System.Action OnNewWaypoints;
-    public void OnNewWaypointsHandle()
-    {
-        CurrentState = moveState;
-    }
-    
-    // State
-    enum CustomerStates { Idle, Move, Ordered }
-
-    public CustomerIdleState idleState;
-    public CustomerMoveState moveState;
-
-    [SerializeField] IState currentState;
-    IState CurrentState
-    {
-        get => currentState;
-        set
-        {
-            if (value != null)
-            {
-                CurrentState?.ExitState();
-                currentState = value;
-                CurrentState.EnterState();
-            }
-        }
-    }
-
     // Monobehaviour
-    private void Awake()
+    protected override void Awake()
     {
-        idleState = new CustomerIdleState();
-        moveState = new CustomerMoveState(this);
-
-        OnNewWaypoints += OnNewWaypointsHandle;
+        base.Awake();
+        IdleState = new CustomerIdleState();
+        MoveState = new CustomerMoveState(this);
     }
 
-    private void Start()
-    {
-        Debug.Log("Test()");
-        CurrentState = idleState;
-    }
-
-    public bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
-
-    [Button]
-    public void GetPath(Vector3Int startCell,Vector3Int targetCell)
-    {
-        List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-        if(PathFinder.TryFindWaypoint(this,startCell,targetCell,dirs,out List<Vector3Int> wayPoints))
-        {
-            WayPoints = wayPoints;
-            CurrentState = moveState;
-        }
-    }
-
-    [Button]
-    public void DebugGetPath()
-    {
-        GetPath(new Vector3Int(-8,-15,0),new Vector3Int(-6,-6,0));
-    }
+    public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 
     public void GetOrder()
     {
-        
+        //TaskManager.Instance.AddTasks(new DonutBox.GetDonut());
     }
 
     #region State
     public class CustomerIdleState : IState
     {
         public void EnterState(){}
-        public void UpdateState(){}
         public void ExitState(){}
     }
 
-    public class CustomerMoveState : IState
+    public class CustomerMoveState : MoveState<Customer>
     {
-        Customer Customer { get; }
-        Vector3 startPos;
-        Vector3 targetPos;
-        float distance;
-        readonly float speed = 1f;
-        float duration;
-        float timeElapsed;
-        
-        public CustomerMoveState(Customer customer)
+        public CustomerMoveState(Customer charecter):base(charecter){}
+
+        public override void ExitConditionCheck()
         {
-            Customer = customer;
-        }
-
-        public void EnterState(){
-            Debug.Log("MoveState Started");
-            Customer.StartCoroutine(MoveRoutine());
-        }
-        public void UpdateState(){}
-        public void ExitState(){}
-        
-        IEnumerator MoveRoutine()
-        {
-            startPos = Customer.transform.position;
-            targetPos = BoardManager.Instance.GetCellCenterWorld(Customer.WayPoints[0]);
-            Customer.WayPoints.RemoveAt(0);
-
-            // reset value
-            distance = Vector3.Distance(startPos, targetPos);
-            duration = distance / speed;
-            timeElapsed = 0;
-
-            while(timeElapsed < duration)
+            if (Charecter.WayPoints.Count == 0)
             {
-                Customer.transform.position = Vector3.Lerp(startPos, targetPos, timeElapsed / duration);
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-
-            Customer.transform.position = targetPos;
-
-            if(Customer.WayPoints.Count == 0)
-            {
-                if(Customer.CellPosition == Customer.Bar.ServiceCell)
+                if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
                 {
-                    Customer.Bar.CustomerArrived(Customer);
+                    Charecter.Bar.CustomerArrived(Charecter);
                 }
 
-                Customer.CurrentState = Customer.idleState;
+                Charecter.CurrentState = Charecter.IdleState;
             }
             else
             {
                 // self transition
-                Customer.CurrentState = Customer.moveState;
+                Charecter.CurrentState = Charecter.MoveState;
             }
         }
-
     }
     #endregion
 }
+
+

@@ -42,6 +42,10 @@ public class PathFinder
         {
             Debug.Log("target can't reach");
             return false;
+        }else if(startCell == targetCell)
+        {
+            resultPath = new List<Vector3Int>() { startCell };
+            return true;
         }
 
         Node startNode = new(startCell, 0, targetCell);
@@ -103,8 +107,6 @@ public class PathFinder
             for (int i = 0; i < resultPath.Count - 1; i++)
             {
                 var newDir = resultPath[i + 1] - resultPath[i];
-
-                Debug.Log($"{currentDir} : {newDir}");
 
                 if (newDir == currentDir)
                 {

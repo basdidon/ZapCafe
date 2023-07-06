@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1927085785812912425
 SpriteRenderer:
@@ -97,5 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adddbbb728f22e940913bb8a00b81369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waypoints: []
   <PathTilemap>k__BackingField: {fileID: 0}
-  <Path>k__BackingField: []
+  <Bar>k__BackingField: {fileID: 0}

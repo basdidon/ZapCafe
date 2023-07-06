@@ -1,83 +1,149 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Tilemaps;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 
-public class Worker : MonoBehaviour
+public class Worker : Charecter
 {
+    [field: SerializeField] public Tilemap PathTilemap { get; set; }
     TaskManager TaskManager { get => TaskManager.Instance; }
-    public ITask Task { get; set; }
-
-    // State
-    IState currentState;
-    public IState CurrentState {
-        get => currentState;
+    [OdinSerialize] ITask task;
+    [OdinSerialize] public ITask Task 
+    {
+        get => task;
         set
         {
             if (value != null)
             {
-                CurrentState?.ExitState();
-                currentState = value;
-                CurrentState.EnterState();
+                task = value;
+                var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+                if(PathFinder.TryFindWaypoint(this,CellPosition, task.TaskObject.WorkingCell,dirs,out List<Vector3Int> waypoints))
+                {
+                    WayPoints = waypoints;
+                }
             }
         }
     }
 
-    private void Start()
+    // task progress
+    public GameObject TaskProgress;
+    public Image ProgressImg;
+
+    // state
+    public ExecutingTask ExecutingTask;
+
+    protected override void Awake()
     {
-        TaskManager.AddAvaliableWorker(this);
+        base.Awake();
+        IdleState = new WorkerIdle(this);
+        MoveState = new WorkerMove(this);
+        ExecutingTask = new ExecutingTask(this);
     }
 
-    public void SetTask(ITask task)
+    protected override void Start()
     {
-        if(task != null)
+        base.Start();
+        TaskProgress.SetActive(false);
+    }
+
+    public override bool CanMoveTo(Vector3Int cellPos)
+    {
+        return PathTilemap.HasTile(cellPos);
+    }
+
+    [Button]
+    public void RequestTask()
+    {
+        ITask task = TaskManager.Tasks.Find(task => task.CanExecute);
+
+        if (task != null)
         {
             Task = task;
+        }
+        else
+        {
+            TaskManager.AvailableWorker.Enqueue(this);
         }
     }
 }
 
-public class WorkerIdle : IState
+public class WorkerIdle : IdleState<Worker>
 {
-    public void EnterState()
+    public WorkerIdle(Worker worker) : base(worker) {}
+
+    public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        TaskManager.Instance.AddAvaliableWorker(Charecter);
     }
 
-    public void UpdateState()
-    {
-        throw new System.NotImplementedException();
-    }
+    public override void ExitState(){}
+}
 
-    public void ExitState()
+public class WorkerMove : MoveState<Worker>
+{
+    public WorkerMove(Worker worker):base(worker){}
+
+    public override void ExitConditionCheck()
     {
-        throw new System.NotImplementedException();
+        if(Charecter.WayPoints.Count == 0)
+        {
+            Debug.Log("End");
+
+            if (Charecter.Task != null)
+            {
+                Charecter.CurrentState = Charecter.ExecutingTask;
+            }
+        }
+        else
+        {
+            // self transition
+            Charecter.CurrentState = Charecter.MoveState;
+        }
     }
 }
 
-public class WorkerMove : IState
+public class ExecutingTask : ISelfExitState
 {
-    Worker Worker { get; set; }
-    Vector3 Target { get; set; }
-
-    public WorkerMove(Worker worker, Vector3 target)
+    Worker Worker { get; }
+    float timeElapsed;
+    float duration;
+    public ExecutingTask(Worker worker)
     {
         Worker = worker;
-        Target = target;
     }
-
     public void EnterState()
     {
-        throw new System.NotImplementedException();
+        Worker.TaskProgress.SetActive(true);
+        Worker.ProgressImg.fillAmount = 0f;
+        duration = Worker.Task.Duration;
+        timeElapsed = 0f;
+        Worker.StartCoroutine(StartTask());
     }
 
-    public void UpdateState()
+    IEnumerator StartTask()
     {
-        throw new System.NotImplementedException();
+        while (timeElapsed < Worker.Task.Duration)
+        {
+            Worker.ProgressImg.fillAmount = timeElapsed / duration;
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        Worker.Task.Execute();
+
+        ExitConditionCheck();
     }
 
-    public void ExitState()
+    public void ExitState(){
+        Worker.Task = null;
+        Worker.TaskProgress.SetActive(false);
+    }
+
+    public void ExitConditionCheck()
     {
-        throw new System.NotImplementedException();
+        Worker.CurrentState = Worker.IdleState;
     }
 }
-
