@@ -7,7 +7,7 @@ using Sirenix.Serialization;
 public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
-    [OdinSerialize] public List<ITask> Tasks { get; private set; }
+    [OdinSerialize] public List<Task> Tasks { get; private set; }
     [OdinSerialize] public Queue<Worker> AvailableWorker { get; private set; }
     [OdinSerialize] public List<TaskObject> TaskObjects { get; set; }
 
@@ -22,21 +22,19 @@ public class TaskManager : SerializedMonoBehaviour
             Instance = this;
         }
 
-        Tasks = new List<ITask>();
+        Tasks = new List<Task>();
         AvailableWorker = new Queue<Worker>();
     }
 
-    public void AddTasks(ITask newTask)
+    public void AddTask(Task newTask)
     {
         if (newTask != null)
         {
+            Tasks.Add(newTask);
+
             if (AvailableWorker.TryDequeue(out Worker worker))
             {
-                worker.Task = newTask;
-            }
-            else
-            {
-                Tasks.Add(newTask);
+                newTask.TryAssignTask(worker);
             }
         }
     }
@@ -47,12 +45,11 @@ public class TaskManager : SerializedMonoBehaviour
         {
             // TODO : loop to find task that can execute
 
-            ITask task = Tasks.Find(task => task.CanExecute);
+            Task task = Tasks.Find(task => task.TryGetTaskObject(worker));
 
             if (task != null)
             {
-                worker.Task = task;
-                Tasks.Remove(task);
+                task.TryAssignTask(worker);
             }
             else
             {
@@ -73,13 +70,21 @@ public class TaskManager : SerializedMonoBehaviour
     public void CountBar() => Debug.Log(FindTaskObjectByType<Bar>().Count);
     public List<TaskObject> FindTaskObjectByType<T>()
     {
-        return TaskObjects.FindAll(taskObject => (taskObject is T) && (taskObject.Worker == null));
+        return TaskObjects.FindAll(taskObject => (taskObject is T) && taskObject.IsAvailable);
+    }
+
+    public bool TryGetTask(Worker worker, out Task task)
+    {
+        task = Tasks.Find(t => t.Worker);
+        if (task != null)
+            return true;
+        return false;
     }
 
     public bool TryGetTaskObject<T>(BoardObject boardObject, out T taskObject) where T : TaskObject
     {
         taskObject = null;
-        var taskObjects = TaskObjects.FindAll(taskObject => (taskObject is T) && (taskObject.Worker == null));
+        var taskObjects = TaskObjects.FindAll(taskObject => (taskObject is T) && taskObject.IsAvailable);
 
         if (taskObjects == null || taskObjects.Count == 0) return false;
 
@@ -102,6 +107,8 @@ public class TaskManager : SerializedMonoBehaviour
 
         return true;
     }
+
+    
 
 
 }

@@ -9,25 +9,6 @@ using Sirenix.Serialization;
 public class Worker : Charecter
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
-    TaskManager TaskManager { get => TaskManager.Instance; }
-    [OdinSerialize] ITask task;
-    [OdinSerialize] public ITask Task 
-    {
-        get => task;
-        set
-        {
-            if (value != null)
-            {
-                task = value;
-                var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-                if(PathFinder.TryFindWaypoint(this,CellPosition, task.TaskObject.WorkingCell,dirs,out List<Vector3Int> waypoints))
-                {
-                    WayPoints = waypoints;
-                }
-            }
-        }
-    }
-
     // task progress
     public GameObject TaskProgress;
     public Image ProgressImg;
@@ -53,21 +34,6 @@ public class Worker : Charecter
     {
         return PathTilemap.HasTile(cellPos);
     }
-
-    [Button]
-    public void RequestTask()
-    {
-        ITask task = TaskManager.Tasks.Find(task => task.CanExecute);
-
-        if (task != null)
-        {
-            Task = task;
-        }
-        else
-        {
-            TaskManager.AvailableWorker.Enqueue(this);
-        }
-    }
 }
 
 public class WorkerIdle : IdleState<Worker>
@@ -76,7 +42,15 @@ public class WorkerIdle : IdleState<Worker>
 
     public override void EnterState()
     {
-        TaskManager.Instance.AddAvaliableWorker(Charecter);
+        if (TaskManager.Instance.TryGetTask(Charecter,out Task task))
+        {
+            Debug.Log("found");
+            task.TryAssignTask(Charecter);
+        }
+        else
+        {
+            TaskManager.Instance.AddAvaliableWorker(Charecter);
+        }
     }
 
     public override void ExitState(){}
@@ -86,15 +60,17 @@ public class WorkerMove : MoveState<Worker>
 {
     public WorkerMove(Worker worker):base(worker){}
 
-    public override void ExitConditionCheck()
+    public override void SetNextState()
     {
         if(Charecter.WayPoints.Count == 0)
         {
-            Debug.Log("End");
-
-            if (Charecter.Task != null)
+            if (TaskManager.Instance.Tasks.Find(task => task.Worker == Charecter) != null)
             {
                 Charecter.CurrentState = Charecter.ExecutingTask;
+            }
+            else
+            {
+                Charecter.CurrentState = Charecter.IdleState;
             }
         }
         else
@@ -108,6 +84,7 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
+    Task Task { get; set; }
     float timeElapsed;
     float duration;
     public ExecutingTask(Worker worker)
@@ -118,31 +95,35 @@ public class ExecutingTask : ISelfExitState
     {
         Worker.TaskProgress.SetActive(true);
         Worker.ProgressImg.fillAmount = 0f;
-        duration = Worker.Task.Duration;
+        Task = TaskManager.Instance.Tasks.Find(task => task.Worker == Worker);
+        Task.TaskObject.Worker = Worker;
+        duration = Task.Duration;
         timeElapsed = 0f;
         Worker.StartCoroutine(StartTask());
     }
 
     IEnumerator StartTask()
     {
-        while (timeElapsed < Worker.Task.Duration)
+        while (timeElapsed < Task.Duration)
         {
             Worker.ProgressImg.fillAmount = timeElapsed / duration;
             timeElapsed += Time.deltaTime;
             yield return null;
         }
 
-        Worker.Task.Execute();
+        Debug.Log(Task.ToString());
+        Task.Execute();
 
-        ExitConditionCheck();
+        SetNextState();
     }
 
     public void ExitState(){
-        Worker.Task = null;
+        Task.TaskObject.Worker = null;
+        TaskManager.Instance.Tasks.Remove(Task);
         Worker.TaskProgress.SetActive(false);
     }
 
-    public void ExitConditionCheck()
+    public void SetNextState()
     {
         Worker.CurrentState = Worker.IdleState;
     }

@@ -2971,7 +2971,6 @@ MonoBehaviour:
   customerPrefab: {fileID: 148548812845598186, guid: c93836a8298384842bf112e4215627ab, type: 3}
   spawnAt: {fileID: 711498983}
   PathTile: {fileID: 1162782962}
-  <Customer>k__BackingField: {fileID: 0}
   <ServicePoint>k__BackingField: {fileID: 1928428180}
   <WorkingPoint>k__BackingField: {fileID: 656058036}
 --- !u!4 &311147774
@@ -3107,14 +3106,35 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes:
     - Name: Tasks
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Task, Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Bar+GetOrderTask, Assembly-CSharp
+    - Name: Worker
       Entry: 6
+      Data: 
+    - Name: TaskObject
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: AvailableWorker
       Entry: 6
       Data: 
     - Name: TaskObjects
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[TaskObject, Assembly-CSharp]], mscorlib
+      Data: 2|System.Collections.Generic.List`1[[TaskObject, Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -3516,7 +3536,7 @@ GameObject:
   m_Layer: 0
   m_Name: WorkingPoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4132,7 +4152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15214ec8e417c3c45955044477aeefe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <WorkingPoint>k__BackingField: {fileID: 0}
+  <WorkingPoint>k__BackingField: {fileID: 1023221110}
 --- !u!1 &1679450604
 GameObject:
   m_ObjectHideFlags: 0
@@ -4167,7 +4187,6 @@ MonoBehaviour:
   customerPrefab: {fileID: 148548812845598186, guid: c93836a8298384842bf112e4215627ab, type: 3}
   spawnAt: {fileID: 884506962}
   PathTile: {fileID: 1162782962}
-  <Customer>k__BackingField: {fileID: 0}
   <ServicePoint>k__BackingField: {fileID: 168636829}
   <WorkingPoint>k__BackingField: {fileID: 1801921339}
 --- !u!4 &1679450606

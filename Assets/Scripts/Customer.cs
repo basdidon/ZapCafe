@@ -38,7 +38,7 @@ public class Customer : Charecter
 
     public void GetOrder()
     {
-        //TaskManager.Instance.AddTasks(new DonutBox.GetDonut());
+        TaskManager.Instance.AddTask(new DonutBox.GetDonut(this));
     }
 
     #region State
@@ -52,7 +52,7 @@ public class Customer : Charecter
     {
         public CustomerMoveState(Customer charecter):base(charecter){}
 
-        public override void ExitConditionCheck()
+        public override void SetNextState()
         {
             if (Charecter.WayPoints.Count == 0)
             {

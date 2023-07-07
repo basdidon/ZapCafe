@@ -21,7 +21,6 @@ public class Bar : TaskObject
     public Tilemap PathTile;
 
     // Customer
-    [field: SerializeField] public Customer Customer { get; set; }
     [field: SerializeField] public Transform ServicePoint { get; set; }
     public Vector3Int ServiceCell { get => BoardManager.GetCellPos(ServicePoint.position); }
 
@@ -55,34 +54,49 @@ public class Bar : TaskObject
 
     public void CustomerArrived(Customer customer)
     {
-        Customer = customer;
-        TaskManager.AddTasks(new GetOrderTask(this));
+        TaskManager.AddTask(new GetOrderTask(customer,this));
     }
 
-    public class GetOrderTask : ITask 
+    public class GetOrderTask : Task
     {
-        public TaskObject TaskObject { get; }
+        public Bar Bar { get; set; }
+        public override float Duration => 5f;
 
-        public GetOrderTask(Bar bar)
+        public GetOrderTask(Customer customer,Bar bar):base(customer)
         {
-            TaskObject = bar;
+            TaskObject = Bar = bar;
         }
 
-        public bool CanExecute { get => true; }
+        public override bool TryGetTaskObject(Charecter charecter)
+        {
+            return true;
+        }
 
-        public float Duration => 5f;
-
-        public void Execute()
+        public override void Execute()
         {
             Debug.Log("Task execute()");
-            //TaskObject.Customer.GetOrder();
-            //WorkableObject.StartCoroutine(GetOrder());
+            Customer.GetOrder();
         }
-        /*
-        IEnumerator GetOrder()
-        {
-
-        }*/
     }
 
+    public class ServeOrderTask : Task
+    {
+        public ServeOrderTask(Customer customer) : base(customer)
+        {
+
+        }
+
+        public override float Duration => 0f;
+
+        public override void Execute()
+        {
+            Debug.Log("order served");
+        }
+
+        public override bool TryGetTaskObject(Charecter charecter)
+        {
+            TaskObject = Customer.Bar;
+            return true;
+        }
+    }
 }

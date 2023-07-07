@@ -1,0 +1,12 @@
+[submodule "Assets/basdidon.package/Assets/basdidon.package/BasDidon"]
+	path = Assets/basdidon.package/Assets/basdidon.package/BasDidon
+	url = https://github.com/basdidon/BasDidon.git
+[submodule "Assets/Assets"]
+	path = Assets/Assets
+	url = https://github.com/basdidon/BasDidon.git
+[submodule "BasDidon"]
+	path = BasDidon
+	url = https://github.com/basdidon/BasDidon.git
+[submodule "Assets/BasDidon"]
+	path = Assets/BasDidon
+	url = https://github.com/basdidon/BasDidon.git

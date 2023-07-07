@@ -80,7 +80,7 @@ public class PathFinder
                     {
                         if (currentNode.CellPosition + direction == targetCell)
                         {
-                            Debug.Log("found");
+                            //Debug.Log("found");
                             resultPath = newPath;
                             return true;
                         }

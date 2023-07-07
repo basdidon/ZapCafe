@@ -10,5 +10,5 @@ public interface IState
 
 public interface ISelfExitState : IState
 {
-    public void ExitConditionCheck();
+    public void SetNextState();
 }

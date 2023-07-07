@@ -15,38 +15,28 @@ public class DonutBox : TaskObject
         TaskManager.AddTaskObject(this);
     }
 
-    public class GetDonut : ITask
+    public class GetDonut : Task
     {
-        public TaskObject TaskObject { get; }
+        public GetDonut(Customer customer) : base(customer) { }
 
-        public GetDonut(DonutBox donutBox)
+        public override bool TryGetTaskObject(Charecter charecter)
         {
-            TaskObject = donutBox;
-        }
-        /*
-        public bool TryExecute()
-        {
-            var donutBoxes = FindObjectsOfType<DonutBox>();
-            for (int i = 0; i < donutBoxes.Length; i++)
+            if(TaskManager.Instance.TryGetTaskObject(charecter,out DonutBox donutBox))
             {
-
+                TaskObject = donutBox;
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
-        */
-        public bool CanExecute {
-            get
-            {
-                return true;  
 
-            }
-        }
-        //TaskObject.Worker == null;
+        public override float Duration => 1f;
 
-        public float Duration => 1f;
-
-        public void Execute()
+        public override void Execute()
         {
-            throw new System.NotImplementedException();
+            TaskManager.Instance.AddTask(new Bar.ServeOrderTask(Customer));
         }
     }
 }

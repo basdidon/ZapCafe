@@ -87,7 +87,6 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
 
     public virtual void EnterState()
     {
-        Debug.Log("MoveState Started");
         Charecter.StartCoroutine(MoveRoutine());
     }
     public virtual void ExitState() { }
@@ -112,8 +111,8 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
 
         Charecter.transform.position = targetPos;
 
-        ExitConditionCheck();
+        SetNextState();
     }
 
-    public abstract void ExitConditionCheck();
+    public abstract void SetNextState();
 }
