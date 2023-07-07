@@ -30,7 +30,7 @@ public class TaskManager : SerializedMonoBehaviour
     {
         if (newTask != null)
         {
-            if(AvailableWorker.TryDequeue(out Worker worker))
+            if (AvailableWorker.TryDequeue(out Worker worker))
             {
                 worker.Task = newTask;
             }
@@ -43,13 +43,13 @@ public class TaskManager : SerializedMonoBehaviour
 
     public void AddAvaliableWorker(Worker worker)
     {
-        if(worker != null)
+        if (worker != null)
         {
             // TODO : loop to find task that can execute
 
             ITask task = Tasks.Find(task => task.CanExecute);
 
-            if(task != null)
+            if (task != null)
             {
                 worker.Task = task;
                 Tasks.Remove(task);
@@ -69,15 +69,39 @@ public class TaskManager : SerializedMonoBehaviour
         }
     }
 
+    [Button]
+    public void CountBar() => Debug.Log(FindTaskObjectByType<Bar>().Count);
     public List<TaskObject> FindTaskObjectByType<T>()
     {
         return TaskObjects.FindAll(taskObject => (taskObject is T) && (taskObject.Worker == null));
     }
 
-    [Button]
-    public void CountBar()
+    public bool TryGetTaskObject<T>(BoardObject boardObject, out T taskObject) where T : TaskObject
     {
-        var result =  FindTaskObjectByType<Bar>();
-        Debug.Log(result.Count);
+        taskObject = null;
+        var taskObjects = TaskObjects.FindAll(taskObject => (taskObject is T) && (taskObject.Worker == null));
+
+        if (taskObjects == null || taskObjects.Count == 0) return false;
+
+        taskObject = (T) taskObjects[0];
+
+        // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
+        // both method need to use square root for get the result
+        // but in this function, distance is no matter
+        // so i just use Vector3.sqrMagnitude find which object is closer
+        float minSqrMagnitude = (boardObject.CellCenterWorld- taskObject.CellCenterWorld).sqrMagnitude;
+        for(int i = 1; i < taskObjects.Count; i++)
+        {
+            var sqrMagnitude = (boardObject.CellCenterWorld - taskObjects[i].CellCenterWorld).sqrMagnitude;
+            if ( sqrMagnitude < minSqrMagnitude)
+            {
+                taskObject = (T) taskObjects[i];
+                minSqrMagnitude = sqrMagnitude;
+            }
+        }
+
+        return true;
     }
+
+
 }
