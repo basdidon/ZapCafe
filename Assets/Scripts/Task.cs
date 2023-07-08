@@ -4,37 +4,41 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
+[System.Serializable]
 public abstract class Task
 {
-    public Customer Customer { get;}
-    [OdinSerialize] public Worker Worker { get;private set; }
-    [OdinSerialize] public TaskObject TaskObject { get;protected set; }
+    public Customer Customer { get; }
+    //public Worker Worker { get; private set; }
+    //public TaskObject TaskObject { get; private set; }
 
+    public abstract float Duration { get; }
+    
     public Task(Customer customer)
     {
         Customer = customer;
     }
 
-    public abstract float Duration { get; }
-
+    public abstract bool TryGetTaskObject(Charecter charecter,out TaskObject taskObject);
+    /*
     public bool TryAssignTask(Worker worker)
     {
-        if (TryGetTaskObject(worker))
+        if (TryGetTaskObject(worker, out TaskObject taskObject))
         {
-            Worker = worker;
-            
             // move worker to taskObject
-            var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-            if (PathFinder.TryFindWaypoint(worker, worker.CellPosition, TaskObject.WorkingCell, dirs, out List<Vector3Int> waypoints))
+            if (PathFinder.TryFindWaypoint(Worker, Worker.CellPosition, taskObject.WorkingCell, Worker.dirs, out List<Vector3Int> waypoints))
             {
-                worker.WayPoints = waypoints;
+                Worker = worker;
+                TaskObject = taskObject;
+                worker.CurrentState = new WorkerMove(worker, waypoints, new ExecutingTask(worker, taskObject));
+                return true;
             }
-            return true;
+            else
+            {
+                Debug.LogError("<color=red> Can't Move To TaskObject</color>");
+            }
         }
-
         return false;
-    }
-    public abstract bool TryGetTaskObject(Charecter charecter);
+    }*/
     
-    public abstract void Execute();
+    public abstract Task Execute();
 }

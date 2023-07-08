@@ -18,7 +18,7 @@ public class Customer : Charecter
 
         if (PathFinder.TryFindWaypoint(this, Bar.SpawnCell, Bar.ServiceCell, dirs, out List<Vector3Int> waypoints))
         {
-            WayPoints = waypoints;
+            CurrentState = new CustomerMoveState(this, waypoints);
         }
         else
         {
@@ -27,11 +27,9 @@ public class Customer : Charecter
     }
 
     // Monobehaviour
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         IdleState = new CustomerIdleState();
-        MoveState = new CustomerMoveState(this);
     }
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
@@ -50,11 +48,11 @@ public class Customer : Charecter
 
     public class CustomerMoveState : MoveState<Customer>
     {
-        public CustomerMoveState(Customer charecter):base(charecter){}
+        public CustomerMoveState(Customer charecter,List<Vector3Int> waypoints):base(charecter,waypoints){}
 
         public override void SetNextState()
         {
-            if (Charecter.WayPoints.Count == 0)
+            if (WayPoints.Count == 0)
             {
                 if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
                 {
@@ -66,7 +64,7 @@ public class Customer : Charecter
             else
             {
                 // self transition
-                Charecter.CurrentState = Charecter.MoveState;
+                Charecter.CurrentState = new CustomerMoveState(Charecter,WayPoints);
             }
         }
     }

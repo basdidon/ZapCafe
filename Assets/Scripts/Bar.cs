@@ -64,38 +64,38 @@ public class Bar : TaskObject
 
         public GetOrderTask(Customer customer,Bar bar):base(customer)
         {
-            TaskObject = Bar = bar;
+            Bar = bar;
         }
 
-        public override bool TryGetTaskObject(Charecter charecter)
+        public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
         {
+            taskObject = Bar;
             return true;
         }
 
-        public override void Execute()
+        public override Task Execute()
         {
             Debug.Log("Task execute()");
             Customer.GetOrder();
+            return null;
         }
     }
 
     public class ServeOrderTask : Task
     {
-        public ServeOrderTask(Customer customer) : base(customer)
-        {
-
-        }
+        public ServeOrderTask(Customer customer) : base(customer) { }
 
         public override float Duration => 0f;
 
-        public override void Execute()
+        public override Task Execute()
         {
             Debug.Log("order served");
+            return null;
         }
 
-        public override bool TryGetTaskObject(Charecter charecter)
+        public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
         {
-            TaskObject = Customer.Bar;
+            taskObject = Customer.Bar;
             return true;
         }
     }

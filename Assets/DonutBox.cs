@@ -10,33 +10,40 @@ public class DonutBox : TaskObject
     [field: SerializeField] public Transform WorkingPoint { get; set; }
     public override Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
+    // Item Sprite
+    [SerializeField] Sprite donutSprite;
+
     private void Start()
     {
         TaskManager.AddTaskObject(this);
     }
 
+    public void GetItem(Worker worker)
+    {
+        worker.ItemSpriteRenderer.sprite = donutSprite;
+    }
+
     public class GetDonut : Task
     {
-        public GetDonut(Customer customer) : base(customer) { }
+        public GetDonut(Customer customer) : base(customer) {}
 
-        public override bool TryGetTaskObject(Charecter charecter)
+        public override bool TryGetTaskObject(Charecter charecter,out TaskObject taskObject)
         {
+            taskObject = null;
             if(TaskManager.Instance.TryGetTaskObject(charecter,out DonutBox donutBox))
             {
-                TaskObject = donutBox;
+                taskObject = donutBox;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public override float Duration => 1f;
 
-        public override void Execute()
+        public override Task Execute()
         {
-            TaskManager.Instance.AddTask(new Bar.ServeOrderTask(Customer));
+            return new Bar.ServeOrderTask(Customer);
         }
     }
 }

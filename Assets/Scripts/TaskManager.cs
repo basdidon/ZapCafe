@@ -8,7 +8,7 @@ public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
     [OdinSerialize] public List<Task> Tasks { get; private set; }
-    [OdinSerialize] public Queue<Worker> AvailableWorker { get; private set; }
+    [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
     [OdinSerialize] public List<TaskObject> TaskObjects { get; set; }
 
     private void Awake()
@@ -22,40 +22,44 @@ public class TaskManager : SerializedMonoBehaviour
             Instance = this;
         }
 
-        Tasks = new List<Task>();
-        AvailableWorker = new Queue<Worker>();
+        Tasks = new();
+        AvailableWorker = new();
     }
 
     public void AddTask(Task newTask)
     {
-        if (newTask != null)
-        {
-            Tasks.Add(newTask);
+        if (newTask == null)
+            return;
 
-            if (AvailableWorker.TryDequeue(out Worker worker))
-            {
-                newTask.TryAssignTask(worker);
-            }
+        var worker = AvailableWorker.Find(worker => worker.TrySetTask(newTask));
+
+        if(worker != null)
+        {
+            AvailableWorker.Remove(worker);
+        }
+        else
+        {
+            Tasks.Add(newTask);        
         }
     }
 
     public void AddAvaliableWorker(Worker worker)
     {
-        if (worker != null)
+        if (worker == null)
+            return;
+        
+        // TODO : loop to find task that can execute
+        Task task = Tasks.Find(task => worker.TrySetTask(task));
+
+        if (task != null)
         {
-            // TODO : loop to find task that can execute
-
-            Task task = Tasks.Find(task => task.TryGetTaskObject(worker));
-
-            if (task != null)
-            {
-                task.TryAssignTask(worker);
-            }
-            else
-            {
-                AvailableWorker.Enqueue(worker);
-            }
+            Tasks.Remove(task);
         }
+        else
+        {
+            AvailableWorker.Add(worker);
+        }
+        
     }
 
     public void AddTaskObject(TaskObject taskObject)
@@ -71,14 +75,6 @@ public class TaskManager : SerializedMonoBehaviour
     public List<TaskObject> FindTaskObjectByType<T>()
     {
         return TaskObjects.FindAll(taskObject => (taskObject is T) && taskObject.IsAvailable);
-    }
-
-    public bool TryGetTask(Worker worker, out Task task)
-    {
-        task = Tasks.Find(t => t.Worker);
-        if (task != null)
-            return true;
-        return false;
     }
 
     public bool TryGetTaskObject<T>(BoardObject boardObject, out T taskObject) where T : TaskObject

@@ -9,19 +9,50 @@ using Sirenix.Serialization;
 public class Worker : Charecter
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
+    // Hold Item
+    public SpriteRenderer ItemSpriteRenderer;
+
     // task progress
     public GameObject TaskProgress;
     public Image ProgressImg;
 
-    // state
-    public ExecutingTask ExecutingTask;
-
-    protected override void Awake()
+    // Task
+    [OdinSerialize] public Task CurrentTask { get; set; }
+    public List<Task> Tasks { get; set; }
+    
+    public bool TrySetTask(Task newTask)
     {
-        base.Awake();
+        if (newTask == null)
+            return false;
+
+        if (newTask.TryGetTaskObject(this, out TaskObject taskObject))
+        {
+            // move worker to taskObject
+            if (PathFinder.TryFindWaypoint(this, CellPosition, taskObject.WorkingCell, dirs, out List<Vector3Int> waypoints))
+            {
+                CurrentTask = newTask;
+                //CurrentTask.Worker = this;
+                taskObject.Worker = this;
+                CurrentState = new WorkerMove(this, waypoints, new ExecutingTask(this, taskObject));
+                return true;
+            }
+            else
+            {
+                Debug.LogError("<color=red> Can't Move To TaskObject</color>");
+            }
+        }
+
+        return false;
+    }
+
+    // Events
+    public System.Action OnTaskDone;
+
+    // State
+    protected void Awake()
+    {
         IdleState = new WorkerIdle(this);
-        MoveState = new WorkerMove(this);
-        ExecutingTask = new ExecutingTask(this);
+        Tasks = new();
     }
 
     protected override void Start()
@@ -30,10 +61,7 @@ public class Worker : Charecter
         TaskProgress.SetActive(false);
     }
 
-    public override bool CanMoveTo(Vector3Int cellPos)
-    {
-        return PathTilemap.HasTile(cellPos);
-    }
+    public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 }
 
 public class WorkerIdle : IdleState<Worker>
@@ -42,10 +70,12 @@ public class WorkerIdle : IdleState<Worker>
 
     public override void EnterState()
     {
-        if (TaskManager.Instance.TryGetTask(Charecter,out Task task))
+        
+        var task = Charecter.Tasks.Find(task => Charecter.TrySetTask(task));
+        
+        if(task != null)
         {
-            Debug.Log("found");
-            task.TryAssignTask(Charecter);
+            Charecter.Tasks.Remove(task);
         }
         else
         {
@@ -58,25 +88,22 @@ public class WorkerIdle : IdleState<Worker>
 
 public class WorkerMove : MoveState<Worker>
 {
-    public WorkerMove(Worker worker):base(worker){}
+    public IState NextState { get; set; }
+    public WorkerMove(Worker worker, List<Vector3Int> waypoints, IState nextState = null) : base(worker, waypoints)
+    {
+        NextState = nextState;
+    }
 
     public override void SetNextState()
     {
-        if(Charecter.WayPoints.Count == 0)
+        if(WayPoints.Count == 0)
         {
-            if (TaskManager.Instance.Tasks.Find(task => task.Worker == Charecter) != null)
-            {
-                Charecter.CurrentState = Charecter.ExecutingTask;
-            }
-            else
-            {
-                Charecter.CurrentState = Charecter.IdleState;
-            }
+            Charecter.CurrentState = NextState;
         }
         else
         {
             // self transition
-            Charecter.CurrentState = Charecter.MoveState;
+            Charecter.CurrentState = new WorkerMove(Charecter,WayPoints,NextState);
         }
     }
 }
@@ -84,47 +111,50 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
-    Task Task { get; set; }
+    Task NextTask { get; set; }
+    TaskObject TaskObject { get; }
     float timeElapsed;
     float duration;
-    public ExecutingTask(Worker worker)
+
+    public ExecutingTask(Worker worker,TaskObject taskObject)
     {
         Worker = worker;
+        TaskObject = taskObject;
     }
+
     public void EnterState()
     {
         Worker.TaskProgress.SetActive(true);
         Worker.ProgressImg.fillAmount = 0f;
-        Task = TaskManager.Instance.Tasks.Find(task => task.Worker == Worker);
-        Task.TaskObject.Worker = Worker;
-        duration = Task.Duration;
+        duration = Worker.CurrentTask.Duration;
         timeElapsed = 0f;
         Worker.StartCoroutine(StartTask());
     }
 
     IEnumerator StartTask()
     {
-        while (timeElapsed < Task.Duration)
+        while (timeElapsed < Worker.CurrentTask.Duration)
         {
             Worker.ProgressImg.fillAmount = timeElapsed / duration;
             timeElapsed += Time.deltaTime;
             yield return null;
         }
 
-        Debug.Log(Task.ToString());
-        Task.Execute();
+        Debug.Log(Worker.CurrentTask.ToString());
+        NextTask = Worker.CurrentTask.Execute();
 
         SetNextState();
     }
 
     public void ExitState(){
-        Task.TaskObject.Worker = null;
-        TaskManager.Instance.Tasks.Remove(Task);
+        TaskObject.Worker = null;
         Worker.TaskProgress.SetActive(false);
     }
 
     public void SetNextState()
     {
-        Worker.CurrentState = Worker.IdleState;
+        if (!Worker.TrySetTask(NextTask))
+            Worker.CurrentState = Worker.IdleState;
+        
     }
 }
