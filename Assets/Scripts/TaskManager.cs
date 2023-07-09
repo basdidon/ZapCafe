@@ -7,6 +7,7 @@ using Sirenix.Serialization;
 public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
+
     [OdinSerialize] public List<Task> Tasks { get; private set; }
     [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
     [OdinSerialize] public List<TaskObject> TaskObjects { get; set; }
@@ -36,11 +37,11 @@ public class TaskManager : SerializedMonoBehaviour
         if(worker != null)
         {
             AvailableWorker.Remove(worker);
+            newTask.Worker = worker;
         }
-        else
-        {
-            Tasks.Add(newTask);        
-        }
+
+        Tasks.Add(newTask);        
+        
     }
 
     public void AddAvaliableWorker(Worker worker)
@@ -49,11 +50,11 @@ public class TaskManager : SerializedMonoBehaviour
             return;
         
         // TODO : loop to find task that can execute
-        Task task = Tasks.Find(task => worker.TrySetTask(task));
+        var task = Tasks.Find(task => worker.TrySetTask(task));
 
         if (task != null)
         {
-            Tasks.Remove(task);
+            task.Worker = worker;
         }
         else
         {

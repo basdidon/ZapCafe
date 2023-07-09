@@ -20,6 +20,11 @@ public class Worker : Charecter
     [OdinSerialize] public Task CurrentTask { get; set; }
     public List<Task> Tasks { get; set; }
     
+    /// <summary>
+    /// set <c>Task</c> to <c>Worker</c>
+    /// </summary>
+    /// <param name="newTask"></param>
+    /// <returns></returns>
     public bool TrySetTask(Task newTask)
     {
         if (newTask == null)
@@ -31,8 +36,9 @@ public class Worker : Charecter
             if (PathFinder.TryFindWaypoint(this, CellPosition, taskObject.WorkingCell, dirs, out List<Vector3Int> waypoints))
             {
                 CurrentTask = newTask;
+                CurrentTask.TaskObject = taskObject;
                 //CurrentTask.Worker = this;
-                taskObject.Worker = this;
+                //taskObject.Worker = this;
                 CurrentState = new WorkerMove(this, waypoints, new ExecutingTask(this, taskObject));
                 return true;
             }
@@ -44,9 +50,6 @@ public class Worker : Charecter
 
         return false;
     }
-
-    // Events
-    public System.Action OnTaskDone;
 
     // State
     protected void Awake()
@@ -70,14 +73,9 @@ public class WorkerIdle : IdleState<Worker>
 
     public override void EnterState()
     {
-        
         var task = Charecter.Tasks.Find(task => Charecter.TrySetTask(task));
         
-        if(task != null)
-        {
-            Charecter.Tasks.Remove(task);
-        }
-        else
+        if(task == null)
         {
             TaskManager.Instance.AddAvaliableWorker(Charecter);
         }
@@ -111,7 +109,6 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
-    Task NextTask { get; set; }
     TaskObject TaskObject { get; }
     float timeElapsed;
     float duration;
@@ -133,7 +130,8 @@ public class ExecutingTask : ISelfExitState
 
     IEnumerator StartTask()
     {
-        while (timeElapsed < Worker.CurrentTask.Duration)
+        Worker.CurrentTask.started?.Invoke();
+        while (timeElapsed < duration)
         {
             Worker.ProgressImg.fillAmount = timeElapsed / duration;
             timeElapsed += Time.deltaTime;
@@ -141,20 +139,19 @@ public class ExecutingTask : ISelfExitState
         }
 
         Debug.Log(Worker.CurrentTask.ToString());
-        NextTask = Worker.CurrentTask.Execute();
+        //NextTask = Worker.CurrentTask.Execute();
+        Worker.CurrentTask.performed?.Invoke();
 
         SetNextState();
     }
 
     public void ExitState(){
-        TaskObject.Worker = null;
+        //TaskObject.Worker = null;
         Worker.TaskProgress.SetActive(false);
     }
 
     public void SetNextState()
     {
-        if (!Worker.TrySetTask(NextTask))
-            Worker.CurrentState = Worker.IdleState;
-        
+            Worker.CurrentState = Worker.IdleState;   
     }
 }

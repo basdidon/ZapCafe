@@ -36,7 +36,9 @@ public class Customer : Charecter
 
     public void GetOrder()
     {
-        TaskManager.Instance.AddTask(new DonutBox.GetDonut(this));
+        Debug.Log("getOrder");
+        var a = new GetDonut(this);
+        TaskManager.Instance.AddTask(new GetDonut(this));
     }
 
     #region State
@@ -56,7 +58,11 @@ public class Customer : Charecter
             {
                 if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
                 {
-                    Charecter.Bar.CustomerArrived(Charecter);
+                    //Charecter.Bar.CustomerArrived(Charecter);
+                    Charecter.Bar.Customer = Charecter;
+                    var newTask = new Bar.GetOrderTask(Charecter, Charecter.Bar);
+                    newTask.performed += Charecter.GetOrder;
+                    TaskManager.Instance.AddTask(newTask);
                 }
 
                 Charecter.CurrentState = Charecter.IdleState;

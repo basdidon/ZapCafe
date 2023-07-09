@@ -7,7 +7,9 @@ using Sirenix.Serialization;
 
 public abstract class TaskObject:BoardObject
 {
-    [OdinSerialize] public Worker Worker { get; set; }
+    [OdinSerialize]
+    [BoxGroup("user")]
+    public Worker Worker { get; set; }  // when someone use it
     public bool IsAvailable { get => Worker == null; }
     public abstract Vector3Int WorkingCell { get; }
 }
@@ -21,6 +23,9 @@ public class Bar : TaskObject
     public Tilemap PathTile;
 
     // Customer
+    [OdinSerialize] 
+    [BoxGroup("user")]
+    public Customer Customer { get; set; }
     [field: SerializeField] public Transform ServicePoint { get; set; }
     public Vector3Int ServiceCell { get => BoardManager.GetCellPos(ServicePoint.position); }
 
@@ -51,10 +56,15 @@ public class Bar : TaskObject
             Debug.LogError("not found Customer's Script.");
         }
     }
-
+    /*
     public void CustomerArrived(Customer customer)
     {
-        TaskManager.AddTask(new GetOrderTask(customer,this));
+
+    }
+    */
+    public void CustomerLeave()
+    {
+        Customer = null;
     }
 
     public class GetOrderTask : Task
@@ -72,13 +82,15 @@ public class Bar : TaskObject
             taskObject = Bar;
             return true;
         }
-
+        /*
         public override Task Execute()
         {
             Debug.Log("Task execute()");
             Customer.GetOrder();
             return null;
         }
+
+        */
     }
 
     public class ServeOrderTask : Task
@@ -86,13 +98,13 @@ public class Bar : TaskObject
         public ServeOrderTask(Customer customer) : base(customer) { }
 
         public override float Duration => 0f;
-
+        /*
         public override Task Execute()
         {
             Debug.Log("order served");
             return null;
         }
-
+        */
         public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
         {
             taskObject = Customer.Bar;
