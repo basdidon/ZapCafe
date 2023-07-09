@@ -37,7 +37,6 @@ public class TaskManager : SerializedMonoBehaviour
         if(worker != null)
         {
             AvailableWorker.Remove(worker);
-            newTask.Worker = worker;
         }
 
         Tasks.Add(newTask);        
@@ -52,11 +51,7 @@ public class TaskManager : SerializedMonoBehaviour
         // TODO : loop to find task that can execute
         var task = Tasks.Find(task => worker.TrySetTask(task));
 
-        if (task != null)
-        {
-            task.Worker = worker;
-        }
-        else
+        if (task == null) 
         {
             AvailableWorker.Add(worker);
         }

@@ -36,9 +36,8 @@ public class Worker : Charecter
             if (PathFinder.TryFindWaypoint(this, CellPosition, taskObject.WorkingCell, dirs, out List<Vector3Int> waypoints))
             {
                 CurrentTask = newTask;
+                CurrentTask.Worker = this;
                 CurrentTask.TaskObject = taskObject;
-                //CurrentTask.Worker = this;
-                //taskObject.Worker = this;
                 CurrentState = new WorkerMove(this, waypoints, new ExecutingTask(this, taskObject));
                 return true;
             }

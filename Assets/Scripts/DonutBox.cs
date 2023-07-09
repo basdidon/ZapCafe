@@ -26,7 +26,12 @@ public class GetDonut : Task
     {
         performed += delegate { 
             Worker.ItemSpriteRenderer.sprite = (TaskObject as DonutBox).DonutSprite;
-            //Worker.Tasks.Add(new Bar.ServeOrderTask(customer));
+            var serveTask = new Bar.ServeOrderTask(customer);
+            serveTask.performed += delegate {
+                Worker.ItemSpriteRenderer.sprite = null;
+                Worker.Tasks.Remove(serveTask);
+            };
+            Worker.Tasks.Add(serveTask);
         };
     }
 
@@ -42,7 +47,7 @@ public class GetDonut : Task
         return false;
     }
 
-    public override float Duration => 1f;
+    public override float Duration => 3f;
 
 
     /*

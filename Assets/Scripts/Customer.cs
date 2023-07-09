@@ -37,7 +37,6 @@ public class Customer : Charecter
     public void GetOrder()
     {
         Debug.Log("getOrder");
-        var a = new GetDonut(this);
         TaskManager.Instance.AddTask(new GetDonut(this));
     }
 
@@ -58,7 +57,6 @@ public class Customer : Charecter
             {
                 if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
                 {
-                    //Charecter.Bar.CustomerArrived(Charecter);
                     Charecter.Bar.Customer = Charecter;
                     var newTask = new Bar.GetOrderTask(Charecter, Charecter.Bar);
                     newTask.performed += Charecter.GetOrder;
@@ -71,6 +69,25 @@ public class Customer : Charecter
             {
                 // self transition
                 Charecter.CurrentState = new CustomerMoveState(Charecter,WayPoints);
+            }
+        }
+    }
+
+    public class CustomerExitState : MoveState<Customer>
+    {
+        public CustomerExitState(Customer charecter, List<Vector3Int> waypoints) : base(charecter, waypoints) { }
+
+        public override void SetNextState()
+        {
+            if (WayPoints.Count == 0)
+            {
+                Debug.Log(Charecter.name);
+                Destroy(Charecter.gameObject);
+            }
+            else
+            {
+                // self transition
+                Charecter.CurrentState = new CustomerExitState(Charecter, WayPoints);
             }
         }
     }

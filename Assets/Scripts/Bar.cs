@@ -19,7 +19,9 @@ public class Bar : TaskObject
     TaskManager TaskManager { get => TaskManager.Instance; }
     public GameObject customerPrefab; //**** move to objectPool later
     public Transform spawnAt;
+    public Transform exitAt;
     public Vector3Int SpawnCell { get => BoardManager.GetCellPos(spawnAt.position); }
+    public Vector3Int ExitCell { get => BoardManager.GetCellPos(exitAt.position); }
     public Tilemap PathTile;
 
     // Customer
@@ -56,15 +58,19 @@ public class Bar : TaskObject
             Debug.LogError("not found Customer's Script.");
         }
     }
-    /*
-    public void CustomerArrived(Customer customer)
-    {
 
-    }
-    */
     public void CustomerLeave()
     {
+        if (PathFinder.TryFindWaypoint(Customer, ServiceCell, ExitCell, Customer.dirs, out List<Vector3Int> waypoints))
+        {
+            Customer.CurrentState = new Customer.CustomerExitState(Customer, waypoints);
+        }
+        else
+        {
+            Debug.LogError($"can't move from {ServiceCell} to {ExitCell}");
+        }
         Customer = null;
+        SpawnNewCustomer();
     }
 
     public class GetOrderTask : Task
@@ -82,29 +88,17 @@ public class Bar : TaskObject
             taskObject = Bar;
             return true;
         }
-        /*
-        public override Task Execute()
-        {
-            Debug.Log("Task execute()");
-            Customer.GetOrder();
-            return null;
-        }
-
-        */
     }
 
     public class ServeOrderTask : Task
     {
-        public ServeOrderTask(Customer customer) : base(customer) { }
-
-        public override float Duration => 0f;
-        /*
-        public override Task Execute()
+        public ServeOrderTask(Customer customer) : base(customer) 
         {
-            Debug.Log("order served");
-            return null;
+            performed += delegate { (TaskObject as Bar).CustomerLeave(); };
         }
-        */
+
+        public override float Duration => 1f;
+
         public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
         {
             taskObject = Customer.Bar;
