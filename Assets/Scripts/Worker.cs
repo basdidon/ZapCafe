@@ -17,33 +17,33 @@ public class Worker : Charecter
     public Image ProgressImg;
 
     // Task
-    [OdinSerialize] public Task CurrentTask { get; set; }
-    public List<Task> Tasks { get; set; }
-    
+    [OdinSerialize] public ITask<WorkStation> CurrentTask { get; set; }
+    public List<ITask<WorkStation>> Tasks { get; set; }
+
     /// <summary>
     /// set <c>Task</c> to <c>Worker</c>
     /// </summary>
     /// <param name="newTask"></param>
     /// <returns></returns>
-    public bool TrySetTask(Task newTask)
+    public bool TrySetTask(ITask<WorkStation> newTask)
     {
         if (newTask == null)
             return false;
 
-        if (newTask.TryGetTaskObject(this, out TaskObject taskObject))
+        if (newTask.TryGetworkStation(this, out WorkStation workStation))
         {
-            // move worker to taskObject
-            if (PathFinder.TryFindWaypoint(this, CellPosition, taskObject.WorkingCell, dirs, out List<Vector3Int> waypoints))
+            // move worker to workStation
+            if (PathFinder.TryFindWaypoint(this, CellPosition, workStation.WorkingCell, dirs, out List<Vector3Int> waypoints))
             {
                 CurrentTask = newTask;
                 CurrentTask.Worker = this;
-                CurrentTask.TaskObject = taskObject;
-                CurrentState = new WorkerMove(this, waypoints, new ExecutingTask(this, taskObject));
+                CurrentTask.WorkStation = workStation;
+                CurrentState = new WorkerMove(this, waypoints, new ExecutingTask(this, workStation));
                 return true;
             }
             else
             {
-                Debug.LogError("<color=red> Can't Move To TaskObject</color>");
+                Debug.LogError("<color=red> Can't Move To workStation</color>");
             }
         }
 
@@ -63,7 +63,23 @@ public class Worker : Charecter
         TaskProgress.SetActive(false);
     }
 
-    public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
+    public override bool CanMoveTo(Vector3Int cellPos){
+        RaycastHit2D[] hits = new RaycastHit2D[100];
+        int hits_n = Physics2D.RaycastNonAlloc(BoardManager.GetCellCenterWorld(cellPos), Vector2.down, hits,0.1f);
+        bool isCollided = false;
+        for (int i = 0; i < hits_n; i++){
+            if (hits[i].transform.CompareTag("WorkStation"))
+            {
+                isCollided = true;
+                break;
+            }
+            //Debug.Log($"{hits[i].transform.tag} : {hits[i].transform.name} contacctPoint at {hits[i].point} & at {cellPos}");
+        }
+
+        // Debug.DrawRay(BoardManager.GetCellCenterWorld(cellPos), Vector2.down * 0.1f, Color.black, 5f);
+
+        return PathTilemap.HasTile(cellPos) && !isCollided;
+    }
 }
 
 public class WorkerIdle : IdleState<Worker>
@@ -108,14 +124,14 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
-    TaskObject TaskObject { get; }
+    WorkStation WorkStation { get; }
     float timeElapsed;
     float duration;
 
-    public ExecutingTask(Worker worker,TaskObject taskObject)
+    public ExecutingTask(Worker worker,WorkStation workStation)
     {
         Worker = worker;
-        TaskObject = taskObject;
+        WorkStation = workStation;
     }
 
     public void EnterState()
@@ -145,7 +161,7 @@ public class ExecutingTask : ISelfExitState
     }
 
     public void ExitState(){
-        //TaskObject.Worker = null;
+        //workStation.Worker = null;
         Worker.TaskProgress.SetActive(false);
     }
 

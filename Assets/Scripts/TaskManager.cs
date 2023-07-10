@@ -8,9 +8,9 @@ public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
 
-    [OdinSerialize] public List<Task> Tasks { get; private set; }
+    [OdinSerialize] public List<ITask<WorkStation>> Tasks { get; private set; }
     [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
-    [OdinSerialize] public List<TaskObject> TaskObjects { get; set; }
+    [OdinSerialize] public List<WorkStation> WorkStations { get; set; }
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class TaskManager : SerializedMonoBehaviour
         AvailableWorker = new();
     }
 
-    public void AddTask(Task newTask)
+    public void AddTask(ITask<WorkStation> newTask)
     {
         if (newTask == null)
             return;
@@ -40,7 +40,6 @@ public class TaskManager : SerializedMonoBehaviour
         }
 
         Tasks.Add(newTask);        
-        
     }
 
     public void AddAvaliableWorker(Worker worker)
@@ -48,51 +47,76 @@ public class TaskManager : SerializedMonoBehaviour
         if (worker == null)
             return;
         
-        // TODO : loop to find task that can execute
-        var task = Tasks.Find(task => worker.TrySetTask(task));
+        var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
 
         if (task == null) 
         {
             AvailableWorker.Add(worker);
         }
-        
     }
 
-    public void AddTaskObject(TaskObject taskObject)
+    public bool TryGetTaskByworkStation<T>(out ITask<WorkStation> task) where T : WorkStation
     {
-        if (!TaskObjects.Contains(taskObject))
+        task = Tasks.Find(task => task.Worker == null && task.WorkStation != null && task.WorkStation.GetType() == typeof(T));
+
+        if (task == null)
+            return false;
+        return true;
+    }
+
+    // when 
+    public void WorkStationFree<T>() where T:WorkStation
+    {
+        if (AvailableWorker.Count <= 0)
+            return;
+
+        var worker = AvailableWorker[0];
+        var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
+
+        if (task == null)
         {
-            TaskObjects.Add(taskObject);
+            AvailableWorker.Add(worker);
+        }
+        AvailableWorker.Remove(worker);
+
+    }
+
+    public void AddworkStation(WorkStation workStation)
+    {
+        if (!WorkStations.Contains(workStation))
+        {
+            WorkStations.Add(workStation);
         }
     }
 
+
     [Button]
-    public void CountBar() => Debug.Log(FindTaskObjectByType<Bar>().Count);
-    public List<TaskObject> FindTaskObjectByType<T>()
+    public void CountBar() => Debug.Log(FindworkStationByType<Bar>().Count);
+    public List<WorkStation> FindworkStationByType<T>()
     {
-        return TaskObjects.FindAll(taskObject => (taskObject is T) && taskObject.IsAvailable);
+        return WorkStations.FindAll(workStation => (workStation is T) && workStation.IsAvailable);
     }
 
-    public bool TryGetTaskObject<T>(BoardObject boardObject, out T taskObject) where T : TaskObject
+    public bool TryGetworkStation<T>(BoardObject boardObject, out T workStation) where T : WorkStation
     {
-        taskObject = null;
-        var taskObjects = TaskObjects.FindAll(taskObject => (taskObject is T) && taskObject.IsAvailable);
+        workStation = null;
+        var workStations = WorkStations.FindAll(workStation => (workStation is T) && workStation.IsAvailable);
 
-        if (taskObjects == null || taskObjects.Count == 0) return false;
+        if (workStations == null || workStations.Count == 0) return false;
 
-        taskObject = (T) taskObjects[0];
+        workStation = (T) workStations[0];
 
         // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
         // both method need to use square root for get the result
         // but in this function, distance is no matter
         // so i just use Vector3.sqrMagnitude find which object is closer
-        float minSqrMagnitude = (boardObject.CellCenterWorld- taskObject.CellCenterWorld).sqrMagnitude;
-        for(int i = 1; i < taskObjects.Count; i++)
+        float minSqrMagnitude = (boardObject.CellCenterWorld- workStation.CellCenterWorld).sqrMagnitude;
+        for(int i = 1; i < workStations.Count; i++)
         {
-            var sqrMagnitude = (boardObject.CellCenterWorld - taskObjects[i].CellCenterWorld).sqrMagnitude;
+            var sqrMagnitude = (boardObject.CellCenterWorld - workStations[i].CellCenterWorld).sqrMagnitude;
             if ( sqrMagnitude < minSqrMagnitude)
             {
-                taskObject = (T) taskObjects[i];
+                workStation = (T) workStations[i];
                 minSqrMagnitude = sqrMagnitude;
             }
         }

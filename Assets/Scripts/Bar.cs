@@ -4,17 +4,17 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-
-public abstract class TaskObject:BoardObject
+/*
+public abstract class workStation:BoardObject
 {
     [OdinSerialize]
     [BoxGroup("user")]
     public Worker Worker { get; set; }  // when someone use it
-    public bool IsAvailable { get => Worker == null; }
+    public bool IsAvailable { get => TaskManager.Instance.Tasks.Find(task => task.workStation == this) == null; }
     public abstract Vector3Int WorkingCell { get; }
 }
-
-public class Bar : TaskObject
+*/
+public class Bar : WorkStation
 {
     TaskManager TaskManager { get => TaskManager.Instance; }
     public GameObject customerPrefab; //**** move to objectPool later
@@ -38,7 +38,7 @@ public class Bar : TaskObject
     // Mono
     private void Start()
     {
-        TaskManager.AddTaskObject(this);
+        TaskManager.AddworkStation(this);
         SpawnNewCustomer();
     }
 
@@ -73,7 +73,7 @@ public class Bar : TaskObject
         SpawnNewCustomer();
     }
 
-    public class GetOrderTask : Task
+    public class GetOrderTask : Task<Bar>
     {
         public Bar Bar { get; set; }
         public override float Duration => 5f;
@@ -83,25 +83,25 @@ public class Bar : TaskObject
             Bar = bar;
         }
 
-        public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
+        public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
         {
-            taskObject = Bar;
+            workStation = Bar;
             return true;
         }
     }
 
-    public class ServeOrderTask : Task
+    public class ServeOrderTask : Task<Bar>
     {
         public ServeOrderTask(Customer customer) : base(customer) 
         {
-            performed += delegate { (TaskObject as Bar).CustomerLeave(); };
+            performed += delegate { (WorkStation as Bar).CustomerLeave(); };
         }
 
         public override float Duration => 1f;
 
-        public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
+        public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
         {
-            taskObject = Customer.Bar;
+            workStation = Customer.Bar;
             return true;
         }
     }

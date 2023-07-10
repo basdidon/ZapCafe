@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.Serialization;
 
-public class DonutBox : TaskObject
+public class DonutBox : WorkStation
 {
     TaskManager TaskManager { get => TaskManager.Instance; }
 
@@ -16,44 +16,39 @@ public class DonutBox : TaskObject
 
     private void Start()
     {
-        TaskManager.AddTaskObject(this);
+        TaskManager.AddworkStation(this);
     }
 }
 
-public class GetDonut : Task
+public class GetDonut : Task<DonutBox>
 {
+    public override float Duration => 3f;
+
     public GetDonut(Customer customer) : base(customer)
     {
-        performed += delegate { 
-            Worker.ItemSpriteRenderer.sprite = (TaskObject as DonutBox).DonutSprite;
+        performed += delegate {
+            Worker.ItemSpriteRenderer.sprite = (WorkStation as DonutBox).DonutSprite;
             var serveTask = new Bar.ServeOrderTask(customer);
             serveTask.performed += delegate {
                 Worker.ItemSpriteRenderer.sprite = null;
                 Worker.Tasks.Remove(serveTask);
             };
             Worker.Tasks.Add(serveTask);
+
+            TaskManager.Instance.WorkStationFree<DonutBox>();
         };
     }
 
-    public override bool TryGetTaskObject(Charecter charecter, out TaskObject taskObject)
+    public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
     {
-        taskObject = null;
-        if (TaskManager.Instance.TryGetTaskObject(charecter, out DonutBox donutBox))
+        workStation = null;
+        if (TaskManager.Instance.TryGetworkStation(worker, out DonutBox donutBox))
         {
-            taskObject = donutBox;
+            workStation = donutBox;
             return true;
         }
 
         return false;
     }
 
-    public override float Duration => 3f;
-
-
-    /*
-    public override Task Execute()
-    {
-        // give donut to player
-        return new Bar.ServeOrderTask(Customer);
-    }*/
 }

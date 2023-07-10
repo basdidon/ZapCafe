@@ -5,20 +5,33 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
 
-[System.Serializable]
-public abstract class Task
+public interface ITask<out T> where T : WorkStation
 {
-    [OdinSerialize] public Customer Customer { get; private set; }
+    Customer Customer { get; }
+    Worker Worker { get; set; }
+    WorkStation WorkStation { get; set; }
+
+    float Duration { get; }
+    bool TryGetworkStation(Worker worker, out WorkStation workStation);
+
+    public Action started { get; set; }
+    public Action performed { get; set; }
+}
+
+[System.Serializable]
+public abstract class Task<T> : ITask<T> where T : WorkStation
+{
+    [OdinSerialize] public Customer Customer { get; }
     [OdinSerialize] public Worker Worker { get; set; }
-    [OdinSerialize] TaskObject taskObject;
-    public TaskObject TaskObject
+    [OdinSerialize] WorkStation workStation;
+    public WorkStation WorkStation
     {
-        get => taskObject;
+        get => workStation;
         set
         {
-            taskObject = value;
-            started += delegate { TaskObject.Worker = Worker; };
-            performed += delegate { TaskObject.Worker = null; };
+            workStation = value;
+            started += delegate { WorkStation.Worker = Worker; };
+            performed += delegate { WorkStation.Worker = null; };
         }
     }
     public abstract float Duration { get; }
@@ -31,30 +44,48 @@ public abstract class Task
         };
     }
 
-    public abstract bool TryGetTaskObject(Charecter charecter,out TaskObject taskObject);
+    public abstract bool TryGetworkStation(Worker worker, out WorkStation workStation);
 
-    //public abstract Task Execute();
-    public Action started;
-    public Action performed;
+    public Action started { get; set; }
+    public Action performed { get; set; }
 }
+
+/*
+public abstract class WorkStation{}
+
+public class WorkStationA : WorkStation{ }
+public class WorkStationB : WorkStation{ }
+*/
+
+/*
+public sealed class TaskA<T> : ITask<T> where T : WorkStationA
+{
+    public T WorkStation { get; set; }
+}
+
+public sealed class TaskB<T> : ITask<T> where T : WorkStationB
+{
+    public T WorkStation { get; set; }
+}
+*/
 
 
 /* 
 public bool TryAssignTask(Worker worker)
 {
-    if (TryGetTaskObject(worker, out TaskObject taskObject))
+    if (TryGetworkStation(worker, out workStation workStation))
     {
-        // move worker to taskObject
-        if (PathFinder.TryFindWaypoint(Worker, Worker.CellPosition, taskObject.WorkingCell, Worker.dirs, out List<Vector3Int> waypoints))
+        // move worker to workStation
+        if (PathFinder.TryFindWaypoint(Worker, Worker.CellPosition, workStation.WorkingCell, Worker.dirs, out List<Vector3Int> waypoints))
         {
             Worker = worker;
-            TaskObject = taskObject;
-            worker.CurrentState = new WorkerMove(worker, waypoints, new ExecutingTask(worker, taskObject));
+            workStation = workStation;
+            worker.CurrentState = new WorkerMove(worker, waypoints, new ExecutingTask(worker, workStation));
             return true;
         }
         else
         {
-            Debug.LogError("<color=red> Can't Move To TaskObject</color>");
+            Debug.LogError("<color=red> Can't Move To workStation</color>");
         }
     }
     return false;
