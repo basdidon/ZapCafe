@@ -4,11 +4,13 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
-public abstract class WorkStation : BoardObject
+public interface IWorkStation<out T> : IBoardObject where T : Item
 {
-    [OdinSerialize]
-    [BoxGroup("user")]
-    public Worker Worker { get; set; }  // when someone use it
+    Worker Worker { get; set; }
     public bool IsAvailable { get => TaskManager.Instance.Tasks.Find(task => task.WorkStation == this) == null; }
-    public abstract Vector3Int WorkingCell { get; }
+    Vector3Int WorkingCell { get; }
+
+    Sprite Sprite { get; }
+
+    T GetItem();
 }

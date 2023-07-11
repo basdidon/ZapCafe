@@ -4,19 +4,9 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-/*
-public abstract class workStation:BoardObject
+
+public class Bar : BoardObject,IWorkStation<Item>
 {
-    [OdinSerialize]
-    [BoxGroup("user")]
-    public Worker Worker { get; set; }  // when someone use it
-    public bool IsAvailable { get => TaskManager.Instance.Tasks.Find(task => task.workStation == this) == null; }
-    public abstract Vector3Int WorkingCell { get; }
-}
-*/
-public class Bar : WorkStation
-{
-    TaskManager TaskManager { get => TaskManager.Instance; }
     public GameObject customerPrefab; //**** move to objectPool later
     public Transform spawnAt;
     public Transform exitAt;
@@ -32,13 +22,14 @@ public class Bar : WorkStation
     public Vector3Int ServiceCell { get => BoardManager.GetCellPos(ServicePoint.position); }
 
     // Worker
+    public Worker Worker { get; set; }
     [field: SerializeField] public Transform WorkingPoint { get; set; }
-    public override Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
+    public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
     // Mono
     private void Start()
     {
-        TaskManager.AddworkStation(this);
+        WorkStationRegistry.Instance.AddWorkStation(this);
         SpawnNewCustomer();
     }
 
@@ -69,11 +60,15 @@ public class Bar : WorkStation
         {
             Debug.LogError($"can't move from {ServiceCell} to {ExitCell}");
         }
+        Customer.OrderSprite = null;
         Customer = null;
         SpawnNewCustomer();
     }
 
-    public class GetOrderTask : Task<Bar>
+    public Item GetItem() => throw new System.NotImplementedException();
+    public Sprite Sprite { get => throw new System.NotImplementedException(); }
+
+    public class GetOrderTask : Task<Item>
     {
         public Bar Bar { get; set; }
         public override float Duration => 5f;
@@ -82,27 +77,32 @@ public class Bar : WorkStation
         {
             Bar = bar;
         }
-
-        public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
+        public override IWorkStation<Item> GetworkStation(Worker worker)
         {
-            workStation = Bar;
-            return true;
+            return Bar;
         }
     }
 
-    public class ServeOrderTask : Task<Bar>
+    public class ServeOrderTask : Task<Item>
     {
         public ServeOrderTask(Customer customer) : base(customer) 
         {
-            performed += delegate { (WorkStation as Bar).CustomerLeave(); };
+            Performed += delegate { (WorkStation as Bar).CustomerLeave(); };
         }
 
         public override float Duration => 1f;
 
-        public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
+        public override IWorkStation<Item> GetworkStation(Worker worker)
         {
-            workStation = Customer.Bar;
-            return true;
+            foreach(Bar bar in WorkStationRegistry.Instance.GetWorkStationsByType<Bar>())
+            {
+                if(bar.Customer == Customer)
+                {
+                    return bar;
+                }
+            }
+
+            return null;
         }
     }
 }

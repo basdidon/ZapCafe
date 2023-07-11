@@ -17,20 +17,22 @@ public class Worker : Charecter
     public Image ProgressImg;
 
     // Task
-    [OdinSerialize] public ITask<WorkStation> CurrentTask { get; set; }
-    public List<ITask<WorkStation>> Tasks { get; set; }
+    [OdinSerialize] public ITask<Item> CurrentTask { get; set; }
+    public List<ITask<Item>> Tasks { get; set; }
 
     /// <summary>
     /// set <c>Task</c> to <c>Worker</c>
     /// </summary>
     /// <param name="newTask"></param>
     /// <returns></returns>
-    public bool TrySetTask(ITask<WorkStation> newTask)
+    public bool TrySetTask(ITask<Item> newTask)
     {
         if (newTask == null)
             return false;
 
-        if (newTask.TryGetworkStation(this, out WorkStation workStation))
+        var workStation = newTask.GetworkStation(this);
+
+        if (workStation != null)
         {
             // move worker to workStation
             if (PathFinder.TryFindWaypoint(this, CellPosition, workStation.WorkingCell, dirs, out List<Vector3Int> waypoints))
@@ -124,11 +126,11 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
-    WorkStation WorkStation { get; }
+    IWorkStation<Item> WorkStation { get; }
     float timeElapsed;
     float duration;
 
-    public ExecutingTask(Worker worker,WorkStation workStation)
+    public ExecutingTask(Worker worker,IWorkStation<Item> workStation)
     {
         Worker = worker;
         WorkStation = workStation;
@@ -145,7 +147,7 @@ public class ExecutingTask : ISelfExitState
 
     IEnumerator StartTask()
     {
-        Worker.CurrentTask.started?.Invoke();
+        Worker.CurrentTask.Started?.Invoke();
         while (timeElapsed < duration)
         {
             Worker.ProgressImg.fillAmount = timeElapsed / duration;
@@ -154,14 +156,12 @@ public class ExecutingTask : ISelfExitState
         }
 
         Debug.Log(Worker.CurrentTask.ToString());
-        //NextTask = Worker.CurrentTask.Execute();
-        Worker.CurrentTask.performed?.Invoke();
+        Worker.CurrentTask.Performed?.Invoke();
 
         SetNextState();
     }
 
     public void ExitState(){
-        //workStation.Worker = null;
         Worker.TaskProgress.SetActive(false);
     }
 

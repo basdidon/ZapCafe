@@ -8,9 +8,8 @@ public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
 
-    [OdinSerialize] public List<ITask<WorkStation>> Tasks { get; private set; }
+    [OdinSerialize] public List<ITask<Item>> Tasks { get; private set; }
     [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
-    [OdinSerialize] public List<WorkStation> WorkStations { get; set; }
 
     private void Awake()
     {
@@ -27,7 +26,7 @@ public class TaskManager : SerializedMonoBehaviour
         AvailableWorker = new();
     }
 
-    public void AddTask(ITask<WorkStation> newTask)
+    public void AddTask(ITask<Item> newTask)
     {
         if (newTask == null)
             return;
@@ -55,17 +54,7 @@ public class TaskManager : SerializedMonoBehaviour
         }
     }
 
-    public bool TryGetTaskByworkStation<T>(out ITask<WorkStation> task) where T : WorkStation
-    {
-        task = Tasks.Find(task => task.Worker == null && task.WorkStation != null && task.WorkStation.GetType() == typeof(T));
-
-        if (task == null)
-            return false;
-        return true;
-    }
-
-    // when 
-    public void WorkStationFree<T>() where T:WorkStation
+    public void WorkStationFree<T>() where T : Item
     {
         if (AvailableWorker.Count <= 0)
             return;
@@ -80,51 +69,4 @@ public class TaskManager : SerializedMonoBehaviour
         AvailableWorker.Remove(worker);
 
     }
-
-    public void AddworkStation(WorkStation workStation)
-    {
-        if (!WorkStations.Contains(workStation))
-        {
-            WorkStations.Add(workStation);
-        }
-    }
-
-
-    [Button]
-    public void CountBar() => Debug.Log(FindworkStationByType<Bar>().Count);
-    public List<WorkStation> FindworkStationByType<T>()
-    {
-        return WorkStations.FindAll(workStation => (workStation is T) && workStation.IsAvailable);
-    }
-
-    public bool TryGetworkStation<T>(BoardObject boardObject, out T workStation) where T : WorkStation
-    {
-        workStation = null;
-        var workStations = WorkStations.FindAll(workStation => (workStation is T) && workStation.IsAvailable);
-
-        if (workStations == null || workStations.Count == 0) return false;
-
-        workStation = (T) workStations[0];
-
-        // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
-        // both method need to use square root for get the result
-        // but in this function, distance is no matter
-        // so i just use Vector3.sqrMagnitude find which object is closer
-        float minSqrMagnitude = (boardObject.CellCenterWorld- workStation.CellCenterWorld).sqrMagnitude;
-        for(int i = 1; i < workStations.Count; i++)
-        {
-            var sqrMagnitude = (boardObject.CellCenterWorld - workStations[i].CellCenterWorld).sqrMagnitude;
-            if ( sqrMagnitude < minSqrMagnitude)
-            {
-                workStation = (T) workStations[i];
-                minSqrMagnitude = sqrMagnitude;
-            }
-        }
-
-        return true;
-    }
-
-    
-
-
 }

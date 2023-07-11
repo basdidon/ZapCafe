@@ -3,12 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Sirenix.OdinInspector;
+using System.Linq;
 
 public class Customer : Charecter
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
     [field: SerializeField] public Bar Bar { get; set; }
-    
+
+    [field: SerializeField] GameObject textBubble;
+    [field: SerializeField] SpriteRenderer OrderItemRenderer;
+    Sprite orderSprite;
+    public Sprite OrderSprite 
+    {
+        get => orderSprite;
+        set
+        {
+            orderSprite = value;
+            if(OrderSprite == null)
+            {
+                textBubble.SetActive(false);
+            }
+            else
+            {
+                OrderItemRenderer.sprite = OrderSprite;
+                textBubble.SetActive(true);
+            }
+        }
+    }
+
     public void Initialized(Bar bar)
     {
         Bar = bar;
@@ -30,14 +52,28 @@ public class Customer : Charecter
     protected void Awake()
     {
         IdleState = new CustomerIdleState();
+        CustomerOrders = new() { new GetItem<Donut>(this), new GetItem<Burger>(this) };
+        OrderSprite = null;
     }
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 
+    List<ITask<Item>> CustomerOrders;
     public void GetOrder()
     {
         Debug.Log("getOrder");
-        TaskManager.Instance.AddTask(new GetDonut(this));
+        var orderTask = CustomerOrders[Random.Range(0, CustomerOrders.Count)];
+        TaskManager.Instance.AddTask(orderTask);
+
+        // hardcode remove later
+        if (orderTask.GetType().GenericTypeArguments.Contains(typeof(Donut)))
+        {
+            OrderSprite = ItemList.Instance.GetItemSprite("Donut");
+        }
+        else
+        {
+            OrderSprite = ItemList.Instance.GetItemSprite("Burger");
+        }
     }
 
     #region State
@@ -59,7 +95,7 @@ public class Customer : Charecter
                 {
                     Charecter.Bar.Customer = Charecter;
                     var newTask = new Bar.GetOrderTask(Charecter, Charecter.Bar);
-                    newTask.performed += Charecter.GetOrder;
+                    newTask.Performed += Charecter.GetOrder;
                     TaskManager.Instance.AddTask(newTask);
                 }
 

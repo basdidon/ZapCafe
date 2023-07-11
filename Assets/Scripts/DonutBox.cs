@@ -3,42 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.Serialization;
 
-public class DonutBox : WorkStation
+public class DonutBox : BoardObject,IWorkStation<Donut>
 {
-    TaskManager TaskManager { get => TaskManager.Instance; }
-
     // Worker
+    public Worker Worker { get; set; }
     [field: SerializeField] public Transform WorkingPoint { get; set; }
-    public override Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
+    public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
-    // Donut Sprite
-    [OdinSerialize] public Sprite DonutSprite { get; set; }
+    [SerializeField] Sprite sprite;
+    public Sprite Sprite => sprite;
 
     private void Start()
     {
-        TaskManager.AddworkStation(this);
+        WorkStationRegistry.Instance.AddWorkStation(this);
+    }
+
+    public Donut GetItem()
+    {
+        throw new System.NotImplementedException();
     }
 }
 
-public class GetDonut : Task<DonutBox>
+public class GetItem<T> : Task<T> where T : Item
 {
     public override float Duration => 3f;
 
-    public GetDonut(Customer customer) : base(customer)
+    public GetItem(Customer customer) : base(customer)
     {
-        performed += delegate {
-            Worker.ItemSpriteRenderer.sprite = (WorkStation as DonutBox).DonutSprite;
+        Performed += delegate {
+            Worker.ItemSpriteRenderer.sprite = WorkStation.Sprite;
             var serveTask = new Bar.ServeOrderTask(customer);
-            serveTask.performed += delegate {
+            serveTask.Performed += delegate {
                 Worker.ItemSpriteRenderer.sprite = null;
                 Worker.Tasks.Remove(serveTask);
             };
             Worker.Tasks.Add(serveTask);
 
-            TaskManager.Instance.WorkStationFree<DonutBox>();
+            TaskManager.Instance.WorkStationFree<T>();
         };
     }
+}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
     {
         workStation = null;
@@ -50,5 +72,10 @@ public class GetDonut : Task<DonutBox>
 
         return false;
     }
+    /*
+    public override float Duration => throw new System.NotImplementedException();
 
-}
+    public override bool TryGetworkStation(Worker worker, out WorkStation workStation)
+    {
+        throw new System.NotImplementedException();
+    }*/
