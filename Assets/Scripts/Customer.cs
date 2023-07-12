@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Sirenix.OdinInspector;
 using System.Linq;
 
 public class Customer : Charecter
@@ -52,20 +51,22 @@ public class Customer : Charecter
     protected void Awake()
     {
         IdleState = new CustomerIdleState();
-        CustomerOrders = new() { new GetItem<Donut>(this), new GetItem<Burger>(this) };
+        CustomerOrders = new() { new GetItem(this,"Donut"), new GetItem(this,"Burger") };
         OrderSprite = null;
     }
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 
-    List<ITask<Item>> CustomerOrders;
+    List<GetItem> CustomerOrders;
     public void GetOrder()
     {
         Debug.Log("getOrder");
         var orderTask = CustomerOrders[Random.Range(0, CustomerOrders.Count)];
         TaskManager.Instance.AddTask(orderTask);
 
+        OrderSprite = ItemList.Instance.GetItemSprite(orderTask.ItemName);
         // hardcode remove later
+        /*
         if (orderTask.GetType().GenericTypeArguments.Contains(typeof(Donut)))
         {
             OrderSprite = ItemList.Instance.GetItemSprite("Donut");
@@ -73,7 +74,7 @@ public class Customer : Charecter
         else
         {
             OrderSprite = ItemList.Instance.GetItemSprite("Burger");
-        }
+        }*/
     }
 
     #region State

@@ -9,6 +9,29 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
      public readonly List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
     public abstract bool CanMoveTo(Vector3Int cellPos);
 
+    // Hold Item
+    [SerializeField] SpriteRenderer ItemSpriteRenderer;
+
+    Item holdingItem = null;
+    public Item HoldingItem
+    {
+        get => holdingItem;
+        set
+        {
+            holdingItem = value;
+            if (HoldingItem == null)
+            {
+                ItemSpriteRenderer.sprite = null;
+            }
+            else
+            {
+                Debug.Log(HoldingItem);
+                Debug.Log(HoldingItem.Sprite.ToString());
+                ItemSpriteRenderer.sprite = HoldingItem.Sprite;
+            }
+        }
+    }
+
     // State
     public IState IdleState { get; set; }
 

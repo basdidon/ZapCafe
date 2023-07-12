@@ -216,17 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15214ec8e417c3c45955044477aeefe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   <WorkingPoint>k__BackingField: {fileID: 290082121250252793}
-  sprite: {fileID: 21300000, guid: 21dc777e721375d4e9836b533d98e687, type: 3}
 --- !u!60 &7402568471862083982
 PolygonCollider2D:
   m_ObjectHideFlags: 0

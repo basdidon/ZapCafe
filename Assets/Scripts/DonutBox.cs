@@ -3,45 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.Serialization;
 
-public class DonutBox : BoardObject,IWorkStation<Donut>
+public class DonutBox : BoardObject,IWorkStation,IItemFactory
 {
     // Worker
     public Worker Worker { get; set; }
     [field: SerializeField] public Transform WorkingPoint { get; set; }
     public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
-    [SerializeField] Sprite sprite;
-    public Sprite Sprite => sprite;
+    public string ItemName => "Donut";
 
     private void Start()
     {
         WorkStationRegistry.Instance.AddWorkStation(this);
     }
-
-    public Donut GetItem()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
-public class GetItem<T> : Task<T> where T : Item
+public class GetItem : Task // <T> : Task<T> where T : Item
 {
+    public string ItemName { get; }
     public override float Duration => 3f;
 
-    public GetItem(Customer customer) : base(customer)
+    public GetItem(Customer customer, string itemName) : base(customer)
     {
+        ItemName = itemName;
+
         Performed += delegate {
-            Worker.ItemSpriteRenderer.sprite = WorkStation.Sprite;
+            Worker.HoldingItem = (WorkStation as IItemFactory).CreateItem();
             var serveTask = new Bar.ServeOrderTask(customer);
             serveTask.Performed += delegate {
-                Worker.ItemSpriteRenderer.sprite = null;
+                Worker.HoldingItem = null;
                 Worker.Tasks.Remove(serveTask);
             };
             Worker.Tasks.Add(serveTask);
 
-            TaskManager.Instance.WorkStationFree<T>();
+            TaskManager.Instance.WorkStationFree();
         };
     }
+
+    public override IWorkStation GetworkStation(Worker worker) => WorkStationRegistry.Instance.GetItemFactories(ItemName).ReadyToUse().FindClosest(worker);
 }
 
 

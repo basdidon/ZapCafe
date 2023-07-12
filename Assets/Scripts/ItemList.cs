@@ -22,6 +22,11 @@ public class ItemList : MonoBehaviour
 
     public Sprite GetItemSprite(string name)
     {
-        return Itemsdata.Find(itemdata => itemdata.name == name).Sprite;        
+        return Itemsdata.Find(itemdata => itemdata.Name == name).Sprite;        
+    }
+
+    public ItemSO GetItemData(string name)
+    {
+        return Itemsdata.Find(itemdata => itemdata.Name == name);
     }
 }

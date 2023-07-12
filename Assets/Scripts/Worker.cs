@@ -3,29 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 
 public class Worker : Charecter
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
-    // Hold Item
-    public SpriteRenderer ItemSpriteRenderer;
 
     // task progress
     public GameObject TaskProgress;
     public Image ProgressImg;
 
     // Task
-    [OdinSerialize] public ITask<Item> CurrentTask { get; set; }
-    public List<ITask<Item>> Tasks { get; set; }
+    [field:SerializeField] public ITask CurrentTask { get; set; }
+    public List<ITask> Tasks { get; set; }
 
     /// <summary>
     /// set <c>Task</c> to <c>Worker</c>
     /// </summary>
     /// <param name="newTask"></param>
     /// <returns></returns>
-    public bool TrySetTask(ITask<Item> newTask)
+    public bool TrySetTask(ITask newTask)
     {
         if (newTask == null)
             return false;
@@ -126,11 +122,11 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
-    IWorkStation<Item> WorkStation { get; }
+    IWorkStation WorkStation { get; }
     float timeElapsed;
     float duration;
 
-    public ExecutingTask(Worker worker,IWorkStation<Item> workStation)
+    public ExecutingTask(Worker worker,IWorkStation workStation)
     {
         Worker = worker;
         WorkStation = workStation;

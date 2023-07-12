@@ -7,4 +7,9 @@ public class ItemSO : ScriptableObject
 {
     [field:SerializeField] public string Name { get; set; }
     [field:SerializeField] public Sprite Sprite { get; set; }
+
+    public Item CreateItem()
+    {
+        return new Item(Name, Sprite);
+    }
 }

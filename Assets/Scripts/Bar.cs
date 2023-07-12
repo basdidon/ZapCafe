@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
-public class Bar : BoardObject,IWorkStation<Item>
+public class Bar : BoardObject,IWorkStation
 {
     public GameObject customerPrefab; //**** move to objectPool later
     public Transform spawnAt;
@@ -60,15 +60,12 @@ public class Bar : BoardObject,IWorkStation<Item>
         {
             Debug.LogError($"can't move from {ServiceCell} to {ExitCell}");
         }
-        Customer.OrderSprite = null;
+
         Customer = null;
         SpawnNewCustomer();
     }
 
-    public Item GetItem() => throw new System.NotImplementedException();
-    public Sprite Sprite { get => throw new System.NotImplementedException(); }
-
-    public class GetOrderTask : Task<Item>
+    public class GetOrderTask : Task
     {
         public Bar Bar { get; set; }
         public override float Duration => 5f;
@@ -77,23 +74,27 @@ public class Bar : BoardObject,IWorkStation<Item>
         {
             Bar = bar;
         }
-        public override IWorkStation<Item> GetworkStation(Worker worker)
-        {
-            return Bar;
-        }
+        public override IWorkStation GetworkStation(Worker worker) => (IWorkStation) Bar;
     }
 
-    public class ServeOrderTask : Task<Item>
+    public class ServeOrderTask : Task
     {
         public ServeOrderTask(Customer customer) : base(customer) 
         {
-            Performed += delegate { (WorkStation as Bar).CustomerLeave(); };
+            Performed += delegate {
+                Customer.OrderSprite = null;
+                Customer.HoldingItem = Worker.HoldingItem;
+                Worker.HoldingItem = null;
+                (WorkStation as Bar).CustomerLeave(); 
+            };
         }
 
         public override float Duration => 1f;
 
-        public override IWorkStation<Item> GetworkStation(Worker worker)
+        public override IWorkStation GetworkStation(Worker worker)
         {
+            //throw new System.NotImplementedException();
+            
             foreach(Bar bar in WorkStationRegistry.Instance.GetWorkStationsByType<Bar>())
             {
                 if(bar.Customer == Customer)
@@ -101,7 +102,7 @@ public class Bar : BoardObject,IWorkStation<Item>
                     return bar;
                 }
             }
-
+            
             return null;
         }
     }
