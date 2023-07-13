@@ -65,16 +65,6 @@ public class Customer : Charecter
         TaskManager.Instance.AddTask(orderTask);
 
         OrderSprite = ItemList.Instance.GetItemSprite(orderTask.ItemName);
-        // hardcode remove later
-        /*
-        if (orderTask.GetType().GenericTypeArguments.Contains(typeof(Donut)))
-        {
-            OrderSprite = ItemList.Instance.GetItemSprite("Donut");
-        }
-        else
-        {
-            OrderSprite = ItemList.Instance.GetItemSprite("Burger");
-        }*/
     }
 
     #region State

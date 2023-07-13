@@ -5,10 +5,14 @@ using TMPro;
 
 public class CoinUiController : MonoBehaviour
 {
-    public TextMeshPro coin_txt;
+    public TMP_Text coin_txt;
 
     private void Awake()
     {
-        //LevelManager.Instance.OnCoinChanged += newCoinValue => coin_txt.SetText(newCoinValue);
+        if (coin_txt == null)
+            Debug.LogError("coin_txt is null");
+
+        coin_txt.SetText("0");
+        LevelManager.Instance.OnCoinChanged += newCoinValue => coin_txt.SetText(newCoinValue.ToString());
     }
 }

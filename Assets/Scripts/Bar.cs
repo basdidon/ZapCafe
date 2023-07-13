@@ -85,6 +85,7 @@ public class Bar : BoardObject,IWorkStation
                 Customer.OrderSprite = null;
                 Customer.HoldingItem = Worker.HoldingItem;
                 Worker.HoldingItem = null;
+                LevelManager.Instance.Coin += Customer.HoldingItem.Price;
                 (WorkStation as Bar).CustomerLeave(); 
             };
         }

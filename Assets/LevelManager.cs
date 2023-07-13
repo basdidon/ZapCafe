@@ -7,18 +7,18 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
 
-    int coin;
+    [SerializeField] int coin;
     public int Coin
     {
         get => coin;
         set
         {
             coin = value;
-            OnCoinChanged?.Invoke();
+            OnCoinChanged?.Invoke(Coin);
         }
     }
 
-    public delegate int CoinChangedEvent();
+    public delegate void CoinChangedEvent(int newCoinValue);
     public CoinChangedEvent OnCoinChanged;
 
     private void Awake()

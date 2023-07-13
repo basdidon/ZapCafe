@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Donut
   <Sprite>k__BackingField: {fileID: 21300000, guid: 21dc777e721375d4e9836b533d98e687, type: 3}
+  <Price>k__BackingField: 10

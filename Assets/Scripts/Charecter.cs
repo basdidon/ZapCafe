@@ -12,7 +12,7 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
     // Hold Item
     [SerializeField] SpriteRenderer ItemSpriteRenderer;
 
-    Item holdingItem = null;
+    [SerializeField] Item holdingItem = null;
     public Item HoldingItem
     {
         get => holdingItem;
@@ -25,8 +25,9 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
             }
             else
             {
+                /*
                 Debug.Log(HoldingItem);
-                Debug.Log(HoldingItem.Sprite.ToString());
+                Debug.Log(HoldingItem.Sprite.ToString());*/
                 ItemSpriteRenderer.sprite = HoldingItem.Sprite;
             }
         }
@@ -51,6 +52,7 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
     protected virtual void Start()
     {
         CurrentState = IdleState;
+        HoldingItem = null;
     }
 }
 

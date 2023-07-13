@@ -7,11 +7,13 @@ public class Item
     public string Name { get; set; }
     public Sprite Sprite { get; set; }
     public int Quantity { get; set; }
+    public int Price { get; set; }
 
-    public Item(string name, Sprite sprite)
+    public Item(string name, Sprite sprite, int price)
     {
         Name = name;
         Sprite = sprite;
+        Price = price;
     }
 
     public Item(string name, int quantity)
