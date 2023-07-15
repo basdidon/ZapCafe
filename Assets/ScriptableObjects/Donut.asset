@@ -14,4 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Donut
   <Sprite>k__BackingField: {fileID: 21300000, guid: 21dc777e721375d4e9836b533d98e687, type: 3}
-  <Price>k__BackingField: 10
+  itemLevelDict:
+    rid: 5202761830040076289
+  references:
+    version: 2
+    RefIds:
+    - rid: 5202761830040076289
+      type: {class: ItemLevelDictionary, ns: , asm: Assembly-CSharp}
+      data:
+        keyData: 010000000200000003000000
+        valueData:
+        - time: 20
+          price: 20
+          cost: 150
+        - time: 19
+          price: 20
+          cost: 250
+        - time: 18
+          price: 25
+          cost: 350

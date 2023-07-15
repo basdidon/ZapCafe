@@ -7,8 +7,8 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
 
-    [SerializeField] int coin;
-    public int Coin
+    [SerializeField] float coin;
+    public float Coin
     {
         get => coin;
         set
@@ -18,7 +18,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public delegate void CoinChangedEvent(int newCoinValue);
+    public delegate void CoinChangedEvent(float newCoinValue);
     public CoinChangedEvent OnCoinChanged;
 
     private void Awake()

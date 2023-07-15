@@ -11,6 +11,8 @@ public class BurgerBox : BoardObject, IWorkStation,IItemFactory
     public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
     public string ItemName => "Burger";
+    [SerializeField] int level = 1;
+    public int Level { get => level; set => level = value; }
 
     private void Start()
     {

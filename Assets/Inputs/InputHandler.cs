@@ -22,14 +22,11 @@ public class InputHandler : MonoBehaviour
         }
 
         inputs = new Inputs();
-        inputs.Gameplay.Tap.performed += delegate { Debug.Log("Tap performed"); };
-    }
-
-    private void Update()
-    {
-        var touchPos = inputs.Gameplay.TouchPosition.ReadValue<Vector2>();
-        var ray = Camera.main.ScreenPointToRay(touchPos);
-
-
+        inputs.Gameplay.Tap.performed += delegate {
+            Debug.Log("Tap performed");
+            var touchPos = inputs.Gameplay.TouchPosition.ReadValue<Vector2>();
+            var ray = Camera.main.ScreenPointToRay(touchPos);
+            //Physics2D.Raycast(ray.origin, ray.direction, 10f,);
+        };
     }
 }

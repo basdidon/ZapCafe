@@ -11,10 +11,28 @@ public class DonutBox : BoardObject,IWorkStation,IItemFactory
     public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
     public string ItemName => "Donut";
+    [SerializeField] int level = 1;
+    public int Level { get => level; set => level = value; }
 
     private void Start()
     {
         WorkStationRegistry.Instance.AddWorkStation(this);
+    }
+
+    public void UpLevel()
+    {
+        var cost = ItemList.Instance.GetItemData(ItemName).GetCostToUpgrade(Level);
+        if (cost < LevelManager.Instance.Coin)
+        {
+            LevelManager.Instance.Coin -= cost;
+            Level++;
+        }
+    }
+
+    public void BtnDebug()
+    {
+        Debug.Log("buttonHit");
+        UpLevel();
     }
 }
 
@@ -41,6 +59,8 @@ public class GetItem : Task // <T> : Task<T> where T : Item
     }
 
     public override IWorkStation GetworkStation(Worker worker) => WorkStationRegistry.Instance.GetItemFactories(ItemName).ReadyToUse().FindClosest(worker);
+
+
 }
 
 

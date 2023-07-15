@@ -14,4 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Burger
   <Sprite>k__BackingField: {fileID: 21300000, guid: 1ec937fa45d89264d9daa67c5bc4cc59, type: 3}
-  <Price>k__BackingField: 25
+  itemLevelDict:
+    rid: 5202761830040076288
+  references:
+    version: 2
+    RefIds:
+    - rid: 5202761830040076288
+      type: {class: ItemLevelDictionary, ns: , asm: Assembly-CSharp}
+      data:
+        keyData: 01000000
+        valueData:
+        - time: 10
+          price: 10
+          cost: 100
