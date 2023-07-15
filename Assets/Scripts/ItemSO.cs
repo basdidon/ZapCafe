@@ -1,10 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-[CreateAssetMenu(menuName = "ScriptableObject/Item",fileName ="Item")]
-public class ItemSO : ScriptableObject
+[Serializable]
+public struct ItemLevel
 {
-    [field:SerializeField] public string Name { get; set; }
-    [field:SerializeField] public Sprite Sprite { get; set; }
+    public int time;
+    public float price;
+    public float cost;
+}
+
+[Serializable]
+public class ItemLevelDictionary : UnitySerializedDictionary<int, ItemLevel> { }
+
+[CreateAssetMenu(menuName = "ScriptableObject/Item", fileName = "Item")]
+public class ItemSO : ScriptableObject 
+{
+    [field: SerializeField] public string Name { get; set; }
+    [field: SerializeField] public Sprite Sprite { get; set; }
+    [SerializeReference] public ItemLevelDictionary itemLevelDict;
+
+    public Item CreateItem(int level)
+    {
+        if(itemLevelDict.TryGetValue(level,out ItemLevel itemLevel)){
+            return new Item(Name, Sprite, itemLevel.price , itemLevel.time);
+        }
+        else
+        {
+            throw new  System.Exception($"not found itemLevel at level {level}");
+        }
+    }
+
+    public float GetCostToUpgrade(int curLvl)
+    {
+        if (itemLevelDict.ContainsKey(curLvl + 1))
+            Debug.LogError("no next level");
+
+        if (itemLevelDict.TryGetValue(curLvl, out ItemLevel itemLevel))
+        {
+            return itemLevel.cost;
+        }
+        else
+        {
+            throw new System.Exception($"not found itemLevel at level {curLvl}");
+        }
+    }
 }

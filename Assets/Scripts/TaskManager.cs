@@ -8,7 +8,7 @@ public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
 
-    [OdinSerialize] public List<ITask<Item>> Tasks { get; private set; }
+    [OdinSerialize] public List<ITask> Tasks { get; private set; }
     [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
 
     private void Awake()
@@ -26,7 +26,7 @@ public class TaskManager : SerializedMonoBehaviour
         AvailableWorker = new();
     }
 
-    public void AddTask(ITask<Item> newTask)
+    public void AddTask(ITask newTask)
     {
         if (newTask == null)
             return;
@@ -54,7 +54,7 @@ public class TaskManager : SerializedMonoBehaviour
         }
     }
 
-    public void WorkStationFree<T>() where T : Item
+    public void WorkStationFree()
     {
         if (AvailableWorker.Count <= 0)
             return;

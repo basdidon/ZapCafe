@@ -104,7 +104,7 @@ SpriteRenderer:
   m_SortingLayerID: 443218829
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3ce81a82dae9df94fb71bb9930d2acf0, type: 3}
+  m_Sprite: {fileID: 1744155017, guid: 7dd4d744cf2eb264792d70dd09bdb70d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -163,18 +163,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f569ff04008ca24282110c711145f48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: Customer
-      Entry: 6
-      Data: 
   customerPrefab: {fileID: 148548812845598186, guid: c93836a8298384842bf112e4215627ab, type: 3}
   spawnAt: {fileID: 0}
   exitAt: {fileID: 0}

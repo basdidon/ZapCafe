@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
-
+/*
 public interface ITask<out T> where T : Item {
     public Customer Customer { get; }
     public Worker Worker { get; set; }
@@ -17,13 +17,28 @@ public interface ITask<out T> where T : Item {
     public Action Started { get; set; }
     public Action Performed { get; set; }
 }
-
-public abstract class Task<T> : ITask<T> where T : Item
+*/
+public interface ITask
 {
     public Customer Customer { get; }
     public Worker Worker { get; set; }
-    [OdinSerialize] IWorkStation<Item> workStation;
-    public IWorkStation<Item> WorkStation
+    public IWorkStation WorkStation { get; set; }
+
+    float Duration { get; }
+
+    IWorkStation GetworkStation(Worker worker);
+
+    public Action Started { get; set; }
+    public Action Performed { get; set; }
+}
+
+
+public abstract class Task  : ITask //<T> : ITask<T> where T : Item
+{
+    public Customer Customer { get; }
+    public Worker Worker { get; set; }
+    [OdinSerialize] IWorkStation workStation;
+    public IWorkStation WorkStation
     {
         get => workStation;
         set
@@ -44,7 +59,8 @@ public abstract class Task<T> : ITask<T> where T : Item
 
     public abstract float Duration { get; }
 
-    public virtual IWorkStation<T> GetworkStation(Worker worker) => WorkStationRegistry.Instance.GetWorkStation<T>(worker);
+    //public virtual IWorkStation<T> GetworkStation(Worker worker) => WorkStationRegistry.Instance.GetWorkStation<T>(worker);
+    public abstract IWorkStation GetworkStation(Worker worker); //=> throw new System.NotImplementedException(); //WorkStationRegistry.Instance.GetWorkStation<T>(worker);
 
     public Action Started { get; set; }
     public Action Performed { get; set; }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 public interface IBoardObject
 {
@@ -11,7 +10,7 @@ public interface IBoardObject
     public Vector3 CellCenterWorld { get; }
 }
 
-public class BoardObject : SerializedMonoBehaviour,IBoardObject
+public class BoardObject : MonoBehaviour,IBoardObject
 {
     protected BoardManager BoardManager { get { return BoardManager.Instance; } }
 
