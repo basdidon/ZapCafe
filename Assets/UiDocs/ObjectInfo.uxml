@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="ObjectInfo" view-data-key="ObjectInfo" style="flex-grow: 1; background-color: rgb(255, 255, 186); background-image: none; position: absolute; width: 311px; height: 158px; border-left-width: 8px; border-right-width: 8px; border-top-width: 8px; border-bottom-width: 8px; border-left-color: rgb(115, 23, 23); border-right-color: rgb(115, 23, 23); border-top-color: rgb(115, 23, 23); border-bottom-color: rgb(115, 23, 23); padding-left: 12px; padding-right: 12px; padding-top: 8px; padding-bottom: 8px;">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; font-size: 28px;">
+            <ui:Label tabindex="-1" text="WorkStation" display-tooltip-when-elided="true" name="NameText" style="-unity-text-align: middle-left; background-color: rgb(186, 225, 255); padding-left: 4px; padding-right: 4px;" />
+            <ui:VisualElement name="Level" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; margin-left: auto;">
+                <ui:Label tabindex="-1" text="Lv." display-tooltip-when-elided="true" style="left: auto; top: initial; right: initial; white-space: nowrap; -unity-text-align: middle-right; text-overflow: clip; margin-left: auto;" />
+                <ui:Label tabindex="-1" text="99" display-tooltip-when-elided="true" name="LevelText" style="-unity-text-align: middle-left; margin-left: auto;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row;">
+            <ui:VisualElement name="Time" style="flex-grow: 1; background-color: rgb(191, 239, 136); flex-direction: row; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; width: 50%; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;">
+                <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; background-color: rgb(121, 220, 120); padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px;" />
+                <ui:Label tabindex="-1" text="150 s" display-tooltip-when-elided="true" name="TimeText" style="margin-left: auto; -unity-text-align: middle-right;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Price" style="flex-grow: 1; background-color: rgb(191, 239, 136); flex-direction: row; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; width: 50%; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;">
+                <ui:Label tabindex="-1" text="Price" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; background-color: rgb(121, 220, 120); padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px;" />
+                <ui:Label tabindex="-1" text="20" display-tooltip-when-elided="true" name="PriceText" style="-unity-text-align: middle-right; margin-left: auto;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row;">
+            <ui:VisualElement name="Cost" style="flex-grow: 1; background-color: rgb(191, 239, 136); flex-direction: row; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; align-items: center;">
+                <ui:Label tabindex="-1" text="Cost" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; -unity-background-image-tint-color: rgb(186, 225, 255); background-color: rgb(121, 220, 120); padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px;" />
+                <ui:Label tabindex="-1" text="250" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; margin-left: auto;" />
+            </ui:VisualElement>
+            <ui:Button text="Upgrade" display-tooltip-when-elided="true" style="background-color: rgb(209, 208, 88); border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0); border-top-left-radius: 13px; border-bottom-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

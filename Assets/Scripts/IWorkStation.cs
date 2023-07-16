@@ -25,5 +25,6 @@ public interface IItemFactory : IBoardObject
             Level++;
         }
     }
+
     public Item CreateItem() => ItemList.Instance.GetItemData(ItemName).CreateItem(Level);
 }

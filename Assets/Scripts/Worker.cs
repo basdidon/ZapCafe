@@ -66,7 +66,7 @@ public class Worker : Charecter
         int hits_n = Physics2D.RaycastNonAlloc(BoardManager.GetCellCenterWorld(cellPos), Vector2.down, hits,0.1f);
         bool isCollided = false;
         for (int i = 0; i < hits_n; i++){
-            if (hits[i].transform.CompareTag("WorkStation"))
+            if (hits[i].transform.CompareTag("Collider"))
             {
                 isCollided = true;
                 break;
