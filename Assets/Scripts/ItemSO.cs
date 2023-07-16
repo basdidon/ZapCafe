@@ -34,7 +34,7 @@ public class ItemSO : ScriptableObject
 
     public float GetCostToUpgrade(int curLvl)
     {
-        if (itemLevelDict.ContainsKey(curLvl + 1))
+        if (!itemLevelDict.ContainsKey(curLvl + 1))
             Debug.LogError("no next level");
 
         if (itemLevelDict.TryGetValue(curLvl, out ItemLevel itemLevel))
