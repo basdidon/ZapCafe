@@ -20,7 +20,7 @@
         <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row;">
             <ui:VisualElement name="Cost" style="flex-grow: 1; background-color: rgb(191, 239, 136); flex-direction: row; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; align-items: center;">
                 <ui:Label tabindex="-1" text="Cost" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; -unity-background-image-tint-color: rgb(186, 225, 255); background-color: rgb(121, 220, 120); padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px;" />
-                <ui:Label tabindex="-1" text="250" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; margin-left: auto;" />
+                <ui:Label tabindex="-1" text="250" display-tooltip-when-elided="true" name="CostText" style="-unity-text-align: middle-left; margin-left: auto;" />
             </ui:VisualElement>
             <ui:Button text="Upgrade" display-tooltip-when-elided="true" style="background-color: rgb(209, 208, 88); border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0); border-top-left-radius: 13px; border-bottom-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px;" />
         </ui:VisualElement>

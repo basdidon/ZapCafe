@@ -3857,7 +3857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4145241c7e0deea4aa38e086057c2024, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransformToFollow: {fileID: 1568184142}
+  TransformToFollow: {fileID: 1537849414}
 --- !u!1 &1105749222
 GameObject:
   m_ObjectHideFlags: 0

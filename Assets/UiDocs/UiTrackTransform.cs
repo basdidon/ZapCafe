@@ -10,7 +10,12 @@ public class UITrackTransform : MonoBehaviour
 
     // Ui Doc
     private VisualElement root;
-    //private TextElement nameText;
+    private TextElement nameText;
+    private TextElement levelText;
+    private TextElement timeText;
+    private TextElement priceText;
+    private TextElement costText;
+
 
     private Camera m_MainCamera;
     private void Start()
@@ -19,14 +24,22 @@ public class UITrackTransform : MonoBehaviour
         if (TryGetComponent(out UIDocument uiDoc))
         {
             root = uiDoc.rootVisualElement.Q("ObjectInfo");
-            //nameText = root.Q<Label>("NameText") ;
+            nameText = root.Q<Label>("NameText") ;
+            levelText = root.Q<Label>("LevelText");
+            timeText = root.Q<Label>("TimeText");
+            priceText = root.Q<Label>("PriceText");
+            costText = root.Q<Label>("CostText");
         }
 
         if (root == null)
             Debug.Log("m_bar null");
 
         SetPosition();
-        //nameText.text = "DonutBox";
+        nameText.text = "DonutBox";
+        levelText.text = "1";
+        timeText.text = "120 s";
+        priceText.text = "30";
+        costText.text = "300";
     }
 
     public void SetPosition()
@@ -35,7 +48,7 @@ public class UITrackTransform : MonoBehaviour
         newPosition.x -= root.layout.width / 2;
         root.transform.position = newPosition;
     }
-
+    
     private void LateUpdate()
     {
         if(root != null)
