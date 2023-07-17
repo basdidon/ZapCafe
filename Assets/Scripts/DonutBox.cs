@@ -5,7 +5,7 @@ using Sirenix.Serialization;
 
 public class DonutBox : BoardObject,IWorkStation,IItemFactory,IUiObject
 {
-    // Worker
+    // IWorkStation
     public Worker Worker { get; set; }
     [field: SerializeField] public Transform WorkingPoint { get; set; }
     public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }

@@ -32,6 +32,18 @@ public class ItemSO : ScriptableObject
         }
     }
 
+    public ItemLevel GetItemDataByLevel(int level)
+    {
+        if (itemLevelDict.TryGetValue(level, out ItemLevel itemLevel))
+        {
+            return itemLevel;
+        }
+        else
+        {
+            throw new System.Exception($"not found itemLevel at level {level}");
+        }
+    }
+
     public float GetCostToUpgrade(int curLvl)
     {
         if (!itemLevelDict.ContainsKey(curLvl + 1))

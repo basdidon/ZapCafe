@@ -18,12 +18,7 @@ public class UiObjectManager : MonoBehaviour
 
     private void OnEnable() => inputs.Enable();
     private void OnDisable() => inputs.Disable();
-    /*
-    [SerializeField] List<IUiObject> uiObjects = new();
 
-    public delegate void UiObjectActive(IUiObject uiObject);
-    public UiObjectActive OnUiObjectActive;
-    */
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -38,14 +33,13 @@ public class UiObjectManager : MonoBehaviour
         inputs = new Inputs();
 
         inputs.Gameplay.Tap.performed += delegate {
-            /*
+            
             Debug.Log("Tap performed");
             var touchPos = inputs.Gameplay.TouchPosition.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(touchPos);
 
             RaycastHit2D[] hits = new RaycastHit2D[10];
             int n_hits = Physics2D.RaycastNonAlloc(ray.origin, ray.direction, hits, 20f);
-            //Debug.DrawRay(ray.origin, ray.direction * 20f, Color.black, 5f);
             Transform topMostHit = null;
 
             for (int i = 0; i < n_hits; i++)
@@ -61,7 +55,6 @@ public class UiObjectManager : MonoBehaviour
                     }
                     else if (topMostHit.transform.position.y > hits[i].transform.position.y)
                     {
-                        Debug.Log("a");
                         topMostHit = hits[i].transform;
                     }
 
@@ -77,16 +70,18 @@ public class UiObjectManager : MonoBehaviour
                 }
                 else
                 {
-                    OnUiObjectActive?.Invoke(uiObject);
-                    uiObject.ShowUiObject();
+                    var offset =  Vector3.up * 3 + topMostHit.transform.position;
+                    UITrackTransform.Instance.DisplayFactoryPanel(offset,"a",1,1,1,1);
                 }
             }
             else
             {
+                /*
                 Debug.Log("null");
                 OnUiObjectActive?.Invoke(null);
+                */
             }
-            */
+            
         };
     }
 
