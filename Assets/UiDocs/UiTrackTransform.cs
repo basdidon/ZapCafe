@@ -11,13 +11,6 @@ public class UITrackTransform : MonoBehaviour
 
     public Vector2 newPosition;
 
-    public Vector2 panelSize;
-    public Vector2 resolvePanelSize;
-    public Vector2 myPanelSize;
-
-    public Vector2 screenSize;
-    public Vector2 referenceResolution;
-
     // Ui Doc
     private VisualElement root;
     private TextElement nameText;
@@ -51,31 +44,23 @@ public class UITrackTransform : MonoBehaviour
             timeText = root.Q<Label>("TimeText");
             priceText = root.Q<Label>("PriceText");
             costText = root.Q<Label>("CostText");
-            referenceResolution = uiDoc.panelSettings.referenceResolution;
         }
 
         if (root == null)
             Debug.Log("m_bar null");
-        //HidePanel();
+
+        // HidePanel();
 }
 
     public void SetPosition()
     {
-        panelSize =  new Vector2(root.layout.width, root.layout.height);
-        resolvePanelSize = new Vector2(root.resolvedStyle.width, root.resolvedStyle.height);
-        myPanelSize = new Vector2(root.layout.width * (Screen.width / referenceResolution.x), root.layout.height * (Screen.height / referenceResolution.y));
-
-        screenSize = new Vector2(Screen.width,Screen.height);
-        var screenPoint = m_MainCamera.WorldToScreenPoint(TransformToFollow.position); //RuntimePanelUtils.CameraTransformWorldToPanel(root.panel, TransformToFollow.position, m_MainCamera);
-        newPosition = screenPoint;
-        newPosition.x -= panelSize.x /2;
-        newPosition.y = referenceResolution.y - newPosition.y;
+        newPosition = RuntimePanelUtils.CameraTransformWorldToPanel(root.panel, TransformToFollow.position, m_MainCamera);
+        newPosition.x -= root.layout.width / 2;
+        newPosition.y -= root.layout.height / 2;
 
         // check overflow Ui
-        newPosition.x = Mathf.Clamp(newPosition.x, 0f, referenceResolution.x - panelSize.x);
-        newPosition.y = Mathf.Clamp(newPosition.y, 0f, referenceResolution.y - panelSize.y);
-        
-        //Debug.Log($"{newPosition} / {Screen.width} , {Screen.height}");
+        newPosition.x = Mathf.Clamp(newPosition.x, 0f, Screen.width - root.layout.width);
+        newPosition.y = Mathf.Clamp(newPosition.y, 0f, Screen.height - root.layout.height);
 
         root.transform.position = newPosition;
     }

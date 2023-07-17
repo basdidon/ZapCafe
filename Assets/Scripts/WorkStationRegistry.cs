@@ -118,7 +118,7 @@ public class WorkStationRegistry : SerializedMonoBehaviour
 
     public WorkStations GetItemFactories(string ItemName)
     {
-        return workStations.Where(workStation => (workStation is IItemFactory itemFactory) && itemFactory.ItemName == ItemName);
+        return workStations.Where(workStation => (workStation is ItemFactory itemFactory) && itemFactory.ItemName == ItemName);
     }
 
 

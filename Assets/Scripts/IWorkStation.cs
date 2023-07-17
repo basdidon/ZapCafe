@@ -11,10 +11,16 @@ public interface IWorkStation : IBoardObject
     Vector3Int WorkingCell { get; }
 }
 
-public interface IItemFactory : IBoardObject
+public abstract class ItemFactory : BoardObject,IWorkStation,IUiObject
 {
-    string ItemName { get; }
-    public int Level { get; set; }
+    // IWorkStation
+    public Worker Worker { get; set; }
+    [field: SerializeField] public Transform WorkingPoint { get; set; }
+    public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
+
+    public abstract string ItemName { get; }
+    protected int level = 1;
+    public int Level { get => level; }
 
     public void UpLevel()
     {
@@ -22,9 +28,21 @@ public interface IItemFactory : IBoardObject
         if (cost < LevelManager.Instance.Coin)
         {
             LevelManager.Instance.Coin -= cost;
-            Level++;
+            level++;
         }
     }
 
     public Item CreateItem() => ItemList.Instance.GetItemData(ItemName).CreateItem(Level);
+
+    public void ShowUiObject()
+    {
+        var offset = transform.position + Vector3.up * 1.5f;
+        ItemLevel itemData = ItemList.Instance.GetItemData(ItemName).GetItemDataByLevel(Level);
+        UiObjectManager.Instance.DisplayFactoryPanel(offset,GetType().ToString(),Level,itemData.time,itemData.price,itemData.cost);
+    }
+
+    public void HideUiObject()
+    {
+        UiObjectManager.Instance.HidePanel();
+    }
 }
