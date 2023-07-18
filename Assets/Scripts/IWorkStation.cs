@@ -52,7 +52,7 @@ public abstract class ItemFactory : BoardObject,IWorkStation,IUiObject
     {
         Debug.Log("up");
         var cost = ItemList.Instance.GetItemData(ItemName).GetCostToUpgrade(Level);
-        if (cost < LevelManager.Instance.Coin)
+        if (cost <= LevelManager.Instance.Coin)
         {
             LevelManager.Instance.Coin -= cost;
             Level++;
