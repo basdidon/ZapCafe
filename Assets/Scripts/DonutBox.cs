@@ -7,8 +7,9 @@ public class DonutBox : ItemFactory//,IUiObject
 {
     public override string ItemName  => "Donut";
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         WorkStationRegistry.Instance.AddWorkStation(this);
     }
 
@@ -22,7 +23,8 @@ public class DonutBox : ItemFactory//,IUiObject
 public class GetItem : Task
 {
     public string ItemName { get; }
-    public override float Duration => 3f;
+    public ItemFactory ItemFactory { get; set; }
+    public override float Duration => ItemFactory.Time;
 
     public GetItem(Customer customer, string itemName) : base(customer)
     {
@@ -41,9 +43,12 @@ public class GetItem : Task
         };
     }
 
-    public override IWorkStation GetworkStation(Worker worker) => WorkStationRegistry.Instance.GetItemFactories(ItemName).ReadyToUse().FindClosest(worker);
-
-
+    public override IWorkStation GetworkStation(Worker worker)
+    {
+        var result = WorkStationRegistry.Instance.GetItemFactories(ItemName).ReadyToUse().FindClosest(worker);
+        ItemFactory = (ItemFactory) result;
+        return result;
+    }
 }
 
 

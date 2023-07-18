@@ -22,14 +22,20 @@ MonoBehaviour:
     - rid: 5202761830040076289
       type: {class: ItemLevelDictionary, ns: , asm: Assembly-CSharp}
       data:
-        keyData: 010000000200000003000000
+        keyData: 0100000002000000030000000400000005000000
         valueData:
-        - time: 20
+        - time: 5
           price: 20
-          cost: 150
-        - time: 19
+          cost: 0
+        - time: 4.5
           price: 20
           cost: 250
-        - time: 18
+        - time: 4
           price: 25
           cost: 350
+        - time: 4
+          price: 30
+          cost: 500
+        - time: 3
+          price: 50
+          cost: 1000

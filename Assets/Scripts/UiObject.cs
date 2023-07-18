@@ -6,5 +6,4 @@ using UnityEngine.UIElements;
 public interface IUiObject
 {
     void ShowUiObject();
-    void HideUiObject();
 }

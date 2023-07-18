@@ -33,7 +33,7 @@ public interface ITask
 }
 
 
-public abstract class Task  : ITask //<T> : ITask<T> where T : Item
+public abstract class Task  : ITask
 {
     public Customer Customer { get; }
     public Worker Worker { get; set; }
@@ -59,8 +59,7 @@ public abstract class Task  : ITask //<T> : ITask<T> where T : Item
 
     public abstract float Duration { get; }
 
-    //public virtual IWorkStation<T> GetworkStation(Worker worker) => WorkStationRegistry.Instance.GetWorkStation<T>(worker);
-    public abstract IWorkStation GetworkStation(Worker worker); //=> throw new System.NotImplementedException(); //WorkStationRegistry.Instance.GetWorkStation<T>(worker);
+    public abstract IWorkStation GetworkStation(Worker worker);
 
     public Action Started { get; set; }
     public Action Performed { get; set; }

@@ -20,29 +20,55 @@ public abstract class ItemFactory : BoardObject,IWorkStation,IUiObject
 
     public abstract string ItemName { get; }
     protected int level = 1;
-    public int Level { get => level; }
+    public int Level 
+    { 
+        get => level; 
+        private set 
+        {
+            level = value;
+            UpdateFactoryData();
+        } 
+    }
+
+    public float Time { get; set; }
+    public float Price { get; set; }
+    public float Cost { get; set; }
+
+    protected virtual void Start()
+    {
+        UpdateFactoryData();
+    }
+
+    protected void UpdateFactoryData()
+    {
+        ItemSO itemData = ItemList.Instance.GetItemData(ItemName);
+        ItemLevel item = itemData.GetItemDataByLevel(Level);
+        Time = item.time;
+        Price = item.price;
+        Cost = itemData.GetCostToUpgrade(Level);
+    }
 
     public void UpLevel()
     {
+        Debug.Log("up");
         var cost = ItemList.Instance.GetItemData(ItemName).GetCostToUpgrade(Level);
         if (cost < LevelManager.Instance.Coin)
         {
             LevelManager.Instance.Coin -= cost;
-            level++;
+            Level++;
+            // update Ui
+            ShowUiObject();
         }
     }
+
 
     public Item CreateItem() => ItemList.Instance.GetItemData(ItemName).CreateItem(Level);
 
     public void ShowUiObject()
     {
         var offset = transform.position + Vector3.up * 1.5f;
-        ItemLevel itemData = ItemList.Instance.GetItemData(ItemName).GetItemDataByLevel(Level);
-        UiObjectManager.Instance.DisplayFactoryPanel(offset,GetType().ToString(),Level,itemData.time,itemData.price,itemData.cost);
-    }
+        UiObjectManager.Instance.DisplayFactoryPanel(offset,GetType().ToString(),Level,Time,Price,Cost);
 
-    public void HideUiObject()
-    {
-        UiObjectManager.Instance.HidePanel();
+        UiObjectManager.Instance.ClickUpgradeBtn = UpLevel;
     }
 }

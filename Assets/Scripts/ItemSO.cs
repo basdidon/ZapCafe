@@ -6,7 +6,7 @@ using System;
 [Serializable]
 public struct ItemLevel
 {
-    public int time;
+    public float time;
     public float price;
     public float cost;
 }
@@ -46,16 +46,13 @@ public class ItemSO : ScriptableObject
 
     public float GetCostToUpgrade(int curLvl)
     {
-        if (!itemLevelDict.ContainsKey(curLvl + 1))
-            Debug.LogError("no next level");
-
-        if (itemLevelDict.TryGetValue(curLvl, out ItemLevel itemLevel))
+        if (itemLevelDict.TryGetValue(curLvl +1, out ItemLevel itemLevel))
         {
             return itemLevel.cost;
         }
         else
         {
-            throw new System.Exception($"not found itemLevel at level {curLvl}");
+            throw new System.Exception("no next level");
         }
     }
 }

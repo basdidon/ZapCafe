@@ -86,6 +86,7 @@ public class Bar : BoardObject,IWorkStation
                 Customer.HoldingItem = Worker.HoldingItem;
                 Worker.HoldingItem = null;
                 LevelManager.Instance.Coin += Customer.HoldingItem.Price;
+                TextSpawner.Instance.SpawnText($"+ {Customer.HoldingItem.Price}", Customer.transform.position + Vector3.up * 2);
                 (WorkStation as Bar).CustomerLeave(); 
             };
         }

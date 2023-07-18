@@ -6,8 +6,9 @@ using UnityEngine;
 public class BurgerBox : ItemFactory
 {
     public override string ItemName => "Burger";
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         WorkStationRegistry.Instance.AddWorkStation(this);
     }
 }

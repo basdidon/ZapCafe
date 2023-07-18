@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using TMPro;
 
 public class CoinUiController : MonoBehaviour
 {
-    public TMP_Text coin_txt;
+    TextElement coinText;
 
     private void Awake()
     {
-        if (coin_txt == null)
-            Debug.LogError("coin_txt is null");
+        if(TryGetComponent(out UIDocument uIDoc))
+        {
+            coinText = uIDoc.rootVisualElement.Q<Label>("CoinText");
+        }
 
-        coin_txt.SetText("0");
-        LevelManager.Instance.OnCoinChanged += newCoinValue => coin_txt.SetText(newCoinValue.ToString());
+        coinText.text = LevelManager.Instance.Coin.ToString();
+        LevelManager.Instance.OnCoinChanged += newCoinValue => coinText.text = newCoinValue.ToString();
     }
 }

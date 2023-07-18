@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class UiObjectManager : MonoBehaviour
@@ -21,9 +17,12 @@ public class UiObjectManager : MonoBehaviour
     private TextElement timeText;
     private TextElement priceText;
     private TextElement costText;
+    private Button upgradeButton;
 
     private Camera m_MainCamera;
 
+    // events
+    public System.Action ClickUpgradeBtn;
 
     private void OnEnable() => inputs.Enable();
     private void OnDisable() => inputs.Disable();
@@ -43,9 +42,13 @@ public class UiObjectManager : MonoBehaviour
 
         inputs.Gameplay.Tap.performed += delegate
         {
-
             Debug.Log("Tap performed");
             var touchPos = inputs.Gameplay.TouchPosition.ReadValue<Vector2>();
+            if (UItoolkitRayCastBlocker.IsPointerOverBlockers(touchPos))
+            {
+                Debug.Log("raycast blocked");
+                return;
+            }
             var ray = Camera.main.ScreenPointToRay(touchPos);
 
             RaycastHit2D[] hits = new RaycastHit2D[10];
@@ -54,7 +57,6 @@ public class UiObjectManager : MonoBehaviour
 
             for (int i = 0; i < n_hits; i++)
             {
-
                 Debug.Log(hits[i].transform.name);
                 if (hits[i].transform.CompareTag("WorkStation"))
                 {
@@ -85,10 +87,7 @@ public class UiObjectManager : MonoBehaviour
             }
             else
             {
-                /*
-                Debug.Log("null");
-                OnUiObjectActive?.Invoke(null);
-                */
+                HidePanel();
             }
 
         };
@@ -100,12 +99,17 @@ public class UiObjectManager : MonoBehaviour
 
         if (TryGetComponent(out UIDocument uiDoc))
         {
+            uiDoc.panelSettings.referenceResolution = new Vector2Int(Screen.width, Screen.height);
+
             root = uiDoc.rootVisualElement.Q("ObjectInfo");
             nameText = root.Q<Label>("NameText");
             levelText = root.Q<Label>("LevelText");
             timeText = root.Q<Label>("TimeText");
             priceText = root.Q<Label>("PriceText");
             costText = root.Q<Label>("CostText");
+            upgradeButton = root.Q<Button>("UpgradeButton");
+
+            upgradeButton.clicked += delegate { ClickUpgradeBtn?.Invoke(); };
         }
 
         if (root == null)
@@ -113,7 +117,11 @@ public class UiObjectManager : MonoBehaviour
 
         HidePanel();
     }
-
+    /*
+    private void UpgradeButton_clicked()
+    {
+        Debug.Log("btn clicked");
+    }*/
 
     public void SetPosition()
     {
