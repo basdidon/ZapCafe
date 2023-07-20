@@ -9,7 +9,6 @@ public class UItoolkitRayCastBlocker : MonoBehaviour
 {
     VisualElement root;
     static List<UItoolkitRayCastBlocker> AllRayCastBlockers = new();
-    public Rect contectRect;
     public Rect blockingArea;
 
     private void OnEnable()

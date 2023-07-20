@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/style.uss?fileID=7433441132597879392&amp;guid=c323ea079de76df49be255f83bfcc748&amp;type=3#style" />
     <ui:VisualElement name="ObjectInfo" view-data-key="ObjectInfo" style="flex-grow: 1; background-color: rgb(255, 255, 186); background-image: none; position: absolute; width: 600px; height: 300px; border-left-width: 8px; border-right-width: 8px; border-top-width: 8px; border-bottom-width: 8px; border-left-color: rgb(115, 23, 23); border-right-color: rgb(115, 23, 23); border-top-color: rgb(115, 23, 23); border-bottom-color: rgb(115, 23, 23); padding-left: 12px; padding-right: 12px; padding-top: 8px; padding-bottom: 8px; font-size: 24px;">
         <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; font-size: 28px;">
             <ui:Label tabindex="-1" text="WorkStation" display-tooltip-when-elided="true" name="NameText" style="-unity-text-align: middle-left; background-color: rgb(186, 225, 255); padding-left: 12px; padding-right: 12px; width: 60%; padding-top: 12px; padding-bottom: 12px; font-size: 36px; -unity-font-style: bold;" />
@@ -22,7 +23,7 @@
                 <ui:Label tabindex="-1" text="Cost" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; background-color: rgb(121, 220, 120); padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px; font-size: 24px; -unity-font-style: bold;" />
                 <ui:Label tabindex="-1" text="20" display-tooltip-when-elided="true" name="CostText" style="-unity-text-align: middle-right; margin-left: auto;" />
             </ui:VisualElement>
-            <ui:Button text="Upgrade" display-tooltip-when-elided="true" name="UpgradeButton" style="background-color: rgb(209, 208, 88); border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0); border-top-left-radius: 13px; border-bottom-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; -unity-font-style: bold;" />
+            <ui:Button text="Upgrade" display-tooltip-when-elided="true" name="UpgradeButton" style="border-left-color: rgba(255, 255, 255, 0); border-right-color: rgba(255, 255, 255, 0); border-top-color: rgba(255, 255, 255, 0); border-bottom-color: rgba(255, 255, 255, 0); border-top-left-radius: 13px; border-bottom-left-radius: 13px; border-top-right-radius: 13px; border-bottom-right-radius: 13px; -unity-font-style: bold;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

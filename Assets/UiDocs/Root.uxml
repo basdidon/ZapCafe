@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="GamePlayMenu" src="project://database/Assets/UiDocs/GamePlayMenu.uxml?fileID=9197481963319205126&amp;guid=38fca3993d3d4e348a59051ccba0aeec&amp;type=3#GamePlayMenu" />
+    <ui:Template name="CoinUi" src="project://database/Assets/UiDocs/CoinUi.uxml?fileID=9197481963319205126&amp;guid=7381ceccb178efe4388157e9861168d3&amp;type=3#CoinUi" />
+    <ui:Instance template="CoinUi" name="CoinUi" />
+    <ui:Instance template="GamePlayMenu" name="GamePlayMenu" style="margin-top: auto;" />
+</ui:UXML>
