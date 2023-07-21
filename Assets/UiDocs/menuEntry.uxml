@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/style.uss?fileID=7433441132597879392&amp;guid=c323ea079de76df49be255f83bfcc748&amp;type=3#style" />
+    <ui:VisualElement name="btn" class="icon-btn">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
+            <ui:VisualElement name="img" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
+                <ui:Label tabindex="-1" text="100 C" display-tooltip-when-elided="true" name="price-label" style="margin-left: auto; margin-top: auto; font-size: 20px; -unity-text-align: middle-left; background-color: rgb(82, 255, 52); border-top-left-radius: 24px; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-left: 12px; padding-right: 8px; padding-top: 12px; padding-bottom: 8px; margin-right: 0; margin-bottom: 0; -unity-font-style: bold;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label tabindex="-1" text="WorkStation" display-tooltip-when-elided="true" name="name-label" style="-unity-text-align: middle-center; background-color: rgba(0, 101, 241, 0.82); color: rgb(255, 255, 255); font-size: 24px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; -unity-font-style: bold;" />
+    </ui:VisualElement>
+</ui:UXML>

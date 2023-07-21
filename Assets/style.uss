@@ -1,7 +1,37 @@
-Button{
-    background-color: rgb(209,208,88);
+Button {
+    background-color: rgb(209, 208, 88);
 }
 
 Button:active {
-    background-color: rgb(164,164,88);
+    background-color: rgb(164, 164, 88);
+}
+
+.BottomPanel {
+    background-color: rgba(0, 255, 70, 0.64);
+    flex-direction: row;
+    max-height: 250px;
+    min-height: 250px;
+    border-top-width: 16px;
+    border-top-color: rgb(255, 243, 81);
+    margin-top: auto;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.icon-btn {
+    background-color: rgb(209, 208, 88);
+    max-height: 180px;
+    min-height: 180px;
+    max-width: 180px;
+    min-width: 180px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    margin-left: 8px;
+    margin-right: 8px;
 }
