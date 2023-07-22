@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/style.uss?fileID=7433441132597879392&amp;guid=c323ea079de76df49be255f83bfcc748&amp;type=3#style" />
+    <ui:VisualElement class="BottomPanel" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); -unity-text-align: middle-left; align-items: center; justify-content: center;">
+        <ui:VisualElement name="confirm-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/checked.png?fileID=2800000&amp;guid=8576b36c2948c0c4eab7a3e643379320&amp;type=3#checked&apos;);" />
+        <ui:VisualElement name="rotate-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/rotate.png?fileID=2800000&amp;guid=753c940e243817045a1b15f5600cf7d7&amp;type=3#rotate&apos;);" />
+        <ui:VisualElement name="cancle-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/cross.png?fileID=2800000&amp;guid=8bfbd999d2c03774b8774d7b7e398798&amp;type=3#cross&apos;);" />
+    </ui:VisualElement>
+</ui:UXML>

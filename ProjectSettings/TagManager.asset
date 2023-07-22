@@ -18,7 +18,7 @@ TagManager:
   - Object
   - UnWalkable
   - Ground
-  - 
+  - ConstructionBlock
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: Path
     uniqueID: 4129485701
+    locked: 0
+  - name: OverlayTilemap
+    uniqueID: 2755919557
     locked: 0
   - name: Default
     uniqueID: 0

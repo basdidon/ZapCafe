@@ -6,16 +6,21 @@ using UnityEngine.UIElements;
 public class UiMenuGameplayController : PanelControl
 {
     [SerializeField] PanelControl buildMenuPanel;
+    VisualElement btn;
 
     protected override void Awake()
     {
         base.Awake();
-        Root.Q<Button>("build-menu-btn").clicked += GotoBuildMenu;
+        btn = Root.Q<VisualElement>("build-menu-btn");
+        //btn.RegisterCallback<ClickEvent>(evt=>evt.currentTarget);
     }
 
     public void GotoBuildMenu()
     {
+        btn.style.backgroundColor = new StyleColor(Color.black);
+        /*
         Hide();
         buildMenuPanel.Display();
+        */
     }
 }
