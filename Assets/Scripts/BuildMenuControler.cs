@@ -18,6 +18,12 @@ public class WorkStationListEntryController
         img = visualElement.Q<VisualElement>("img");
         priceLabel = visualElement.Q<Label>("price-label");
         nameLabel = visualElement.Q<Label>("name-label");
+
+        button.RegisterCallback<ClickEvent>(evt => {
+            UiEvents.instance.HideUiTriggerEvent("BuildMenu");
+            UiEvents.instance.DisplayUiTriggerEvent("BuildMode");
+            Debug.Log($"Enter build mode : {nameLabel.text}");
+        });
     }
 
     //This function receives the character whose name this list 
@@ -35,6 +41,8 @@ public class WorkStationListEntryController
 
 public class BuildMenuControler : PanelControl
 {
+    public override string Key => "BuildMenu";
+
     [SerializeField] List<WorkStationData> WorkStationDataSet;
 
     // UXML template for list entries
@@ -42,6 +50,7 @@ public class BuildMenuControler : PanelControl
 
     // UI element references
     VisualElement workStationListView;
+
 
     protected override void Awake()
     {
@@ -53,8 +62,9 @@ public class BuildMenuControler : PanelControl
 
         WorkStationDataSet.ForEach(data => {
             var clone = ListEntryTemplate.Instantiate();
+            SetClickAnimation(clone.Q<VisualElement>("btn"), mainColor, onMouseDownColor);
             var newListEntryLogic = new WorkStationListEntryController();
-            clone.userData = newListEntryLogic;
+            //clone.userData = newListEntryLogic;
             newListEntryLogic.SetVisualElement(clone);
             newListEntryLogic.SetCharacterData(data);
             workStationListView.Add(clone);
