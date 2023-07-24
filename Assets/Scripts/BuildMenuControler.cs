@@ -30,7 +30,6 @@ public class WorkStationListEntryController
     //element displays. Since the elements listed 
     //in a `ListView` are pooled and reused, it's necessary to 
     //have a `Set` function to change which character's data to display.
-
     public void SetCharacterData(WorkStationData workStationData)
     {
         img.style.backgroundImage = new StyleBackground(workStationData.Sprite);

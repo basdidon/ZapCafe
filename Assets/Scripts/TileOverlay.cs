@@ -8,7 +8,7 @@ public class TileOverlay : MonoBehaviour
     public static TileOverlay Instance { get; private set; }
     [SerializeField] Tilemap targetTilemap;
     [SerializeField] Tilemap overlayTilemap;
-    [SerializeField] List<Vector3Int> tilesPos;
+    [field:SerializeField] public List<Vector3Int> TilesPos { get; set; }
 
     public TileBase tileOverlay;
     public LayerMask blockConstructionMask;
@@ -42,12 +42,12 @@ public class TileOverlay : MonoBehaviour
                 var _cell = new Vector3Int(x, y, 0);
                 if (targetTilemap.HasTile(_cell) && !Physics2D.Raycast(targetTilemap.GetCellCenterWorld(_cell), Vector2.down, .1f, blockConstructionMask.value))
                 {
-                    tilesPos.Add(_cell);
+                    TilesPos.Add(_cell);
                 }
             }
         }
 
-        tilesPos.ForEach(tilePos => overlayTilemap.SetTile(tilePos, tileOverlay));
+        TilesPos.ForEach(tilePos => overlayTilemap.SetTile(tilePos, tileOverlay));
     }
 
     public void Active()
