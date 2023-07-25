@@ -12,6 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5e4480c1051f1439baf013be0708dc, type: 3}
   m_Name: DonutBox
   m_EditorClassIdentifier: 
-  Sprite: {fileID: 21300000, guid: 21dc777e721375d4e9836b533d98e687, type: 3}
-  Prefab: {fileID: 0}
+  Sprite: {fileID: 796241547, guid: 7dd4d744cf2eb264792d70dd09bdb70d, type: 3}
+  Prefab: {fileID: 7599520969185712210, guid: 2c7c928dd81e7be4eb085681833205dd, type: 3}
+  ItemData: {fileID: 11400000, guid: 143b1eb481766944eb19f5e1bf7068fc, type: 2}
   Price: 100
+  upgradeCost:
+    keyData: 0100000002000000030000000400000005000000
+    valueData:
+    - 0
+    - 100
+    - 300
+    - 800
+    - 1500

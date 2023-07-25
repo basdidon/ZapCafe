@@ -8,14 +8,13 @@ public struct ItemLevel
 {
     public float time;
     public float price;
-    public float cost;
 }
 
 [Serializable]
 public class ItemLevelDictionary : UnitySerializedDictionary<int, ItemLevel> { }
 
 [CreateAssetMenu(menuName = "ScriptableObject/Item", fileName = "Item")]
-public class ItemSO : ScriptableObject 
+public class ItemData : ScriptableObject 
 {
     [field: SerializeField] public string Name { get; set; }
     [field: SerializeField] public Sprite Sprite { get; set; }
@@ -41,18 +40,6 @@ public class ItemSO : ScriptableObject
         else
         {
             throw new System.Exception($"not found itemLevel at level {level}");
-        }
-    }
-
-    public float GetCostToUpgrade(int curLvl)
-    {
-        if (itemLevelDict.TryGetValue(curLvl +1, out ItemLevel itemLevel))
-        {
-            return itemLevel.cost;
-        }
-        else
-        {
-            throw new System.Exception("no next level");
         }
     }
 }

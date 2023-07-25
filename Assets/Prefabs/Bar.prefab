@@ -246,9 +246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customerPrefab: {fileID: 148548812845598186, guid: c93836a8298384842bf112e4215627ab, type: 3}
-  spawnAt: {fileID: 0}
   exitAt: {fileID: 0}
-  PathTile: {fileID: 0}
   <ServicePoint>k__BackingField: {fileID: 703507069937304965}
   <WorkingPoint>k__BackingField: {fileID: 4107098577960086812}
 --- !u!210 &4516851534692951743

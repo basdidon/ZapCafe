@@ -28,7 +28,6 @@ public class WorkStations : IEnumerable<IWorkStation>
         // both method need to use square root for get the result
         // but in this function, distance is no matter
         // so i just use Vector3.sqrMagnitude find which object is closer
-
         float minSqrMagnitude = (boardObject.CellCenterWorld - workStation.CellCenterWorld).sqrMagnitude;
         for (int i = 1; i < workStations.Count; i++)
         {
@@ -118,7 +117,7 @@ public class WorkStationRegistry : SerializedMonoBehaviour
 
     public WorkStations GetItemFactories(string ItemName)
     {
-        return workStations.Where(workStation => (workStation is ItemFactory itemFactory) && itemFactory.ItemName == ItemName);
+        return workStations.Where(workStation => (workStation is ItemFactory itemFactory) && itemFactory.ItemData.Name == ItemName);
     }
 
 

@@ -1,14 +1,20 @@
-using Sirenix.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.Serialization;
 
-public class BurgerBox : ItemFactory
+public class DonutBox : ItemFactory
 {
-    public override string ItemName => "Burger";
     protected override void Start()
     {
         base.Start();
         WorkStationRegistry.Instance.AddWorkStation(this);
+        TaskManager.Instance.WorkStationFree();
+    }
+
+    public void BtnDebug()
+    {
+        Debug.Log("buttonHit");
+        UpLevel();
     }
 }

@@ -33,6 +33,8 @@ public class TileOverlay : MonoBehaviour
 
     public void Reset()
     {
+        overlayTilemap.ClearAllTiles();
+        TilesPos.Clear();
         area = targetTilemap.cellBounds;
 
         for (int x = area.xMin; x < area.xMax; x++)
@@ -52,8 +54,8 @@ public class TileOverlay : MonoBehaviour
 
     public void Active()
     {
-        Reset();
         overlayTilemap.gameObject.SetActive(true);
+        Reset();
     }
     public void Deactive() => overlayTilemap.gameObject.SetActive(false);
 }

@@ -30,20 +30,21 @@ public class Customer : Charecter
         }
     }
 
-    public void Initialized(Bar bar)
+    public void Initialized(Bar bar,Tilemap pathTilemap)
     {
         Bar = bar;
-        PathTilemap = Bar.PathTile;
+        PathTilemap = pathTilemap;
+        HoldingItem = null;
 
         var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
 
-        if (PathFinder.TryFindWaypoint(this, Bar.SpawnCell, Bar.ServiceCell, dirs, out List<Vector3Int> waypoints))
+        if (PathFinder.TryFindWaypoint(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, dirs, out List<Vector3Int> waypoints))
         {
             CurrentState = new CustomerMoveState(this, waypoints);
         }
         else
         {
-            Debug.LogError($"can't move from {Bar.SpawnCell} to {Bar.ServiceCell}");
+            Debug.LogError($"can't move from {BoardManager.Instance.GetCellPos(transform.position)} to {Bar.ServiceCell}");
         }
     }
 
@@ -51,20 +52,20 @@ public class Customer : Charecter
     protected void Awake()
     {
         IdleState = new CustomerIdleState();
-        CustomerOrders = new() { new GetItem(this,"Donut"), new GetItem(this,"Burger") };
+        CustomerOrders = new() { new GetItemTask(this,"Donut"), new GetItemTask(this,"Burger") };
         OrderSprite = null;
     }
+    
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 
-    List<GetItem> CustomerOrders;
+    List<GetItemTask> CustomerOrders;
     public void GetOrder()
     {
-        Debug.Log("getOrder");
         var orderTask = CustomerOrders[Random.Range(0, CustomerOrders.Count)];
         TaskManager.Instance.AddTask(orderTask);
 
-        OrderSprite = ItemList.Instance.GetItemSprite(orderTask.ItemName);
+        OrderSprite = Resources.Load<ItemData>($"ItemDataSet/{orderTask.ItemName}").Sprite;
     }
 
     #region State
@@ -85,7 +86,7 @@ public class Customer : Charecter
                 if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
                 {
                     Charecter.Bar.Customer = Charecter;
-                    var newTask = new Bar.GetOrderTask(Charecter, Charecter.Bar);
+                    var newTask = new GetOrderTask(Charecter, Charecter.Bar);
                     newTask.Performed += Charecter.GetOrder;
                     TaskManager.Instance.AddTask(newTask);
                 }
@@ -108,8 +109,8 @@ public class Customer : Charecter
         {
             if (WayPoints.Count == 0)
             {
-                Debug.Log(Charecter.name);
-                Destroy(Charecter.gameObject);
+                //Debug.Log(Charecter.name);
+                Charecter.gameObject.SetActive(false);
             }
             else
             {

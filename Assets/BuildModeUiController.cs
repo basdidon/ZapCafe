@@ -6,26 +6,34 @@ using UnityEngine.InputSystem;
 
 public class BuildModeUiController : PanelControl
 {
+    public static BuildModeUiController Instance;
     public override string Key => "BuildMode";
 
     [SerializeField] Transform buildPreview;
     [SerializeField] InputActionReference actionReference;
     [SerializeField] Grid MainGrid { get; set; }
     SpriteRenderer SpriteRenderer { get; set; }
-    ItemSO itemData;
-    public ItemSO ItemData { get => itemData;
+    [SerializeField] Transform WorkStationsTransform;
+    WorkStationData workStationData;
+    public WorkStationData WorkStationData { get => workStationData;
         set 
         {
-            itemData = value;
-            SpriteRenderer.sprite = itemData.Sprite;
+            workStationData = value;
+            SpriteRenderer.sprite = workStationData.Sprite;
         }
     }
 
-    private void OnEnable() => actionReference.action.Enable();
-    private void OnDisable() => actionReference.action.Disable();
-
     protected override void Awake()
     {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         base.Awake();
         List<VisualElement> btnList = new() {
             Root.Q<VisualElement>("confirm-btn"),
@@ -70,6 +78,7 @@ public class BuildModeUiController : PanelControl
     {
         base.Display();
         TileOverlay.Instance.Active();
+        actionReference.action.Enable();
         actionReference.action.performed += SetPreviewPosition;
     }
 
@@ -78,13 +87,21 @@ public class BuildModeUiController : PanelControl
         base.Hide();
         TileOverlay.Instance.Deactive();
         buildPreview.gameObject.SetActive(false);
+        actionReference.action.Disable();
         actionReference.action.performed -= SetPreviewPosition;
     }
 
     public void OnConfirm(ClickEvent clickEvent)
     {
+        if(!LevelManager.Instance.TrySpend(workStationData.Price))
+        {
+            Debug.LogWarning("Coin not enough.");
+            return;
+        }
+
         Hide();
         Debug.Log("confirm");
+        Instantiate(workStationData.Prefab, buildPreview.position, Quaternion.identity, WorkStationsTransform);
         UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
     }
 
@@ -99,6 +116,4 @@ public class BuildModeUiController : PanelControl
         Debug.Log("cancle");
         UiEvents.instance.DisplayUiTriggerEvent("BuildMenu");
     }
-
-
 }

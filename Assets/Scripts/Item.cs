@@ -18,10 +18,3 @@ public class Item
         Time = time;
     }
 }
-
-public class Burger : Item
-{
-    public Burger(string name, Sprite sprite, float price, float time) : base(name, sprite, price, time) { }
-    /*
-    public Burger(string name, int quatity) : base(name, quatity) { }*/
-}

@@ -10,6 +10,19 @@ public class WorkStationListEntryController
     Label priceLabel;
     Label nameLabel;
 
+    WorkStationData workStationData;
+    public WorkStationData WorkStationData 
+    {
+        get => workStationData;
+        set
+        {
+            workStationData = value;
+            img.style.backgroundImage = new StyleBackground(workStationData.Sprite);
+            priceLabel.text = $"{workStationData.Price} C";
+            nameLabel.text = workStationData.name;
+        }
+    }
+
     //This function retrieves a reference to the 
     //character name label inside the UI element.
     public void SetVisualElement(VisualElement visualElement)
@@ -22,19 +35,9 @@ public class WorkStationListEntryController
         button.RegisterCallback<ClickEvent>(evt => {
             UiEvents.instance.HideUiTriggerEvent("BuildMenu");
             UiEvents.instance.DisplayUiTriggerEvent("BuildMode");
+            BuildModeUiController.Instance.WorkStationData = WorkStationData;
             Debug.Log($"Enter build mode : {nameLabel.text}");
         });
-    }
-
-    //This function receives the character whose name this list 
-    //element displays. Since the elements listed 
-    //in a `ListView` are pooled and reused, it's necessary to 
-    //have a `Set` function to change which character's data to display.
-    public void SetCharacterData(WorkStationData workStationData)
-    {
-        img.style.backgroundImage = new StyleBackground(workStationData.Sprite);
-        priceLabel.text = $"{workStationData.Price} C";
-        nameLabel.text = workStationData.name;
     }
 }
 
@@ -65,7 +68,7 @@ public class BuildMenuControler : PanelControl
             var newListEntryLogic = new WorkStationListEntryController();
             //clone.userData = newListEntryLogic;
             newListEntryLogic.SetVisualElement(clone);
-            newListEntryLogic.SetCharacterData(data);
+            newListEntryLogic.WorkStationData = data;
             workStationListView.Add(clone);
         });
 

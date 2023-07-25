@@ -8,11 +8,11 @@ using Sirenix.Serialization;
 public class Bar : BoardObject,IWorkStation
 {
     public GameObject customerPrefab; //**** move to objectPool later
-    public Transform spawnAt;
+    //public Transform spawnAt;
     public Transform exitAt;
-    public Vector3Int SpawnCell { get => BoardManager.GetCellPos(spawnAt.position); }
+    //public Vector3Int SpawnCell { get => BoardManager.GetCellPos(spawnAt.position); }
     public Vector3Int ExitCell { get => BoardManager.GetCellPos(exitAt.position); }
-    public Tilemap PathTile;
+    //public Tilemap PathTile;
 
     // Customer
     [OdinSerialize] 
@@ -30,9 +30,10 @@ public class Bar : BoardObject,IWorkStation
     private void Start()
     {
         WorkStationRegistry.Instance.AddWorkStation(this);
-        SpawnNewCustomer();
+        //SpawnNewCustomer();
+        TaskManager.Instance.WorkStationFree();
     }
-
+    /*
     // Method
     [Button]
     public void SpawnNewCustomer()
@@ -49,7 +50,7 @@ public class Bar : BoardObject,IWorkStation
             Debug.LogError("not found Customer's Script.");
         }
     }
-
+    */
     public void CustomerLeave()
     {
         if (PathFinder.TryFindWaypoint(Customer, ServiceCell, ExitCell, Customer.dirs, out List<Vector3Int> waypoints))
@@ -62,50 +63,8 @@ public class Bar : BoardObject,IWorkStation
         }
 
         Customer = null;
-        SpawnNewCustomer();
+        //SpawnNewCustomer();
     }
 
-    public class GetOrderTask : Task
-    {
-        public Bar Bar { get; set; }
-        public override float Duration => 5f;
-
-        public GetOrderTask(Customer customer,Bar bar):base(customer)
-        {
-            Bar = bar;
-        }
-        public override IWorkStation GetworkStation(Worker worker) => (IWorkStation) Bar;
-    }
-
-    public class ServeOrderTask : Task
-    {
-        public ServeOrderTask(Customer customer) : base(customer) 
-        {
-            Performed += delegate {
-                Customer.OrderSprite = null;
-                Customer.HoldingItem = Worker.HoldingItem;
-                Worker.HoldingItem = null;
-                LevelManager.Instance.Coin += Customer.HoldingItem.Price;
-                TextSpawner.Instance.SpawnText($"+ {Customer.HoldingItem.Price}", Customer.transform.position + Vector3.up * 2);
-                (WorkStation as Bar).CustomerLeave(); 
-            };
-        }
-
-        public override float Duration => 1f;
-
-        public override IWorkStation GetworkStation(Worker worker)
-        {
-            //throw new System.NotImplementedException();
-            
-            foreach(Bar bar in WorkStationRegistry.Instance.GetWorkStationsByType<Bar>())
-            {
-                if(bar.Customer == Customer)
-                {
-                    return bar;
-                }
-            }
-            
-            return null;
-        }
-    }
+    
 }

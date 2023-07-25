@@ -32,4 +32,17 @@ public class LevelManager : MonoBehaviour
             Instance = this;
         }
     }
+
+    public bool TrySpend(float value)
+    {
+        if(value > Coin)
+        {
+            return false;
+        }
+        else
+        {
+            Coin -= value;
+            return true;
+        }
+    }
 }
