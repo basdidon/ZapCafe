@@ -7,8 +7,8 @@ public class TileOverlay : MonoBehaviour
 {
     public static TileOverlay Instance { get; private set; }
     [SerializeField] Tilemap targetTilemap;
-    [SerializeField] Tilemap overlayTilemap;
-    [field:SerializeField] public List<Vector3Int> TilesPos { get; set; }
+    [field: SerializeField] public List<Vector3Int> TilesPos { get; set; }
+    [field: SerializeField] public List<GameObject> ActivatedOverlayTile { get; set; }
 
     public TileBase tileOverlay;
     public LayerMask blockConstructionMask;
@@ -33,7 +33,7 @@ public class TileOverlay : MonoBehaviour
 
     public void Reset()
     {
-        overlayTilemap.ClearAllTiles();
+        //overlayTilemap.ClearAllTiles();
         TilesPos.Clear();
         area = targetTilemap.cellBounds;
 
@@ -49,13 +49,19 @@ public class TileOverlay : MonoBehaviour
             }
         }
 
-        TilesPos.ForEach(tilePos => overlayTilemap.SetTile(tilePos, tileOverlay));
+        TilesPos.ForEach(tilePos => {
+            if (ObjectPool.Instance.TryGetPoolObject("TileOverlay", out GameObject poolObject))
+            {
+                poolObject.SetActive(true);
+                poolObject.transform.position = targetTilemap.GetCellCenterWorld(tilePos);
+                ActivatedOverlayTile.Add(poolObject);
+            }
+        });// overlayTilemap.SetTile(tilePos, tileOverlay)) ;
     }
 
     public void Active()
     {
-        overlayTilemap.gameObject.SetActive(true);
         Reset();
     }
-    public void Deactive() => overlayTilemap.gameObject.SetActive(false);
+    public void Deactive() => ActivatedOverlayTile.ForEach(tile => tile.SetActive(false)); //overlayTilemap.gameObject.SetActive(false);
 }

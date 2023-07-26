@@ -32,8 +32,9 @@ public class CustomerSpawner : MonoBehaviour
 
             if (availableBar.Count > 0)
             {
+                
                 //spawn cust
-                if (CustomerObjectPool.Instance.TryGetPoolObject(out GameObject customerGO))
+                if (ObjectPool.Instance.TryGetPoolObject("Customer", out GameObject customerGO))
                 {
                     customerGO.SetActive(true);
                     customerGO.transform.position = BoardManager.Instance.GetCellCenterWorld(SpawnCell);
@@ -45,8 +46,6 @@ public class CustomerSpawner : MonoBehaviour
                     {
                         Debug.LogError("not found Customer's Script.");
                     }
-                    
-                    
                 }
             }
             waitTime = Random.Range(minWaitTime, maxWaitTime);
