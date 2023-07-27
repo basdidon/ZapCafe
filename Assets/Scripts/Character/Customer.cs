@@ -52,20 +52,23 @@ public class Customer : Charecter
     protected void Awake()
     {
         IdleState = new CustomerIdleState();
-        CustomerOrders = new() { new GetItemTask(this,"Donut"), new GetItemTask(this,"Burger") };
+        //CustomerOrders = new() { new GetItemTask(this,"Donut"), new GetItemTask(this,"Burger") };
         OrderSprite = null;
     }
     
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 
-    List<GetItemTask> CustomerOrders;
+    //List<GetItemTask> CustomerOrders;
     public void GetOrder()
     {
+        throw new System.NotImplementedException();
+        /*
         var orderTask = CustomerOrders[Random.Range(0, CustomerOrders.Count)];
         TaskManager.Instance.AddTask(orderTask);
 
         OrderSprite = Resources.Load<ItemData>($"ItemDataSet/{orderTask.ItemName}").Sprite;
+        */
     }
 
     #region State

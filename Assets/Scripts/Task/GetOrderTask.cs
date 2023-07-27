@@ -7,7 +7,7 @@ public class GetOrderTask : Task
     public Bar Bar { get; set; }
     public override float Duration => 5f;
 
-    public GetOrderTask(Customer customer, Bar bar) : base(customer)
+    public GetOrderTask(Customer customer, Bar bar) : base()
     {
         Bar = bar;
     }

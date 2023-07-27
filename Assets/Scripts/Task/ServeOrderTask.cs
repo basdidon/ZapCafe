@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class ServeOrderTask : Task
 {
-    public ServeOrderTask(Customer customer) : base(customer)
+    Customer Customer { get; }
+    public ServeOrderTask(Customer customer) : base()
     {
+        Customer = customer;
         Performed += delegate {
             Customer.OrderSprite = null;
             Customer.HoldingItem = Worker.HoldingItem;
