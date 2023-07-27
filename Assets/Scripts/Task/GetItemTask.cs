@@ -1,21 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+/*
 public class GetItemTask : Task
 {
     public string ItemName { get; }
     public ItemFactory ItemFactory { get; set; }
     public override float Duration => ItemFactory.Time;
 
-    public GetItemTask(Customer customer, string itemName) : base(customer)
+    public GetItemTask(string itemName)
     {
         ItemName = itemName;
 
         Performed += delegate {
             Worker.HoldingItem = (WorkStation as ItemFactory).CreateItem();
-            var serveTask = new ServeOrderTask(customer);
+            var serveTask = new ServeOrderTask(order);
             serveTask.Performed += delegate {
                 Worker.HoldingItem = null;
                 Worker.Tasks.Remove(serveTask);
@@ -32,4 +31,4 @@ public class GetItemTask : Task
         ItemFactory = (ItemFactory)result;
         return result;
     }
-}
+}*/

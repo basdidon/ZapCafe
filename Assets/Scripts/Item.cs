@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Item
 {
-    public string Name { get; set; }
     public Sprite Sprite { get; set; }
+    public string Name { get; set; }
     public int Quantity { get; set; }
     public float Price { get; set; }
     public float Time { get; set; }
