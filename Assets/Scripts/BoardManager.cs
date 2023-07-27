@@ -8,7 +8,7 @@ public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance { get; private set; }
 
-    [field: SerializeField] public Tilemap GroundTileMap { get; set; }
+    [field: SerializeField] public Grid MainGrid { get; set; }
 
     private void Awake()
     {
@@ -21,12 +21,12 @@ public class BoardManager : MonoBehaviour
             Instance = this;
         }
 
-        //ObjectsPosition = new();
+        MainGrid = FindObjectOfType<Grid>();
     }
 
     // public bool IsFreeTile(Vector3Int cellPos) =>  GroundTileMap.HasTile(cellPos) && !ObjectsPosition.ContainsValue(cellPos);
     // GetWorldPosition
-    public Vector3 GetCellCenterWorld(Vector3Int cellPos) => GroundTileMap.GetCellCenterWorld(cellPos);
+    public Vector3 GetCellCenterWorld(Vector3Int cellPos) => MainGrid.GetCellCenterWorld(cellPos);
     // 
-    public Vector3Int GetCellPos(Vector3 worldPos) => GroundTileMap.WorldToCell(worldPos);
+    public Vector3Int GetCellPos(Vector3 worldPos) => MainGrid.WorldToCell(worldPos);
 }

@@ -3135,10 +3135,9 @@ MonoBehaviour:
   targetTilemap: {fileID: 2056174484}
   <TilesPos>k__BackingField: []
   <ActivatedOverlayTile>k__BackingField: []
-  tileOverlay: {fileID: 11400000, guid: fb8d1396370e46143a48c372ef0ce303, type: 2}
   blockConstructionMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 3136
   area:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 0, y: 0, z: 0}

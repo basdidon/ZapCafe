@@ -10,7 +10,6 @@ public class TileOverlay : MonoBehaviour
     [field: SerializeField] public List<Vector3Int> TilesPos { get; set; }
     [field: SerializeField] public List<GameObject> ActivatedOverlayTile { get; set; }
 
-    public TileBase tileOverlay;
     public LayerMask blockConstructionMask;
     public BoundsInt area;
 
@@ -56,12 +55,12 @@ public class TileOverlay : MonoBehaviour
                 poolObject.transform.position = targetTilemap.GetCellCenterWorld(tilePos);
                 ActivatedOverlayTile.Add(poolObject);
             }
-        });// overlayTilemap.SetTile(tilePos, tileOverlay)) ;
+        });
     }
 
     public void Active()
     {
         Reset();
     }
-    public void Deactive() => ActivatedOverlayTile.ForEach(tile => tile.SetActive(false)); //overlayTilemap.gameObject.SetActive(false);
+    public void Deactive() => ActivatedOverlayTile.ForEach(tile => tile.SetActive(false));
 }
