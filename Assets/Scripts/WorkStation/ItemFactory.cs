@@ -36,6 +36,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
 
     protected void UpdateFactoryData()
     {
+        /*
         WorkStationData = Resources.Load<WorkStationData>($"WorkStationDataSet/{WorkStationName}");
         if (WorkStationData == null)
         {
@@ -44,7 +45,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
         ItemLevel item = ItemData.GetItemDataByLevel(level);
         Time = item.time;
         Price = item.price;
-        Cost = WorkStationData.GetCostToUpgrade(level);
+        Cost = WorkStationData.GetCostToUpgrade(level);*/
     }
 
     public void UpLevel()

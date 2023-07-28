@@ -165,6 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <WorkingPoint>k__BackingField: {fileID: 8095366759858150897}
+  workstationData: {fileID: 0}
 --- !u!1 &3343894968937211592
 GameObject:
   m_ObjectHideFlags: 0

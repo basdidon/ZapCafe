@@ -6,7 +6,7 @@ public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance { get; private set; }
 
-    public List<Order> Orders { get; private set; }
+    [field:SerializeField] public List<Order> Orders { get; private set; }
     public List<Worker> AvailableWorker { get; private set; }
 
     [Header("test")]
@@ -73,7 +73,7 @@ public class OrderManager : MonoBehaviour
         */
     }
 }
-
+/*
 public class GetItemOrder : Task
 {
     public override float Duration => 1f;
@@ -82,7 +82,7 @@ public class GetItemOrder : Task
 
     public override IWorkStation GetworkStation(Worker worker)
     {
-        throw new System.NotImplementedException();
+        //WorkStationRegistry.Instance.GetItemFactories
     }
 }
 

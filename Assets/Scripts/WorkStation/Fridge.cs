@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fridge : ItemFactory
+public class Fridge : BoardObject,IWorkStation
 {
-    protected override void Start()
+    public Worker Worker { get; set; }
+    [field: SerializeField] public Transform WorkingPoint { get; set; }
+    public Vector3Int WorkingCell { get => BoardManager.Instance.GetCellPos(WorkingPoint.position); }
+    public NewWorkstationData workstationData;
+
+    protected void Start()
     {
-        base.Start();
         WorkStationRegistry.Instance.AddWorkStation(this);
         TaskManager.Instance.WorkStationFree();
     }

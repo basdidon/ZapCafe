@@ -3030,7 +3030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c17267fb736a8a4ea52005bc5d3f312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GroundTileMap>k__BackingField: {fileID: 258335949}
+  <MainGrid>k__BackingField: {fileID: 0}
 --- !u!4 &482486545
 Transform:
   m_ObjectHideFlags: 0
@@ -6599,6 +6599,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fridge
       objectReference: {fileID: 0}
+    - target: {fileID: 2284181946192601432, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2986700947147577488, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
+      propertyPath: workstationData
+      value: 
+      objectReference: {fileID: 11400000, guid: 8cf457be858ba6c4487bea43dd687a4f, type: 2}
+    - target: {fileID: 3343894968937211592, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4533468693631313211, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
       propertyPath: m_RootOrder
       value: 15
@@ -6642,6 +6654,10 @@ PrefabInstance:
     - target: {fileID: 4533468693631313211, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5310385248573692842, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6736,6 +6752,10 @@ PrefabInstance:
     - target: {fileID: 3343156397153465730, guid: d8d315af588a303439bb52ee1f3c6874, type: 3}
       propertyPath: m_Name
       value: Bar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304895261385327914, guid: d8d315af588a303439bb52ee1f3c6874, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6377103681569354506, guid: d8d315af588a303439bb52ee1f3c6874, type: 3}
       propertyPath: m_RootOrder
