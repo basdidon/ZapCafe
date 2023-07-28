@@ -107,7 +107,7 @@ MonoBehaviour:
   textBubble: {fileID: 5642909342856015821}
   OrderItemRenderer: {fileID: 3014334174226547471}
   Orders:
-  - {fileID: 11400000, guid: b157d0a0b65f6df4590f865694e97f2b, type: 2}
+  - {fileID: 11400000, guid: e6ea624f0ef04e74ab4ded9407a59454, type: 2}
   references:
     version: 2
     RefIds:

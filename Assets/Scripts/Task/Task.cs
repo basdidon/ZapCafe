@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
+using System.Linq;
 /*
 public interface ITask<out T> where T : Item {
     public Customer Customer { get; }
@@ -34,7 +35,7 @@ public interface ITask
 }
 
 
-public abstract class Task  : ITask
+public abstract class Task : ITask
 {
     public Worker Worker { get; set; }
     [OdinSerialize] IWorkStation workStation;
@@ -44,8 +45,14 @@ public abstract class Task  : ITask
         set
         {
             workStation = value;
-            Started += delegate { WorkStation.Worker = Worker; };
-            Performed += delegate { WorkStation.Worker = null; };
+            Started += delegate {
+                WorkStation.Worker = Worker;
+                TaskState = TaskStates.Pending;
+            };
+            Performed += delegate {
+                WorkStation.Worker = null;
+                TaskState = TaskStates.Fulfilled;
+            };
         }
     }
 
@@ -62,6 +69,8 @@ public abstract class Task  : ITask
 
     public Action Started { get; set; }
     public Action Performed { get; set; }
+    public enum TaskStates { Created, Pending, Fulfilled }
+    public TaskStates TaskState { get; private set; }
 }
 
 [Serializable]
@@ -108,16 +117,21 @@ public class Menu
 
     public void OnStartCooking()
     {
-        if (ItemData.RequiredIngredients.Count == 0)
+        if (Ingredients.Count == 0)
         {
             var task = new GetItemOrder(ItemData, new ServeOrderTask(Order.OrderBy));
             TaskManager.Instance.AddTask(task);
         }
         else
         {
-            ItemData.RequiredIngredients.ForEach(ingredient => {
+            Task[] conditionTasks = new Task[Ingredients.Count];
+            for(int i =0;i<Ingredients.Count;i++ )
+            {
+                conditionTasks[i] = new AddItemTo(Ingredients[i], ItemData.WorkStation);
+            }
 
-            });
+            var main_task = new UseWorkStation(ItemData.WorkStation, conditionTasks);
+            TaskManager.Instance.AddTask(main_task);
         }
     }
     // getItem([bun],addItemTo(workStation))

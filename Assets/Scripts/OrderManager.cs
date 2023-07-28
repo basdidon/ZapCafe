@@ -4,6 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
+using System.Linq;
 
 public class OrderManager : MonoBehaviour
 {
@@ -91,20 +92,47 @@ public class AddItemTo : Task
     {
         ItemData = itemData;
         WorkStationData = workStationData;
+
+        Performed += delegate
+        {
+            (WorkStation as ItemFactory).Items.Add(Worker.HoldingItem);
+            Worker.HoldingItem = null;
+        };
     }
 
     public override IWorkStation GetworkStation(Worker worker)
     {
-        return WorkStationRegistry.Instance.GetWorkStations(WorkStationData).FindClosest(worker);
+        return WorkStationRegistry.Instance.GetWorkStations(WorkStationData).ReadyToUse().FindClosest(worker);
     }
 }
 
+// need to done all subtask before run this task
 public class UseWorkStation : Task
 {
     public override float Duration => 5f;
+    public WorkStationData WorkStationData { get; private set; }
+    public List<Task> Tasks { get; private set; }
+
+    public UseWorkStation(WorkStationData workStationData,Task[] tasks)
+    {
+        WorkStationData = workStationData;
+        Tasks = new(tasks);
+        /*Tasks.ForEach(task => task.Performed += delegate {
+            if (IsAllFulfilled) OnAllFulfilled();
+        });*/
+    }
 
     public override IWorkStation GetworkStation(Worker worker)
     {
-        throw new NotImplementedException();
+        if (IsAllFulfilled)
+        {
+            return WorkStationRegistry.Instance.GetWorkStations(WorkStationData).ReadyToUse().FindClosest(worker);
+        }
+
+        return null;
     }
+
+    bool IsAllFulfilled => Tasks.TrueForAll(task => task.TaskState == Task.TaskStates.Fulfilled);
+
+    //private void OnAllFulfilled() => TaskManager.Instance.AddTask(this);
 }
