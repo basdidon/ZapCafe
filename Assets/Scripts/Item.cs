@@ -6,15 +6,10 @@ public class Item
 {
     public Sprite Sprite { get; set; }
     public string Name { get; set; }
-    public int Quantity { get; set; }
-    public float Price { get; set; }
-    public float Time { get; set; }
 
-    public Item(string name, Sprite sprite, float price, float time)
+    public Item(string name, Sprite sprite)
     {
         Name = name;
         Sprite = sprite;
-        Price = price;
-        Time = time;
     }
 }

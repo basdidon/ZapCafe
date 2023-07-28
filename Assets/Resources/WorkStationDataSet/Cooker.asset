@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d9aacadc4945b4fb3b464c61b04338, type: 3}
-  m_Name: Burger
+  m_Script: {fileID: 11500000, guid: 7b5e4480c1051f1439baf013be0708dc, type: 3}
+  m_Name: Cooker
   m_EditorClassIdentifier: 
-  ingredients:
-  - {fileID: 11400000, guid: 88fe2b47bfbc1144ab0713c6f86181f0, type: 2}
-  - {fileID: 11400000, guid: 3fac521de9754aa49a34a336e5326d30, type: 2}
+  sprite: {fileID: 0}
+  prefab: {fileID: 3919638321625872095, guid: aab80df68ea438b4abd11e7a8ec337d7, type: 3}
+  price: 200

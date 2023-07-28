@@ -17,8 +17,8 @@ public class WorkStationListEntryController
         set
         {
             workStationData = value;
-            img.style.backgroundImage = new StyleBackground(workStationData.Sprite);
-            priceLabel.text = $"{workStationData.Price} C";
+            img.style.backgroundImage = new StyleBackground(workStationData.sprite);
+            priceLabel.text = $"{workStationData.price} C";
             nameLabel.text = workStationData.name;
         }
     }

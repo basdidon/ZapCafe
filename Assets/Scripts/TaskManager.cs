@@ -48,7 +48,7 @@ public class TaskManager : SerializedMonoBehaviour
         
         var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
 
-        if (task == null) 
+        if (task == null)
         {
             AvailableWorker.Add(worker);
         }

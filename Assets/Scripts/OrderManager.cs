@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using System;
 
 public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance { get; private set; }
 
     [field:SerializeField] public List<Order> Orders { get; private set; }
-    public List<Worker> AvailableWorker { get; private set; }
-
-    [Header("test")]
-    public MenuData MenuData;
-    public List<IngredientData> AddOns;
 
     private void Awake()
     {
@@ -23,71 +21,90 @@ public class OrderManager : MonoBehaviour
         {
             Instance = this;
         }
-
-        // debug
-        Orders = new() { new Order(null, new Menu(MenuData, AddOns)) };
     }
-
 
     public void AddOrder(Order newOrder)
     {
         if (newOrder == null)
             return;
-        /*
-        var worker = AvailableWorker.Find(worker => worker.TrySetTask(newTask));
 
-        if (worker != null)
-        {
-            AvailableWorker.Remove(worker);
-        }
-        */
         Orders.Add(newOrder);
-    }
-
-    public void AddAvaliableWorker(Worker worker)
-    {
-        if (worker == null)
-            return;
-        /*
-        var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
-
-        if (task == null)
-        {
-            AvailableWorker.Add(worker);
-        }*/
-    }
-
-    public void WorkStationFree()
-    {
-        if (AvailableWorker.Count <= 0)
-            return;
-
-        var worker = AvailableWorker[0];/*
-        var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
-
-        if (task == null)
-        {
-            AvailableWorker.Add(worker);
-        }
-        AvailableWorker.Remove(worker);
-        */
+        newOrder.Menu.OnStartCooking();
     }
 }
-/*
-public class GetItemOrder : Task
-{
-    public override float Duration => 1f;
 
-    //public GetItemOrder(Order order) : base(order) { }
+public class GetDish : Task
+{
+    public override float Duration => .5f;
 
     public override IWorkStation GetworkStation(Worker worker)
     {
-        //WorkStationRegistry.Instance.GetItemFactories
+        throw new System.NotImplementedException();
     }
 }
 
-/*
- * routine m_routine = new CookedOrder(new ServeOrder())
- * burger = 
- * 
- */
+public class Plating : Task
+{
+    public override float Duration => .5f;
+
+    public override IWorkStation GetworkStation(Worker worker)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+public class GetItemOrder : Task
+{
+    [ReadOnly]
+    [field:SerializeField] 
+    public ItemData ItemData { get;private set; }
+    public override float Duration => 1f;
+
+    public GetItemOrder(ItemData itemData)
+    {
+        ItemData = itemData;
+        Performed += delegate { (WorkStation as ItemFactory).CreateItem(itemData, Worker); };
+    }
+
+    public GetItemOrder(ItemData itemData, Task nextTask)
+    {
+        ItemData = itemData;
+        Performed += delegate {
+            (WorkStation as ItemFactory).CreateItem(itemData, Worker);
+            Worker.Tasks.Add(nextTask);
+        };
+    }
+
+    public override IWorkStation GetworkStation(Worker worker)
+    {
+        return WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).FindClosest(worker);
+    }
+}
+
+public class AddItemTo : Task
+{
+    public override float Duration => .5f;
+    public ItemData ItemData { get; private set; }
+    public WorkStationData WorkStationData { get; private set; }
+
+    public AddItemTo(ItemData itemData,WorkStationData workStationData)
+    {
+        ItemData = itemData;
+        WorkStationData = workStationData;
+    }
+
+    public override IWorkStation GetworkStation(Worker worker)
+    {
+        return WorkStationRegistry.Instance.GetWorkStations(WorkStationData).FindClosest(worker);
+    }
+}
+
+public class UseWorkStation : Task
+{
+    public override float Duration => 5f;
+
+    public override IWorkStation GetworkStation(Worker worker)
+    {
+        throw new NotImplementedException();
+    }
+}

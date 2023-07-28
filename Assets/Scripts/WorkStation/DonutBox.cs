@@ -11,10 +11,4 @@ public class DonutBox : ItemFactory
         WorkStationRegistry.Instance.AddWorkStation(this);
         TaskManager.Instance.WorkStationFree();
     }
-
-    public void BtnDebug()
-    {
-        Debug.Log("buttonHit");
-        UpLevel();
-    }
 }

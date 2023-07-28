@@ -5,6 +5,7 @@ using UnityEngine;
 public class ServeOrderTask : Task
 {
     Customer Customer { get; }
+    int price = 50;
     public ServeOrderTask(Customer customer) : base()
     {
         Customer = customer;
@@ -12,8 +13,9 @@ public class ServeOrderTask : Task
             Customer.OrderSprite = null;
             Customer.HoldingItem = Worker.HoldingItem;
             Worker.HoldingItem = null;
-            LevelManager.Instance.Coin += Customer.HoldingItem.Price;
-            TextSpawner.Instance.SpawnText($"+ {Customer.HoldingItem.Price}", Customer.transform.position + Vector3.up * 2);
+            Worker.Tasks.Remove(this);
+            LevelManager.Instance.Coin += price;
+            TextSpawner.Instance.SpawnText($"+ {price}", Customer.transform.position + Vector3.up * 2);
             (WorkStation as Bar).CustomerLeave();
         };
     }

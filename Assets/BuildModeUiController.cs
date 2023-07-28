@@ -19,7 +19,7 @@ public class BuildModeUiController : PanelControl
         set 
         {
             workStationData = value;
-            SpriteRenderer.sprite = workStationData.Sprite;
+            SpriteRenderer.sprite = workStationData.sprite;
         }
     }
 
@@ -93,7 +93,7 @@ public class BuildModeUiController : PanelControl
 
     public void OnConfirm(ClickEvent clickEvent)
     {
-        if(!LevelManager.Instance.TrySpend(workStationData.Price))
+        if(!LevelManager.Instance.TrySpend(workStationData.price))
         {
             Debug.LogWarning("Coin not enough.");
             return;
@@ -101,7 +101,7 @@ public class BuildModeUiController : PanelControl
 
         Hide();
         Debug.Log("confirm");
-        Instantiate(workStationData.Prefab, buildPreview.position, Quaternion.identity, WorkStationsTransform);
+        Instantiate(workStationData.prefab, buildPreview.position, Quaternion.identity, WorkStationsTransform);
         UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
     }
 

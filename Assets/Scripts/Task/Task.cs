@@ -36,8 +36,6 @@ public interface ITask
 
 public abstract class Task  : ITask
 {
-    //public Customer Customer { get; }
-    //public Order Order { get; }
     public Worker Worker { get; set; }
     [OdinSerialize] IWorkStation workStation;
     public IWorkStation WorkStation
@@ -51,10 +49,8 @@ public abstract class Task  : ITask
         }
     }
 
-    public Task()//(Customer customer)
+    public Task()
     {
-        //Customer = customer;
-        //Order = order;
         Performed += delegate {
             TaskManager.Instance.Tasks.Remove(this);
         };
@@ -68,38 +64,61 @@ public abstract class Task  : ITask
     public Action Performed { get; set; }
 }
 
+[Serializable]
 public class Order
 {
     [field:SerializeField] public Customer OrderBy { get; set; }
     [field:SerializeField] public Menu Menu { get; set; }
-    public Order(Customer customer,Menu menu)
+    public enum OrderStates { Created,Pending,Fullfill}
+    public OrderStates OrderState;
+    [field:SerializeField] public List<Item> Items { get; set; }
+
+    public Order(Customer customer)
     {
         OrderBy = customer;
-        Menu = menu;
+    }
+
+    public void CreateMenu(ItemData itemData)
+    {
+        Menu = new Menu(this, itemData);
     }
 }
 
+[Serializable]
 public class Menu
 {
-    [field:SerializeField] List<IngredientData> Ingredients { get; set; }
-    public Menu(MenuData menuData)
+    public Order Order { get; }
+    [ReadOnly]
+    [field:SerializeField] 
+    public ItemData ItemData { get;private set; }
+    [field:SerializeField] public List<ItemData> Ingredients { get;private set; }
+    public Menu(Order order,ItemData itemData)
     {
-        Ingredients = menuData.ingredients;
-    }
-
-    public Menu(MenuData menuData, List<IngredientData> addOns) : this(menuData)
-    {
-        addOns.ForEach(addOn => {
-            if (menuData.optionalIngredients.Contains(addOn)) Ingredients.Add(addOn);
-        });
+        Order = order;
+        ItemData = itemData;
+        Ingredients = ItemData.RequiredIngredients;
     }
     
-}
-
-public abstract class Ingredient
-{
-    public void GetIngredient()
+    public Menu(Order order,ItemData itemData, List<ItemData> addOns) : this(order,itemData)
     {
-          
+        addOns.ForEach(addOn => {
+            if (itemData.OptionalIngredients.Contains(addOn)) Ingredients.Add(addOn);
+        });
     }
+
+    public void OnStartCooking()
+    {
+        if (ItemData.RequiredIngredients.Count == 0)
+        {
+            var task = new GetItemOrder(ItemData, new ServeOrderTask(Order.OrderBy));
+            TaskManager.Instance.AddTask(task);
+        }
+        else
+        {
+            ItemData.RequiredIngredients.ForEach(ingredient => {
+
+            });
+        }
+    }
+    // getItem([bun],addItemTo(workStation))
 }

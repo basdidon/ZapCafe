@@ -114,41 +114,15 @@ public class WorkStationRegistry : SerializedMonoBehaviour
     }
 
     public void AddWorkStation(IWorkStation workStation) { workStations.Add(workStation); }
-
+    
+    /*
     public WorkStations GetItemFactories(string ItemName)
     {
-        return workStations.Where(workStation => (workStation is ItemFactory itemFactory) && itemFactory.ItemData.Name == ItemName);
-    }
-
-
-    /*
-    public IItemFactory GetItemFactory(BoardObject boardObject,string ItemName)
-    {
-        return GetItemFactories(ItemName).Where(workStation => workStation.IsAvailable).FindClosest(boardObject);
+        return workStations.Where(workStation => (workStation is ItemFactory itemFactory) && itemFactory.WorkStationData.ItemData.name == ItemName);
     }*/
+
+    public WorkStations GetWorkStations(WorkStationData workStationData) => workStations.Where(workStation => workStation.WorkStationData == workStationData);
 
     public IEnumerable<T> GetWorkStationsByType<T>() where T : IWorkStation
         => workStations.OfType<T>();
-    /*
-    public WorkStations GetWorkStations<T>() where T : Item 
-        => workStations.Where(workStation => typeof(IWorkStation<T>).IsAssignableFrom(workStation.GetType()));
-
-
-    public IWorkStation<T> GetWorkStation<T>(BoardObject boardObject) where T : Item
-        => (IWorkStation<T>) workStations.FindAll(workStation => typeof(IWorkStation<T>).IsAssignableFrom(workStation.GetType()) && workStation.IsAvailable).FindClosest(boardObject);
-
-    [Button]
-    public void CountDonutFactories()
-    {
-        var results = GetWorkStations<Donut>();
-        int n = 0;
-
-        foreach(var r in results) {
-            n++;
-        }
-
-        Debug.Log("N = " + n);
-    }
-    */
-
 }

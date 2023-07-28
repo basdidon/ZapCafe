@@ -33,6 +33,7 @@ public class Customer : Charecter
     public void Initialized(Bar bar,Tilemap pathTilemap)
     {
         Bar = bar;
+        Bar.Customer = this;
         PathTilemap = pathTilemap;
         HoldingItem = null;
 
@@ -52,23 +53,19 @@ public class Customer : Charecter
     protected void Awake()
     {
         IdleState = new CustomerIdleState();
-        //CustomerOrders = new() { new GetItemTask(this,"Donut"), new GetItemTask(this,"Burger") };
         OrderSprite = null;
     }
     
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
 
-    //List<GetItemTask> CustomerOrders;
+    public List<ItemData> Orders;
     public void GetOrder()
     {
-        throw new System.NotImplementedException();
-        /*
-        var orderTask = CustomerOrders[Random.Range(0, CustomerOrders.Count)];
-        TaskManager.Instance.AddTask(orderTask);
-
-        OrderSprite = Resources.Load<ItemData>($"ItemDataSet/{orderTask.ItemName}").Sprite;
-        */
+        var order = new Order(this);
+        order.CreateMenu(Orders[Random.Range(0, Orders.Count)]);
+        OrderManager.Instance.AddOrder(order);
+        OrderSprite = order.Menu.ItemData.Sprite;
     }
 
     #region State

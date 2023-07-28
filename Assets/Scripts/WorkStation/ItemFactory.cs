@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
+public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
 {
     // IWorkStation
     public Worker Worker { get; set; }
@@ -11,7 +11,10 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
 
     public string WorkStationName => $"{GetType()}";
     public WorkStationData WorkStationData { get; private set; }
-    public ItemData ItemData => WorkStationData.ItemData;
+
+    [field: SerializeField] public List<ItemData> Recipes { get; set; }
+    [field: SerializeField] public ItemData WorkingMenu { get; set; }
+    [field: SerializeField] public List<Item> Items { get; set; }
 
     protected int level = 1;
     public int Level
@@ -20,7 +23,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
         private set
         {
             level = value;
-            UpdateFactoryData();
+            //UpdateFactoryData();
         }
     }
 
@@ -31,22 +34,50 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
     protected virtual void Start()
     {
         Debug.Log(WorkStationName);
-        UpdateFactoryData();
-    }
-
-    protected void UpdateFactoryData()
-    {
-        /*
         WorkStationData = Resources.Load<WorkStationData>($"WorkStationDataSet/{WorkStationName}");
         if (WorkStationData == null)
         {
             Debug.LogError($"Resources.Load<WorkStationData>(WorkStationDataSet/{WorkStationName}) was failed.");
         }
+
+        foreach(var itemData in Resources.LoadAll<ItemData>("ItemDataSet"))
+        {
+            if(itemData.WorkStation == WorkStationData)
+            {
+                Recipes.Add(itemData);
+            }
+        }
+        //UpdateFactoryData();
+
+        WorkStationRegistry.Instance.AddWorkStation(this);
+        TaskManager.Instance.WorkStationFree();
+    }
+    
+    public void CreateItem(ItemData itemData,Worker worker)
+    {
+        Debug.Log("createItem");
+        var recipe = Recipes.Find(recipe => recipe.name == itemData.name);
+        if (recipe != null)
+        {
+            worker.HoldingItem = new Item(recipe.name, recipe.Sprite);
+        }
+        else
+        {
+            Debug.LogError("item not found");
+        }
+    }
+
+    /*
+    protected void UpdateFactoryData()
+    {
+
+        
         ItemLevel item = ItemData.GetItemDataByLevel(level);
         Time = item.time;
         Price = item.price;
-        Cost = WorkStationData.GetCostToUpgrade(level);*/
+        Cost = WorkStationData.GetCostToUpgrade(level);
     }
+
 
     public void UpLevel()
     {
@@ -58,8 +89,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
         }
     }
 
-
-    public Item CreateItem() => ItemData.CreateItem(Level);
+   //public Item CreateItem() => ItemData.CreateItem(Level);
 
     public void ShowUiObject()
     {
@@ -67,5 +97,5 @@ public abstract class ItemFactory : BoardObject, IWorkStation, IUiObject
         UiObjectManager.Instance.DisplayFactoryPanel(offset, GetType().ToString(), Level, Time, Price, Cost);
 
         UiObjectManager.Instance.ClickUpgradeBtn = UpLevel;
-    }
+    }*/
 }

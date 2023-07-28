@@ -381,6 +381,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <WorkingPoint>k__BackingField: {fileID: 290082121250252793}
+  <Recipes>k__BackingField: []
+  <WorkingMenu>k__BackingField: {fileID: 0}
 --- !u!60 &7402568471862083982
 PolygonCollider2D:
   m_ObjectHideFlags: 0
