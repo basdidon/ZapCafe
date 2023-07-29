@@ -52,6 +52,11 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
         WorkStationRegistry.Instance.AddWorkStation(this);
         TaskManager.Instance.WorkStationFree();
     }
+
+    public void RequestItem(ItemData itemData)
+    {
+        WorkingMenu = itemData;
+    }
     
     public void CreateItem(ItemData itemData,Worker worker)
     {

@@ -41,6 +41,7 @@ public class WorkStations : IEnumerable<IWorkStation>
 
         return workStation;
     }
+    public IWorkStation First => workStations[0];
 
     #region Implementation of IEnumerable
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -114,12 +115,6 @@ public class WorkStationRegistry : SerializedMonoBehaviour
     }
 
     public void AddWorkStation(IWorkStation workStation) { workStations.Add(workStation); }
-    
-    /*
-    public WorkStations GetItemFactories(string ItemName)
-    {
-        return workStations.Where(workStation => (workStation is ItemFactory itemFactory) && itemFactory.WorkStationData.ItemData.name == ItemName);
-    }*/
 
     public WorkStations GetWorkStations(WorkStationData workStationData) => workStations.Where(workStation => workStation.WorkStationData == workStationData);
 

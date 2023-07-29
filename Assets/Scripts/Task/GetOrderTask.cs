@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GetOrderTask : Task
+public class GetOrderTask : BaseTask
 {
     public Bar Bar { get; set; }
     public override float Duration => 5f;

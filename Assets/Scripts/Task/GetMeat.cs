@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GetMeat : Task
+public class GetMeat : BaseTask
 {
     public override float Duration => throw new System.NotImplementedException();
 

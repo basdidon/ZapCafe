@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServeOrderTask : Task
+public class ServeOrderTask : BaseTask
 {
     Customer Customer { get; }
     int price = 50;
