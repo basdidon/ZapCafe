@@ -53,7 +53,7 @@ public class Plating : Task
         throw new System.NotImplementedException();
     }
 }
-
+/*
 public class GetItemOrder : Task
 {
     [ReadOnly]
@@ -72,15 +72,16 @@ public class GetItemOrder : Task
         ItemData = itemData;
         Performed += delegate {
             (WorkStation as ItemFactory).CreateItem(itemData, Worker);
+            nextTask.Performed += delegate { Worker.Tasks.Remove(nextTask); };
             Worker.Tasks.Add(nextTask);
         };
     }
 
     public override IWorkStation GetworkStation(Worker worker)
     {
-        return WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).FindClosest(worker);
+        return WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).ReadyToUse().FindClosest(worker);
     }
-}
+}*/
 
 public class AddItemTo : Task
 {
@@ -92,12 +93,12 @@ public class AddItemTo : Task
     {
         ItemData = itemData;
         WorkStationData = workStationData;
-
+        /*
         Performed += delegate
         {
             (WorkStation as ItemFactory).Items.Add(Worker.HoldingItem);
             Worker.HoldingItem = null;
-        };
+        };*/
     }
 
     public override IWorkStation GetworkStation(Worker worker)
@@ -107,24 +108,63 @@ public class AddItemTo : Task
 }
 
 // need to done all subtask before run this task
-public class UseWorkStation : Task
+public class GetItem : Task
 {
     public override float Duration => 5f;
-    public WorkStationData WorkStationData { get; private set; }
+    public Order Order { get; private set; }
+    public List<ItemData> Ingredients => Order.Menu.Ingredients;
+    public ItemData ItemData { get; private set; }
+    public WorkStationData WorkStationData => ItemData.WorkStation;
     public List<Task> Tasks { get; private set; }
 
-    public UseWorkStation(WorkStationData workStationData,Task[] tasks)
+    public GetItem(Order order,ItemData itemData)
     {
-        WorkStationData = workStationData;
-        Tasks = new(tasks);
-        /*Tasks.ForEach(task => task.Performed += delegate {
-            if (IsAllFulfilled) OnAllFulfilled();
-        });*/
+        Order = order;
+        ItemData = itemData;
+        Performed += delegate { (WorkStation as ItemFactory).CreateItem(itemData, Worker); };
+        
+        if(Ingredients.Count > 0)
+        {
+            Task[] conditionTasks = new Task[Ingredients.Count];
+            for (int i = 0; i < Ingredients.Count; i++)
+            {
+                conditionTasks[i] = new AddItemTo(Ingredients[i], ItemData.WorkStation);
+                TaskManager.Instance.AddTask(new GetItem(Order, Ingredients[i], conditionTasks[i]));
+            }
+            Tasks = new(conditionTasks);
+        }
+    }
+
+    public GetItem(Order order, ItemData itemData,Task nextTask)//:this(order,itemData)
+    {
+        Order = order;
+        ItemData = itemData;
+        Performed += delegate { 
+            (WorkStation as ItemFactory).CreateItem(itemData, Worker);
+            nextTask.Performed += delegate { Worker.Tasks.Remove(nextTask); };
+            Worker.Tasks.Add(nextTask);
+        };
+
+        if (Ingredients.Count > 0)
+        {
+            Task[] conditionTasks = new Task[Ingredients.Count];
+            for (int i = 0; i < Ingredients.Count; i++)
+            {
+                conditionTasks[i] = new AddItemTo(Ingredients[i], ItemData.WorkStation);
+                TaskManager.Instance.AddTask(new GetItem(Order, Ingredients[i], conditionTasks[i]));
+            }
+            Tasks = new(conditionTasks);
+        }
+        /*
+        Performed += delegate {
+            nextTask.Performed += delegate { Worker.Tasks.Remove(nextTask); };
+            Worker.Tasks.Add(nextTask);
+        };*/
     }
 
     public override IWorkStation GetworkStation(Worker worker)
     {
-        if (IsAllFulfilled)
+        if (Tasks == null || Tasks.Count==0 || IsAllFulfilled)
         {
             return WorkStationRegistry.Instance.GetWorkStations(WorkStationData).ReadyToUse().FindClosest(worker);
         }
@@ -132,7 +172,5 @@ public class UseWorkStation : Task
         return null;
     }
 
-    bool IsAllFulfilled => Tasks.TrueForAll(task => task.TaskState == Task.TaskStates.Fulfilled);
-
-    //private void OnAllFulfilled() => TaskManager.Instance.AddTask(this);
+    bool IsAllFulfilled => Tasks.TrueForAll(task => task.TaskState == TaskStates.Fulfilled);
 }

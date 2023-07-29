@@ -34,7 +34,6 @@ public interface ITask
     public Action Performed { get; set; }
 }
 
-
 public abstract class Task : ITask
 {
     public Worker Worker { get; set; }
@@ -117,22 +116,6 @@ public class Menu
 
     public void OnStartCooking()
     {
-        if (Ingredients.Count == 0)
-        {
-            var task = new GetItemOrder(ItemData, new ServeOrderTask(Order.OrderBy));
-            TaskManager.Instance.AddTask(task);
-        }
-        else
-        {
-            Task[] conditionTasks = new Task[Ingredients.Count];
-            for(int i =0;i<Ingredients.Count;i++ )
-            {
-                conditionTasks[i] = new AddItemTo(Ingredients[i], ItemData.WorkStation);
-            }
-
-            var main_task = new UseWorkStation(ItemData.WorkStation, conditionTasks);
-            TaskManager.Instance.AddTask(main_task);
-        }
+        TaskManager.Instance.AddTask(new GetItem(Order, ItemData, new ServeOrderTask(Order.OrderBy)));
     }
-    // getItem([bun],addItemTo(workStation))
 }
