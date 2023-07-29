@@ -8,7 +8,7 @@ public class GetItem : BaseTask
     public override float Duration => 5f;
     public Order Order { get; private set; }
     public List<ItemData> Ingredients => Order.Menu.Ingredients;
-    public ItemData ItemData { get; private set; }
+    [field:SerializeField] public ItemData ItemData { get; private set; }
     public WorkStationData WorkStationData => ItemData.WorkStation;
     [field: SerializeField] public BaseTask NextTask { get; private set; }
 
@@ -22,8 +22,11 @@ public class GetItem : BaseTask
         NextTask = nextTask;
         Performed += delegate {
             (WorkStation as ItemFactory).CreateItem(itemData, Worker);
-            nextTask.Performed += delegate { Worker.Tasks.Remove(nextTask); };
-            Worker.Tasks.Add(nextTask);
+            //nextTask.Performed += delegate { Worker.Tasks.Remove(nextTask); };
+            //Worker.Tasks.Add(nextTask);
+            nextTask.Worker = Worker;
+            TaskManager.Instance.AddTask((ITask) nextTask);
+            Debug.Log("getItem() done");
         };
     }
 

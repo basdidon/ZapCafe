@@ -25,6 +25,8 @@ public class Worker : Charecter
     {
         if (newTask == null)
             return false;
+        if (newTask.Worker != null && newTask.Worker != this)
+            return false;
 
         var workStation = newTask.GetworkStation(this);
 
@@ -86,12 +88,14 @@ public class WorkerIdle : IdleState<Worker>
 
     public override void EnterState()
     {
-        var task = Charecter.Tasks.Find(task => Charecter.TrySetTask(task));
-        
+        //var task = Charecter.Tasks.Find(task => Charecter.TrySetTask(task));
+        /*
+        var task = TaskManager.Instance.Tasks.Find(task => task.Worker = Charecter);
         if(task == null)
         {
-            TaskManager.Instance.AddAvaliableWorker(Charecter);
-        }
+        }*/
+        Debug.Log("Player Idle");
+        TaskManager.Instance.AddAvaliableWorker(Charecter);
     }
 
     public override void ExitState(){}

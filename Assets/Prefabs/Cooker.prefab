@@ -94,6 +94,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2953329745289255351}
   - component: {fileID: 4577932480618076020}
+  - component: {fileID: 4948023052552550169}
+  - component: {fileID: 8367601995001415268}
   m_Layer: 0
   m_Name: Cooker
   m_TagString: Untagged
@@ -108,14 +110,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3919638321625872095}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3395699188877617355}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4577932480618076020
 SpriteRenderer:
@@ -155,8 +157,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 443218829
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 362e16b4dc9fb96409fb147708046dfe, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
@@ -169,3 +171,31 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4948023052552550169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3919638321625872095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0008b546c9483e8449f371332c461f4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <WorkingPoint>k__BackingField: {fileID: 3395699188877617355}
+  <Recipes>k__BackingField: []
+  <WorkingMenu>k__BackingField: {fileID: 0}
+  <Items>k__BackingField: []
+--- !u!210 &8367601995001415268
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3919638321625872095}
+  m_Enabled: 1
+  m_SortingLayerID: 443218829
+  m_SortingLayer: 1
+  m_SortingOrder: 0
+  m_SortAtRoot: 0

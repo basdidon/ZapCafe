@@ -45,13 +45,27 @@ public class TaskManager : SerializedMonoBehaviour
     {
         if (worker == null)
             return;
-        
-        var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
+
+        var task = Tasks.Find(task => CompareDebug(task.Worker, worker) && worker.TrySetTask(task));
+
+        if(task == null)
+            Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
+        //task ??= Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
 
         if (task == null)
         {
             AvailableWorker.Add(worker);
         }
+    }
+
+    bool CompareDebug(Worker a,Worker b)
+    {
+        var sa = a != null ? a.name : "null";
+        var sb = b != null ? b.name : "null";
+
+        bool result = a == b;
+        Debug.Log($"{sa} == {sb} => {result}");
+        return result;
     }
 
     public void WorkStationFree()

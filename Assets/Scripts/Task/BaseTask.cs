@@ -21,7 +21,7 @@ public interface ITask
 
 public abstract class BaseTask : ITask
 {
-    public Worker Worker { get; set; }
+    [field:SerializeField] public Worker Worker { get; set; }
     [OdinSerialize] IWorkStation workStation;
     public IWorkStation WorkStation
     {

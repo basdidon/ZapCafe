@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7504127140923744636}
   - component: {fileID: 3730177324493523427}
+  - component: {fileID: 4957229637074640045}
   m_Layer: 0
   m_Name: CuttingBoard
   m_TagString: Untagged
@@ -85,6 +86,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!210 &4957229637074640045
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545590704353367036}
+  m_Enabled: 1
+  m_SortingLayerID: 443218829
+  m_SortingLayer: 1
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &7683946550765123931
 GameObject:
   m_ObjectHideFlags: 0
