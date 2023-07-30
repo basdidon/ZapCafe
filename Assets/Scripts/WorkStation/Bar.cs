@@ -32,6 +32,9 @@ public class Bar : BoardObject,IWorkStation
 
     public void CustomerLeave()
     {
+        if (Customer == null)
+            Debug.Log("Customer null");
+
         if (PathFinder.TryFindWaypoint(Customer, ServiceCell, ExitCell, Customer.dirs, out List<Vector3Int> waypoints))
         {
             Customer.CurrentState = new Customer.CustomerExitState(Customer, waypoints);

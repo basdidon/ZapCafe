@@ -15,6 +15,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
     [field: SerializeField] public List<ItemData> Recipes { get; set; }
     [field: SerializeField] public ItemData WorkingMenu { get; set; }
     [field: SerializeField] public List<Item> Items { get; set; }
+    [field: SerializeField] public List<Item> ToUsed { get; set; }
 
     protected int level = 1;
     public int Level
@@ -64,6 +65,25 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
         var recipe = Recipes.Find(recipe => recipe.name == itemData.name);
         if (recipe != null)
         {
+            //check ingredeints
+            foreach(var requiredIngredeint in recipe.RequiredIngredients)
+            {
+                var _item = Items.Find(item => item.Name == requiredIngredeint.name);
+                if(_item != null)
+                {
+                    Items.Remove(_item);
+                    ToUsed.Add(_item);
+                }
+                else
+                {
+                    Items.AddRange(ToUsed);
+                    ToUsed.Clear();
+                    Debug.LogError("ingredient not found");
+                    return;
+                }
+            }
+
+            ToUsed.Clear();
             worker.HoldingItem = new Item(recipe.name, recipe.Sprite);
         }
         else

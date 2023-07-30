@@ -6,14 +6,12 @@ public class AddItemTo : BaseTask
 {
     public override float Duration => .5f;
     public ItemData ItemData { get; private set; }
-    //public WorkStationData WorkStationData { get; private set; }
     public ItemFactory ItemFactory { get; private set; }
 
     public AddItemTo(ItemData itemData, ItemFactory itemFactory)
     {
         ItemData = itemData;
         ItemFactory = itemFactory;
-        //WorkStationData = workStationData;
         Performed += delegate
         {
             if (WorkStation is ItemFactory itemFactory)
@@ -27,6 +25,5 @@ public class AddItemTo : BaseTask
     public override IWorkStation GetworkStation(Worker worker)
     {
         return ItemFactory;
-        //return WorkStationRegistry.Instance.GetWorkStations(WorkStationData).ReadyToUse().FindClosest(worker);
     }
 }

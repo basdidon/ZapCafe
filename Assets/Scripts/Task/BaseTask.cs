@@ -44,6 +44,7 @@ public abstract class BaseTask : ITask
     {
         Performed += delegate {
             TaskManager.Instance.Tasks.Remove(this);
+            Debug.Log($"{this.GetType()} was removed");
         };
     }
 

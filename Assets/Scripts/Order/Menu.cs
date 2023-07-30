@@ -24,17 +24,17 @@ public class Menu
         addOns.ForEach(addOn => { if (itemData.OptionalIngredients.Contains(addOn)) Ingredients.Add(addOn); });
     }
 
-    public void OnStartCooking()
+    public bool OnStartCooking()
     {
         BaseTask mainTask = new ServeOrderTask(Order.OrderBy);
 
-        HandleGetItem(mainTask,ItemData);
+        return TrySetTaskForMenu(mainTask,ItemData);
     }
 
-    private void HandleGetItem(BaseTask nextTask,ItemData itemData)
+    private bool TrySetTaskForMenu(BaseTask nextTask, ItemData itemData)
     {
         var ingredients = itemData.RequiredIngredients;
-        Debug.Log($"HandleGetItem({itemData.name}) : {ingredients.Count}");
+        //Debug.Log($"HandleGetItem({itemData.name}) : {ingredients.Count}");
         if (ingredients.Count == 0)
         {
             nextTask = new GetItem(Order, itemData, nextTask);
@@ -42,20 +42,28 @@ public class Menu
         else
         {
             BaseTask[] conditionTasks = new BaseTask[ingredients.Count];
-            if(WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).ReadyToUse().First is ItemFactory preparedItemFactory)
+            if (WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).ReadyToUse().First is ItemFactory preparedItemFactory)
             {
                 for (int i = 0; i < ingredients.Count; i++)
                 {
                     conditionTasks[i] = new AddItemTo(ingredients[i], preparedItemFactory);
-                    HandleGetItem(conditionTasks[i], ingredients[i]);
+                    if(TrySetTaskForMenu(conditionTasks[i], ingredients[i]) == false)
+                    {
+                        return false;
+                    }
                 }
 
-                nextTask = new GetItem(Order, itemData,preparedItemFactory, conditionTasks, nextTask);
+                nextTask = new GetItem(Order, itemData, preparedItemFactory, conditionTasks, nextTask);
+            }
+            else
+            {
+                return false;
             }
 
 
         }
 
         TaskManager.Instance.AddTask(nextTask);
+        return true;
     }
 }

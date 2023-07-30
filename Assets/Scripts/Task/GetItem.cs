@@ -21,11 +21,10 @@ public class GetItem : BaseTask
         ItemData = itemData;
         NextTask = nextTask;
         Performed += delegate {
-            (WorkStation as ItemFactory).CreateItem(itemData, Worker);
-            //nextTask.Performed += delegate { Worker.Tasks.Remove(nextTask); };
-            //Worker.Tasks.Add(nextTask);
+            if(WorkStation is ItemFactory itemFactory)
+                itemFactory.CreateItem(itemData, Worker);
             nextTask.Worker = Worker;
-            TaskManager.Instance.AddTask((ITask) nextTask);
+            TaskManager.Instance.AddTask(nextTask);
             Debug.Log("getItem() done");
         };
     }

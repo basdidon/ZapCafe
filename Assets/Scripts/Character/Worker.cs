@@ -163,6 +163,7 @@ public class ExecutingTask : ISelfExitState
 
     public void ExitState(){
         Worker.TaskProgress.SetActive(false);
+        Worker.CurrentTask = null;
     }
 
     public void SetNextState()

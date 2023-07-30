@@ -41,7 +41,7 @@ public class WorkStations : IEnumerable<IWorkStation>
 
         return workStation;
     }
-    public IWorkStation First => workStations[0];
+    public IWorkStation First => workStations.Count > 0 ? workStations[0] : null;
 
     #region Implementation of IEnumerable
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

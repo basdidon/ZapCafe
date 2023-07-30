@@ -49,8 +49,7 @@ public class TaskManager : SerializedMonoBehaviour
         var task = Tasks.Find(task => CompareDebug(task.Worker, worker) && worker.TrySetTask(task));
 
         if(task == null)
-            Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
-        //task ??= Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
+            task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
 
         if (task == null)
         {
