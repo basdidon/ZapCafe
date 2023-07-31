@@ -26,11 +26,14 @@ public class Menu
 
     public bool OnStartCooking()
     {
+        TaskManager.Instance.AddTask(new ServeOrderTaskInverse(this, ItemData));
+        return true;
+        /*
         BaseTask mainTask = new ServeOrderTask(Order.OrderBy);
 
-        return TrySetTaskForMenu(mainTask,ItemData);
+        return TrySetTaskForMenu(mainTask,ItemData);*/
     }
-
+    /*
     private bool TrySetTaskForMenu(BaseTask nextTask, ItemData itemData)
     {
         var ingredients = itemData.RequiredIngredients;
@@ -66,4 +69,39 @@ public class Menu
         TaskManager.Instance.AddTask(nextTask);
         return true;
     }
+    */
+    /*
+    private int TryGetPrepareTasks(ItemData itemData,out ITask[] PrepareTasks)
+    {
+        var ingredients = itemData.RequiredIngredients;
+
+        if (ingredients.Count == 0)
+        {
+            PrepareTasks = new ITask[] { new GetItemInverse(Order, ItemData) };
+        }
+        else
+        {
+            ITask[] _addToTasks = new ITask[ingredients.Count];
+            if (WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).ReadyToUse().First is ItemFactory preparedItemFactory)
+            {
+                for (int i = 0; i < ingredients.Count; i++)
+                {
+                    TryGetPrepareTasks(ingredients[i], out ITask[] _prepareTasks);
+                    _addToTasks[i] = new AddItemToInverse(ingredients[i], preparedItemFactory,_prepareTasks);
+                }
+
+                //nextTask = new GetItem(Order, itemData, preparedItemFactory, conditionTasks, nextTask);
+                PrepareTasks = new ITask[]{ new GetItemInverse(Order, itemData, preparedItemFactory, _addToTasks) };
+            }
+            else
+            {
+                PrepareTasks = null;
+                return -1;
+            }
+        }
+        
+        TaskManager.Instance.AddTask(nextTask);
+        return true;
+        return PrepareTasks.Length;
+    }*/
 }

@@ -30,22 +30,23 @@ public class TaskManager : SerializedMonoBehaviour
     {
         if (newTask == null)
             return;
-
-        var worker = AvailableWorker.Find(worker => worker.TrySetTask(newTask));
+        /*
+        var worker = AvailableWorker.Find(worker => worker.TrySetTask(newTask.GetTask()));
 
         if(worker != null)
         {
             AvailableWorker.Remove(worker);
         }
-
-        Tasks.Add(newTask);        
+        */
+        Tasks.Add(newTask);
+        TryAssignTask();
     }
 
     public void AddAvaliableWorker(Worker worker)
     {
         if (worker == null)
             return;
-
+        /*
         var task = Tasks.Find(task => CompareDebug(task.Worker, worker) && worker.TrySetTask(task));
 
         if(task == null)
@@ -53,8 +54,9 @@ public class TaskManager : SerializedMonoBehaviour
 
         if (task == null)
         {
-            AvailableWorker.Add(worker);
-        }
+        }*/
+        AvailableWorker.Add(worker);
+        TryAssignTask();
     }
 
     bool CompareDebug(Worker a,Worker b)
@@ -81,5 +83,31 @@ public class TaskManager : SerializedMonoBehaviour
         }
         AvailableWorker.Remove(worker);
 
+    }
+
+    public void TryAssignTask()
+    {
+        if (AvailableWorker.Count <= 0)
+            return;
+        if (Tasks.Count <= 0)
+            return;
+
+        for (int i = 0; i < AvailableWorker.Count; i++)
+        {
+            UpdateAvailableTasks();
+            Debug.Log($"availableTasks.Count = {availableTasks.Count}");
+            if (availableTasks.Find(task => AvailableWorker[i].TrySetTask(task)) != null)
+            {
+                AvailableWorker.Remove(AvailableWorker[i]);
+            }
+        }
+    }
+
+    List<ITask> availableTasks = new();
+    public List<ITask> UpdateAvailableTasks()
+    {
+        availableTasks.Clear();
+        Tasks.ForEach(task => task.GetSubTasks(availableTasks));
+        return availableTasks;
     }
 }

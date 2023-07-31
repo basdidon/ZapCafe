@@ -12,5 +12,9 @@ public class GetOrderTask : BaseTask
         Bar = bar;
     }
 
-    public override IWorkStation GetworkStation(Worker worker) => (IWorkStation)Bar;
+    public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
+    {
+        workStation = Bar;
+        return true;
+    }
 }

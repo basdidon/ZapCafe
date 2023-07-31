@@ -68,6 +68,8 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
             //check ingredeints
             foreach(var requiredIngredeint in recipe.RequiredIngredients)
             {
+                Debug.Log(requiredIngredeint.name);
+
                 var _item = Items.Find(item => item.Name == requiredIngredeint.name);
                 if(_item != null)
                 {

@@ -13,7 +13,7 @@ public class Worker : Charecter
     public Image ProgressImg;
 
     // Task
-    [field:SerializeField] public ITask CurrentTask { get; set; }
+    [field:SerializeReference] public ITask CurrentTask { get; set; }
     public List<ITask> Tasks { get; set; }
 
     /// <summary>
@@ -28,9 +28,12 @@ public class Worker : Charecter
         if (newTask.Worker != null && newTask.Worker != this)
             return false;
 
-        var workStation = newTask.GetworkStation(this);
+        if (newTask.Worker == null)
+            Debug.Log($"{name} get null task");
+        else
+            Debug.Log($"{name} get task.worker = {newTask.Worker.name}");
 
-        if (workStation != null)
+        if (newTask.TryGetWorkStation(this,out IWorkStation workStation))
         {
             // move worker to workStation
             if (PathFinder.TryFindWaypoint(this, CellPosition, workStation.WorkingCell, dirs, out List<Vector3Int> waypoints))
@@ -88,12 +91,6 @@ public class WorkerIdle : IdleState<Worker>
 
     public override void EnterState()
     {
-        //var task = Charecter.Tasks.Find(task => Charecter.TrySetTask(task));
-        /*
-        var task = TaskManager.Instance.Tasks.Find(task => task.Worker = Charecter);
-        if(task == null)
-        {
-        }*/
         Debug.Log("Player Idle");
         TaskManager.Instance.AddAvaliableWorker(Charecter);
     }
