@@ -13,51 +13,44 @@ public class Worker : Charecter
     public Image ProgressImg;
 
     // Task
-    [field:SerializeReference] public ITask CurrentTask { get; set; }
-    public List<ITask> Tasks { get; set; }
-
-    /// <summary>
-    /// set <c>Task</c> to <c>Worker</c>
-    /// </summary>
-    /// <param name="newTask"></param>
-    /// <returns></returns>
-    public bool TrySetTask(ITask newTask)
+    [SerializeReference] ITask currentTask;
+    public ITask CurrentTask
     {
-        if (newTask == null)
-            return false;
-        if (newTask.Worker != null && newTask.Worker != this)
-            return false;
-
-        if (newTask.Worker == null)
-            Debug.Log($"{name} get null task");
-        else
-            Debug.Log($"{name} get task.worker = {newTask.Worker.name}");
-
-        if (newTask.TryGetWorkStation(this,out IWorkStation workStation))
+        get => currentTask;
+        set
         {
-            // move worker to workStation
-            if (PathFinder.TryFindWaypoint(this, CellPosition, workStation.WorkingCell, dirs, out List<Vector3Int> waypoints))
+            currentTask = value;
+            if(CurrentTask != null)
             {
-                CurrentTask = newTask;
-                CurrentTask.Worker = this;
-                CurrentTask.WorkStation = workStation;
-                CurrentState = new WorkerMove(this, waypoints, new ExecutingTask(this, workStation));
-                return true;
-            }
-            else
-            {
-                Debug.LogError("<color=red> Can't Move To workStation</color>");
+                Debug.Log(currentTask.Waypoints == null);
+                CurrentState = new WorkerMove(this, currentTask.Waypoints, new ExecutingTask(this));
             }
         }
-
-        return false;
     }
+
+    public bool TryGetWaypoint(Vector3Int targetCellPos,out List<Vector3Int> waypoints)
+    {
+        return PathFinder.TryFindWaypoint(this, CellPosition, targetCellPos, dirs, out waypoints);
+    }
+    /*
+    // Can Worker go to workStation
+    public bool TrySetWorkStaion(IWorkStation workStation)
+    {
+        // move worker to workStation
+        if (PathFinder.TryFindWaypoint(this, CellPosition, workStation.WorkingCell, dirs, out List<Vector3Int> waypoints))
+        {
+            
+            return true;
+        }
+
+        Debug.LogError("<color=red> Can't Move To workStation</color>");
+        return false;
+    }*/
 
     // State
     protected void Awake()
     {
         IdleState = new WorkerIdle(this);
-        Tasks = new();
     }
 
     protected override void Start()
@@ -123,14 +116,12 @@ public class WorkerMove : MoveState<Worker>
 public class ExecutingTask : ISelfExitState
 {
     Worker Worker { get; }
-    IWorkStation WorkStation { get; }
     float timeElapsed;
     float duration;
 
-    public ExecutingTask(Worker worker,IWorkStation workStation)
+    public ExecutingTask(Worker worker)
     {
         Worker = worker;
-        WorkStation = workStation;
     }
 
     public void EnterState()

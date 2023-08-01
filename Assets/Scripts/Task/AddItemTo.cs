@@ -47,8 +47,9 @@ public class AddItemToInverse : BaseTask
                 Worker.HoldingItem = null;
             }
         };
-        
-        PrepareTasks = new ITask[] { new GetItemInverse(ItemData) };
+        var GetItemTask = new GetItemInverse(ItemData);
+        GetItemTask.Performed += delegate { AssignWorker(GetItemTask.Worker); };
+        PrepareTasks = new ITask[] {GetItemTask};
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)

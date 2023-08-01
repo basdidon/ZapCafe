@@ -20,24 +20,25 @@ public class WorkStations : IEnumerable<IWorkStation>
     public WorkStations ReadyToUse() => Where(workStation => workStation.IsAvailable);
     public IWorkStation FindClosest(BoardObject boardObject)
     {
-        if (workStations == null || workStations.Count == 0) return null;
+        if (workStations == null || workStations.Count == 0)
+        {
+            return null;
+        }
 
         var workStation = workStations[0];
+        var minSqrMagnitude = workStation.SqrMagnitude(boardObject);
 
-        // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
-        // both method need to use square root for get the result
-        // but in this function, distance is no matter
-        // so i just use Vector3.sqrMagnitude find which object is closer
-        float minSqrMagnitude = (boardObject.CellCenterWorld - workStation.CellCenterWorld).sqrMagnitude;
         for (int i = 1; i < workStations.Count; i++)
         {
-            var sqrMagnitude = (boardObject.CellCenterWorld - workStations[i].CellCenterWorld).sqrMagnitude;
+            var sqrMagnitude = workStations[i].SqrMagnitude(boardObject);
+            Debug.Log($"{workStation.GetType()} = {minSqrMagnitude} : {workStations[i]} = {sqrMagnitude}"   );
             if (sqrMagnitude < minSqrMagnitude)
             {
                 workStation = workStations[i];
                 minSqrMagnitude = sqrMagnitude;
             }
         }
+        Debug.Log($" => {workStation.GetType()}");
 
         return workStation;
     }

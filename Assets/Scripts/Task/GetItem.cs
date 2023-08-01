@@ -80,7 +80,6 @@ public class GetItemInverse:BaseTask
         if (ingredients != null && ingredients.Count > 0)
         {
             PrepareTasks = new ITask[ingredients.Count];
-                
             for(int i =0;i<ingredients.Count;i++)
             {
                 PrepareTasks[i] = new AddItemToInverse(this,ingredients[i]);

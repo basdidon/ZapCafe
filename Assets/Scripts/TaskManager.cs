@@ -30,76 +30,35 @@ public class TaskManager : SerializedMonoBehaviour
     {
         if (newTask == null)
             return;
-        /*
-        var worker = AvailableWorker.Find(worker => worker.TrySetTask(newTask.GetTask()));
 
-        if(worker != null)
-        {
-            AvailableWorker.Remove(worker);
-        }
-        */
         Tasks.Add(newTask);
-        TryAssignTask();
+        TrySetTask();
     }
 
     public void AddAvaliableWorker(Worker worker)
     {
         if (worker == null)
             return;
-        /*
-        var task = Tasks.Find(task => CompareDebug(task.Worker, worker) && worker.TrySetTask(task));
 
-        if(task == null)
-            task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
-
-        if (task == null)
-        {
-        }*/
         AvailableWorker.Add(worker);
-        TryAssignTask();
+        TrySetTask();
     }
 
-    bool CompareDebug(Worker a,Worker b)
-    {
-        var sa = a != null ? a.name : "null";
-        var sb = b != null ? b.name : "null";
-
-        bool result = a == b;
-        Debug.Log($"{sa} == {sb} => {result}");
-        return result;
-    }
-
-    public void WorkStationFree()
-    {
-        if (AvailableWorker.Count <= 0)
-            return;
-
-        var worker = AvailableWorker[0];
-        var task = Tasks.Find(task => task.Worker == null && worker.TrySetTask(task));
-
-        if (task == null)
-        {
-            AvailableWorker.Add(worker);
-        }
-        AvailableWorker.Remove(worker);
-
-    }
-
-    public void TryAssignTask()
+    public void TrySetTask()
     {
         if (AvailableWorker.Count <= 0)
             return;
         if (Tasks.Count <= 0)
             return;
 
-        for (int i = 0; i < AvailableWorker.Count; i++)
+        UpdateAvailableTasks();
+        foreach(var _task in availableTasks)
         {
-            UpdateAvailableTasks();
-            Debug.Log($"availableTasks.Count = {availableTasks.Count}");
-            if (availableTasks.Find(task => AvailableWorker[i].TrySetTask(task)) != null)
-            {
-                AvailableWorker.Remove(AvailableWorker[i]);
-            }
+            if (AvailableWorker.Count < 0)
+                break;
+
+            _task.SetTask(AvailableWorker.ToArray());
+            
         }
     }
 

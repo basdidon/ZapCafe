@@ -380,6 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15214ec8e417c3c45955044477aeefe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Worker>k__BackingField: {fileID: 0}
   <WorkingPoint>k__BackingField: {fileID: 290082121250252793}
   <Recipes>k__BackingField: []
   <WorkingMenu>k__BackingField: {fileID: 0}

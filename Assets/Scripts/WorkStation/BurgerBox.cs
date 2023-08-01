@@ -9,6 +9,6 @@ public class BurgerBox : ItemFactory
     {
         base.Start();
         WorkStationRegistry.Instance.AddWorkStation(this);
-        TaskManager.Instance.WorkStationFree();
+        TaskManager.Instance.TrySetTask();
     }
 }

@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using System;
-using System.Threading.Tasks;
+using System.Linq;
 
 public interface ITask
 {
-    public Worker Worker { get; set; }
-    public IWorkStation WorkStation { get; set; }
+    public Worker Worker { get; }
+    public IWorkStation WorkStation { get; }
+    public List<Vector3Int> Waypoints { get; }
 
     float Duration { get; }
 
@@ -17,39 +16,30 @@ public interface ITask
 
     public Action Started { get; set; }
     public Action Performed { get; set; }
-    public TaskStates TaskState { get; }
 
-    ITask GetTask();
+    public TaskStates TaskState { get; }
+    public void AssignWorker(Worker worker);
+    public void SetTask(Worker[] workers);
+
     int GetSubTasks(List<ITask> tasks);
 }
 
 public abstract class BaseTask : ITask
 {
-    [field:SerializeField] public Worker Worker { get; set; }
-    [OdinSerialize] IWorkStation workStation;
-    public IWorkStation WorkStation
-    {
-        get => workStation;
-        set
-        {
-            workStation = value;
+    [field: SerializeField] public Worker Worker { get; private set; }
+    [field: SerializeField] public IWorkStation WorkStation { get; private set; }
+    List<Vector3Int> waypoints;
+    public List<Vector3Int> Waypoints { get => waypoints; }
 
-            TaskState = TaskStates.Pending;
-
-            Started += delegate {
-                WorkStation.Worker = Worker;
-                TaskState = TaskStates.Started;
-            };
-            Performed += delegate {
-                WorkStation.Worker = null;
-                TaskState = TaskStates.Fulfilled;
-            };
-        }
-    }
-    
     public BaseTask()
     {
+        Started += delegate {
+            WorkStation.Worker = Worker;
+            TaskState = TaskStates.Started;
+        };
         Performed += delegate {
+            WorkStation.Worker = null;
+            TaskState = TaskStates.Performed;
             if (TaskManager.Instance.Tasks.Remove(this))
             {
                 Debug.Log($"{this.GetType()} was removed");
@@ -63,55 +53,82 @@ public abstract class BaseTask : ITask
     public Action Started { get; set; }
     public Action Performed { get; set; }
 
-    public TaskStates TaskState { get; private set; }
+    [field:SerializeField] public TaskStates TaskState { get; private set; }
+
+    public void AssignWorker(Worker worker)
+    {
+        Worker = worker;
+        TaskState = TaskStates.Assigned;
+    }
+
+    public void SetTask(Worker[] workers)
+    {
+        if (workers == null || workers.Length <= 0)
+            return;
+
+        Worker targetWorker = null;
+        IWorkStation targetWorkStation = null;
+
+        if (TaskState == TaskStates.Assigned)
+        {
+            foreach(var _worker in workers)
+            {
+                if(Worker == _worker && TryGetWorkStation(_worker,out IWorkStation workStation))
+                {
+                    targetWorker = _worker;
+                    targetWorkStation = workStation;
+                }
+            }
+        }
+        else
+        {
+            // find closest worker & workstation
+            float minSqrMagnitude = Mathf.Infinity;
+            foreach (var _worker in workers)
+            {
+                if (TryGetWorkStation(_worker, out IWorkStation workStation))
+                {
+                    float sqrMegnitude = workStation.SqrMagnitude(_worker);
+                    if (sqrMegnitude < minSqrMagnitude)
+                    {
+                        targetWorker = _worker;
+                        targetWorkStation = workStation;
+                        minSqrMagnitude = sqrMegnitude;
+                    }
+                }
+            }
+        }
+
+        if(targetWorker != null && targetWorkStation != null)
+        {
+            if(targetWorker.TryGetWaypoint(targetWorkStation.WorkingCell,out List<Vector3Int> _waypoints))
+            {
+                waypoints = _waypoints;
+                Worker = targetWorker;
+                TaskManager.Instance.AvailableWorker.Remove(Worker);
+                WorkStation = targetWorkStation;
+                Worker.CurrentTask = this;
+                WorkStation.Worker = Worker;
+                TaskState = TaskStates.Pending;
+            }
+        }
+    }
 
     // inverse decorator pattern
     public bool IsAllPrepareTasksDone { get; private set; }
     [SerializeReference] ITask[] prepareTasks;
-    public ITask[] PrepareTasks
+    public ITask[] PrepareTasks 
     {
         get => prepareTasks;
         set
         {
             prepareTasks = value;
-
-            if (PrepareTasks != null && PrepareTasks.Length > 0)
-            {
-                foreach (var _task in PrepareTasks)
-                {
-                    _task.Performed += delegate
-                    {
-                        IsAllPrepareTasksDone = true;
-                        foreach (var _task in PrepareTasks)
-                        {
-                            if (_task.TaskState != TaskStates.Fulfilled)
-                            {
-                                IsAllPrepareTasksDone = false;
-                                break;
-                            }
-                        }
-                    };
-                }
-            }
         }
-    }
-    public ITask GetTask()
-    {
-        if (PrepareTasks != null && PrepareTasks.Length > 0)
-        {
-            foreach(var _task in PrepareTasks)
-            {
-                if (_task.TaskState == TaskStates.Created)
-                    return _task;
-            }
-        }
-
-        return this;
     }
 
     public int GetSubTasks(List<ITask> tasks)
     {
-        if (TaskState != TaskStates.Created)
+        if (new TaskStates[] { TaskStates.Pending,TaskStates.Started,TaskStates.Performed }.Contains(TaskState))// != TaskStates.Created || TaskState != TaskStates.Assigned)
             return 0;
 
         if (PrepareTasks == null || PrepareTasks.Length == 0)
@@ -119,24 +136,33 @@ public abstract class BaseTask : ITask
             tasks.Add(this);
             return 1;
         }
-        else
+
+        int n = 0;
+
+        IsAllPrepareTasksDone = true;
+        foreach (var _task in PrepareTasks)
         {
-            int n = 0;
+            n += _task.GetSubTasks(tasks);
 
-            foreach (var _task in PrepareTasks)
-            {
-                n += _task.GetSubTasks(tasks);
-            }
-
-            if (n == 0 && IsAllPrepareTasksDone)
-            {
-                tasks.Add(this);
-                n++;
-            }
-
-            return n;
+            if (_task.TaskState != TaskStates.Performed)
+                IsAllPrepareTasksDone = false;
         }
+
+        if (n == 0 && IsAllPrepareTasksDone)
+        {
+            tasks.Add(this);
+            n++;
+        }
+
+        return n;
+        
     }
 }
 
-public enum TaskStates { Created, Pending, Started, Fulfilled }
+public enum TaskStates { 
+    Created,        // default state when task was created.
+    Assigned,       // when assigned worker but in a queue.
+    Pending,        // already set workstation and worker.
+    Started,        // when worker started execute task.
+    Performed      // when this task finish.
+}

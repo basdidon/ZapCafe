@@ -164,6 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24fbf8c747c9ac646ab132ea4a94cf84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Worker>k__BackingField: {fileID: 0}
   <WorkingPoint>k__BackingField: {fileID: 8095366759858150897}
   <Recipes>k__BackingField: []
   <WorkingMenu>k__BackingField: {fileID: 0}

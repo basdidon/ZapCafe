@@ -108,7 +108,6 @@ MonoBehaviour:
   OrderItemRenderer: {fileID: 3014334174226547471}
   Orders:
   - {fileID: 11400000, guid: e6ea624f0ef04e74ab4ded9407a59454, type: 2}
-  - {fileID: 11400000, guid: 35181cafa4f914c4299f3ca7d34557a8, type: 2}
   references:
     version: 2
     RefIds:

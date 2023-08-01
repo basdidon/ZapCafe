@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
 {
     // IWorkStation
-    public Worker Worker { get; set; }
+    [field: SerializeField] public Worker Worker { get; set; }
     [field: SerializeField] public Transform WorkingPoint { get; set; }
     public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
 
@@ -51,7 +51,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
         //UpdateFactoryData();
 
         WorkStationRegistry.Instance.AddWorkStation(this);
-        TaskManager.Instance.WorkStationFree();
+        TaskManager.Instance.TrySetTask();
     }
 
     public void RequestItem(ItemData itemData)

@@ -42,12 +42,15 @@ public class ServeOrderTaskInverse : BaseTask
     {
         Menu = menu;
         ItemData = itemData;
-        PrepareTasks = new ITask[] { new GetItemInverse(ItemData) };
+
+        var GetItemTask = new GetItemInverse(ItemData);
+        GetItemTask.Performed += delegate { AssignWorker(GetItemTask.Worker); };
+        PrepareTasks = new ITask[] { GetItemTask };
+
         Performed += delegate {
             Customer.OrderSprite = null;
             Customer.HoldingItem = Worker.HoldingItem;
             Worker.HoldingItem = null;
-            Worker.Tasks.Remove(this);
             LevelManager.Instance.Coin += price;
             TextSpawner.Instance.SpawnText($"+ {price}", Customer.transform.position + Vector3.up * 2);
             (WorkStation as Bar).CustomerLeave();

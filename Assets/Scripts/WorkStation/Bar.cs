@@ -27,7 +27,7 @@ public class Bar : BoardObject,IWorkStation
     private void Start()
     {
         WorkStationRegistry.Instance.AddWorkStation(this);
-        TaskManager.Instance.WorkStationFree();
+        TaskManager.Instance.TrySetTask();
     }
 
     public void CustomerLeave()
