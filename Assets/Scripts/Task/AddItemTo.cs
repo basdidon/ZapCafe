@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 /*
 public class AddItemTo : BaseTask
 {
@@ -43,8 +44,18 @@ public class AddItemToInverse : BaseTask
         {
             if (WorkStation is ItemFactory itemFactory)
             {
-                itemFactory.Items.Add(Worker.HoldingItem);
+                var item = Worker.HoldingItem;
+                if (itemFactory.Items.Contains(item))
+                    Debug.LogWarning("adding same item");
+                itemFactory.Items.Add(item);
                 Worker.HoldingItem = null;
+                Debug.Log($"{item.Name}({item.GetHashCode()}) added to {itemFactory.name} : {itemFactory.Items.Count}");
+                Debug.Log($" - {itemFactory.Items.ToString()}");
+                foreach(var _item in itemFactory.Items)
+                {
+                    Debug.Log(_item.GetHashCode());
+                }
+                Debug.Log("---------------------------");
             }
         };
         var GetItemTask = new GetItemInverse(ItemData);
@@ -55,5 +66,18 @@ public class AddItemToInverse : BaseTask
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
     {
         return NextTask.TryGetWorkStation(worker, out workStation);
+    }
+
+    public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)
+    {
+        return pairs.Where(pair => pair.Worker.HoldingItem.Name == ItemData.name);
+    }
+
+    public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)
+    {
+        pairs = pairs.Where(pair => pair.Worker.HoldingItem?.Name == ItemData.name);
+        if (pairs.Count() > 0)
+            return true;
+        return false;
     }
 }

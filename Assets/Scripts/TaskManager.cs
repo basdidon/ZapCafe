@@ -62,7 +62,7 @@ public class TaskManager : SerializedMonoBehaviour
         }
     }
 
-    List<ITask> availableTasks = new();
+    public List<ITask> availableTasks = new();
     public List<ITask> UpdateAvailableTasks()
     {
         availableTasks.Clear();

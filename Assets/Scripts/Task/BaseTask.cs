@@ -17,9 +17,9 @@ public interface ITask
     public Action Started { get; set; }
     public Action Performed { get; set; }
 
-    public TaskStates TaskState { get; }
-    public void AssignWorker(Worker worker);
-    public void SetTask(Worker[] workers);
+    TaskStates TaskState { get; }
+    void AssignWorker(Worker worker);
+    void SetTask(Worker[] workers);
 
     int GetSubTasks(List<ITask> tasks);
 }
@@ -42,7 +42,7 @@ public abstract class BaseTask : ITask
             TaskState = TaskStates.Performed;
             if (TaskManager.Instance.Tasks.Remove(this))
             {
-                Debug.Log($"{this.GetType()} was removed");
+                // Debug.Log($"{this.GetType()} was removed");
             }
         };
     }
@@ -61,57 +61,53 @@ public abstract class BaseTask : ITask
         TaskState = TaskStates.Assigned;
     }
 
-    public void SetTask(Worker[] workers)
+    public abstract IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs);
+    public abstract bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs);
+
+    protected void SetTask(Worker worker, IWorkStation workStation)
     {
-        if (workers == null || workers.Length <= 0)
+        if (worker == null || workStation == null)
             return;
 
-        Worker targetWorker = null;
-        IWorkStation targetWorkStation = null;
+        if (worker.TryGetWaypoint(workStation.WorkingCell, out List<Vector3Int> _waypoints))
+        {
+            waypoints = _waypoints;
+            Worker = worker;
+            TaskManager.Instance.AvailableWorker.Remove(Worker);
+            WorkStation = workStation;
+            Worker.CurrentTask = this;
+            WorkStation.Worker = Worker;
+            TaskState = TaskStates.Pending;
+        }
+    }
 
-        if (TaskState == TaskStates.Assigned)
-        {
-            foreach(var _worker in workers)
+    public void SetTask(Worker[] workers)
+    {
+        var pairs = workers.Select(
+            worker =>
             {
-                if(Worker == _worker && TryGetWorkStation(_worker,out IWorkStation workStation))
+                if (TryGetWorkStation(worker, out IWorkStation workStation))
                 {
-                    targetWorker = _worker;
-                    targetWorkStation = workStation;
+                    var distance = workStation.SqrMagnitude(worker);
+                    return new WorkerWorkStationPair(worker, workStation, distance);
                 }
-            }
-        }
-        else
+                return null;
+            })
+            .Where(pair => pair != null && pair.WorkStation != null);
+
+        if(TryCheckCondition(ref pairs))
         {
-            // find closest worker & workstation
-            float minSqrMagnitude = Mathf.Infinity;
-            foreach (var _worker in workers)
-            {
-                if (TryGetWorkStation(_worker, out IWorkStation workStation))
-                {
-                    float sqrMegnitude = workStation.SqrMagnitude(_worker);
-                    if (sqrMegnitude < minSqrMagnitude)
-                    {
-                        targetWorker = _worker;
-                        targetWorkStation = workStation;
-                        minSqrMagnitude = sqrMegnitude;
-                    }
-                }
-            }
+            var result = pairs
+                .OrderBy(pair => pair.Distance)
+                .First();
+
+            if (result == null)
+                return;
+
+            SetTask(result.Worker, result.WorkStation);
         }
 
-        if(targetWorker != null && targetWorkStation != null)
-        {
-            if(targetWorker.TryGetWaypoint(targetWorkStation.WorkingCell,out List<Vector3Int> _waypoints))
-            {
-                waypoints = _waypoints;
-                Worker = targetWorker;
-                TaskManager.Instance.AvailableWorker.Remove(Worker);
-                WorkStation = targetWorkStation;
-                Worker.CurrentTask = this;
-                WorkStation.Worker = Worker;
-                TaskState = TaskStates.Pending;
-            }
-        }
+
     }
 
     // inverse decorator pattern
@@ -165,4 +161,18 @@ public enum TaskStates {
     Pending,        // already set workstation and worker.
     Started,        // when worker started execute task.
     Performed      // when this task finish.
+}
+
+public class WorkerWorkStationPair
+{
+    public Worker Worker { get; }
+    public IWorkStation WorkStation { get; }
+    public float? Distance { get; }
+
+    public WorkerWorkStationPair(Worker worker, IWorkStation workStation, float? distance)
+    {
+        Worker = worker;
+        WorkStation = workStation;
+        Distance = distance;
+    }
 }

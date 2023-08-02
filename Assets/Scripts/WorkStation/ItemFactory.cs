@@ -34,6 +34,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
 
     protected virtual void Start()
     {
+        Items = new();
         Debug.Log(WorkStationName);
         WorkStationData = Resources.Load<WorkStationData>($"WorkStationDataSet/{WorkStationName}");
         if (WorkStationData == null)

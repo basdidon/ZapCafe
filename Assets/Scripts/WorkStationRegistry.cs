@@ -31,14 +31,14 @@ public class WorkStations : IEnumerable<IWorkStation>
         for (int i = 1; i < workStations.Count; i++)
         {
             var sqrMagnitude = workStations[i].SqrMagnitude(boardObject);
-            Debug.Log($"{workStation.GetType()} = {minSqrMagnitude} : {workStations[i]} = {sqrMagnitude}"   );
+            //Debug.Log($"{workStation.GetType()} = {minSqrMagnitude} : {workStations[i]} = {sqrMagnitude}"   );
             if (sqrMagnitude < minSqrMagnitude)
             {
                 workStation = workStations[i];
                 minSqrMagnitude = sqrMagnitude;
             }
         }
-        Debug.Log($" => {workStation.GetType()}");
+        //Debug.Log($" => {workStation.GetType()}");
 
         return workStation;
     }

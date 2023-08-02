@@ -1,36 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
-public class ServeOrderTask : BaseTask
-{
-    Customer Customer { get; }
-    int price = 50;
-    public ServeOrderTask(Customer customer) : base()
-    {
-        Customer = customer;
-        Performed += delegate {
-            Customer.OrderSprite = null;
-            Customer.HoldingItem = Worker.HoldingItem;
-            Worker.HoldingItem = null;
-            Worker.Tasks.Remove(this);
-            LevelManager.Instance.Coin += price;
-            TextSpawner.Instance.SpawnText($"+ {price}", Customer.transform.position + Vector3.up * 2);
-            (WorkStation as Bar).CustomerLeave();
-        };
-    }
-
-    public override float Duration => 1f;
-
-    public override IWorkStation GetworkStation(Worker worker)
-    {
-        foreach (Bar bar in WorkStationRegistry.Instance.GetWorkStationsByType<Bar>())
-            if (bar.Customer == Customer)
-                return bar;
-        return null;
-    }
-}
-*/
+using System.Linq;
 
 public class ServeOrderTaskInverse : BaseTask
 {
@@ -73,5 +44,18 @@ public class ServeOrderTaskInverse : BaseTask
 
         return false;
         
+    }
+
+    public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)
+    {
+        return pairs.Where(pair => pair.Worker.HoldingItem.Name == ItemData.name);
+    }
+
+    public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)
+    {
+        pairs = pairs.Where(pair => pair.Worker.HoldingItem?.Name == ItemData.name);
+        if (pairs.Count() > 0)
+            return true;
+        return false;
     }
 }

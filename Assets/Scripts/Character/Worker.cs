@@ -143,7 +143,7 @@ public class ExecutingTask : ISelfExitState
             yield return null;
         }
 
-        Debug.Log(Worker.CurrentTask.ToString());
+        Debug.Log($"{Worker.name} performed {Worker.CurrentTask}");
         Worker.CurrentTask.Performed?.Invoke();
 
         SetNextState();
