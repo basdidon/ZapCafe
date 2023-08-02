@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976e3f51525f45a4895bf222d981e70b, type: 3}
   m_Name: CookedMeat
   m_EditorClassIdentifier: 
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 1cb7385be785dc5458ef1120f8d09e67, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 801f2795f5705ea42874690b516d2ce0, type: 3}
   WorkStation: {fileID: 11400000, guid: 7046183aa1d36ba4f8c88c17a1ddd850, type: 2}
   RequiredIngredients:
   - {fileID: 11400000, guid: ceaa0ad003805594f92c29485f37ece4, type: 2}

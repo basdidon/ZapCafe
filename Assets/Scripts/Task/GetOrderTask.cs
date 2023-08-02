@@ -6,7 +6,7 @@ using System.Linq;
 public class GetOrderTask : BaseTask
 {
     public Bar Bar { get; set; }
-    public override float Duration => .5f;
+    public override float Duration => 1f;
 
     public GetOrderTask(Customer customer, Bar bar) : base()
     {

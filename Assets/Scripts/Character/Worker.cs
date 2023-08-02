@@ -24,6 +24,7 @@ public class Worker : Charecter
             {
                 Debug.Log(currentTask.Waypoints == null);
                 CurrentState = new WorkerMove(this, currentTask.Waypoints, new ExecutingTask(this));
+                CurrentTask.Pending?.Invoke();
             }
         }
     }

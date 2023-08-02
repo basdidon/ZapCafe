@@ -14,11 +14,11 @@ public interface ITask
 
     bool TryGetWorkStation(Worker worker,out IWorkStation workStation);
 
+    public Action Pending { get; set; }
     public Action Started { get; set; }
     public Action Performed { get; set; }
 
     TaskStates TaskState { get; }
-    void AssignWorker(Worker worker);
     void SetTask(Worker[] workers);
 
     int GetSubTasks(List<ITask> tasks);
@@ -27,7 +27,7 @@ public interface ITask
 public abstract class BaseTask : ITask
 {
     [field: SerializeField] public Worker Worker { get; private set; }
-    [field: SerializeField] public IWorkStation WorkStation { get; private set; }
+    [field: SerializeField] public IWorkStation WorkStation { get; set; }
     List<Vector3Int> waypoints;
     public List<Vector3Int> Waypoints { get => waypoints; }
 
@@ -50,16 +50,11 @@ public abstract class BaseTask : ITask
     public abstract float Duration { get; }
     public abstract bool TryGetWorkStation(Worker worker, out IWorkStation workStation);
 
+    public Action Pending { get; set; }
     public Action Started { get; set; }
     public Action Performed { get; set; }
 
     [field:SerializeField] public TaskStates TaskState { get; private set; }
-
-    public void AssignWorker(Worker worker)
-    {
-        Worker = worker;
-        TaskState = TaskStates.Assigned;
-    }
 
     public abstract IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs);
     public abstract bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs);

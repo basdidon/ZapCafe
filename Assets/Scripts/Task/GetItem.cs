@@ -5,7 +5,7 @@ using System.Linq;
 
 public class GetItemInverse:BaseTask
 {
-    public override float Duration => .5f;
+    public override float Duration => 5f;
     [field: SerializeField] public ItemData ItemData { get; private set; }
     public WorkStationData WorkStationData => ItemData.WorkStation;
     [field: SerializeField] public BaseTask NextTask { get; private set; }
@@ -29,7 +29,13 @@ public class GetItemInverse:BaseTask
             PrepareTasks = new ITask[ingredients.Count];
             for(int i =0;i<ingredients.Count;i++)
             {
-                PrepareTasks[i] = new AddItemToInverse(this,ingredients[i]);
+                var _task = new AddItemToInverse(this, ingredients[i]);
+                PrepareTasks[i] = _task;
+                _task.Pending += delegate
+                {
+                    if (WorkStation == null)
+                        WorkStation = _task.WorkStation;
+                };
             }
         }
     }

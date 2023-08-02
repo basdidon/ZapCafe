@@ -15,7 +15,6 @@ public class ServeOrderTaskInverse : BaseTask
         ItemData = itemData;
 
         var GetItemTask = new GetItemInverse(ItemData);
-        GetItemTask.Performed += delegate { AssignWorker(GetItemTask.Worker); };
         PrepareTasks = new ITask[] { GetItemTask };
 
         Performed += delegate {

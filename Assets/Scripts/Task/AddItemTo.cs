@@ -2,33 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-/*
-public class AddItemTo : BaseTask
-{
-    public override float Duration => .5f;
-    public ItemData ItemData { get; private set; }
-    public ItemFactory ItemFactory { get; private set; }
 
-    public AddItemTo(ItemData itemData, ItemFactory itemFactory)
-    {
-        ItemData = itemData;
-        ItemFactory = itemFactory;
-        Performed += delegate
-        {
-            if (WorkStation is ItemFactory itemFactory)
-            {
-                itemFactory.Items.Add(Worker.HoldingItem);
-                Worker.HoldingItem = null;
-            }
-        };
-    }
-
-    public override IWorkStation GetworkStation(Worker worker)
-    {
-        return ItemFactory;
-    }
-}
-*/
 public class AddItemToInverse : BaseTask
 {
     public override float Duration => .5f;
@@ -44,22 +18,11 @@ public class AddItemToInverse : BaseTask
         {
             if (WorkStation is ItemFactory itemFactory)
             {
-                var item = Worker.HoldingItem;
-                if (itemFactory.Items.Contains(item))
-                    Debug.LogWarning("adding same item");
-                itemFactory.Items.Add(item);
+                itemFactory.Items.Add(Worker.HoldingItem);
                 Worker.HoldingItem = null;
-                Debug.Log($"{item.Name}({item.GetHashCode()}) added to {itemFactory.name} : {itemFactory.Items.Count}");
-                Debug.Log($" - {itemFactory.Items.ToString()}");
-                foreach(var _item in itemFactory.Items)
-                {
-                    Debug.Log(_item.GetHashCode());
-                }
-                Debug.Log("---------------------------");
             }
         };
         var GetItemTask = new GetItemInverse(ItemData);
-        GetItemTask.Performed += delegate { AssignWorker(GetItemTask.Worker); };
         PrepareTasks = new ITask[] {GetItemTask};
     }
 
