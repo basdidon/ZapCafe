@@ -117,7 +117,7 @@ Transform:
   m_Children:
   - {fileID: 3395699188877617355}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4577932480618076020
 SpriteRenderer:
@@ -180,11 +180,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3919638321625872095}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0008b546c9483e8449f371332c461f4c, type: 3}
+  m_Script: {fileID: 11500000, guid: 778f835115b120e4583a2ace1fca0cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Worker>k__BackingField: {fileID: 0}
   <WorkingPoint>k__BackingField: {fileID: 3395699188877617355}
+  <WorkStationData>k__BackingField: {fileID: 11400000, guid: 7046183aa1d36ba4f8c88c17a1ddd850, type: 2}
+  <Worker>k__BackingField: {fileID: 0}
   <Recipes>k__BackingField: []
   <WorkingMenu>k__BackingField: {fileID: 0}
   <Items>k__BackingField: []

@@ -5,16 +5,16 @@ using System.Linq;
 
 public class ServeOrderTaskInverse : BaseTask
 {
-    Menu Menu { get; }
-    Customer Customer => Menu.Order.OrderBy;
+    Order Order { get; }
+    Customer Customer => Order.OrderBy;
     ItemData ItemData { get; }
     int price = 50;
-    public ServeOrderTaskInverse(Menu menu,ItemData itemData)
+    public ServeOrderTaskInverse(Order order,ItemData itemData)
     {
-        Menu = menu;
+        Order = order;
         ItemData = itemData;
 
-        var GetItemTask = new GetItemInverse(ItemData);
+        var GetItemTask = new GetItemTask(ItemData);
         PrepareTasks = new ITask[] { GetItemTask };
 
         Performed += delegate {

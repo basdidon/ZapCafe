@@ -7,18 +7,21 @@ using UnityEngine;
 public class Order
 {
     [field: SerializeField] public Customer OrderBy { get; set; }
-    [field: SerializeField] public Menu Menu { get; set; }
-    public enum OrderStates { Created, Pending, Fullfill }
-    public OrderStates OrderState;
-    [field: SerializeField] public List<Item> Items { get; set; }
+    [field: SerializeField] public List<ItemData> Menus { get; }
 
     public Order(Customer customer)
     {
         OrderBy = customer;
+        Menus = new();
     }
 
-    public void CreateMenu(ItemData itemData)
+    public void AddMenu(ItemData itemData)
     {
-        Menu = new Menu(this, itemData);
+        Menus.Add(itemData);
+    }
+
+    public void StartMakingOrder()
+    {
+        Menus.ForEach(menu => TaskManager.Instance.AddTask(new ServeOrderTaskInverse(this,menu)));
     }
 }

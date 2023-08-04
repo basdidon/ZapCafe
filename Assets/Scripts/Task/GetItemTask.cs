@@ -2,34 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Collections.ObjectModel;
 
-public class GetItemInverse:BaseTask
+public class GetItemTask:BaseTask
 {
     public override float Duration => 5f;
     [field: SerializeField] public ItemData ItemData { get; private set; }
+    public ReadOnlyCollection<ItemData> Ingredients => ItemData.Ingredients;
     public WorkStationData WorkStationData => ItemData.WorkStation;
     [field: SerializeField] public BaseTask NextTask { get; private set; }
 
     public List<BaseTask> Tasks { get; private set; }
     public ItemFactory ItemFactory { get; private set; }
 
-    public GetItemInverse(ItemData itemData)
+    public GetItemTask(ItemData itemData)
     {
         //Debug.Log($"getItemtask:{itemData.name} was created");
         ItemData = itemData;
 
         Performed += delegate {
             if (WorkStation is ItemFactory itemFactory)
-                itemFactory.CreateItem(itemData, Worker);
+                itemFactory.CreateItem(ItemData, Worker);
         };
 
-        var ingredients = itemData.RequiredIngredients;
-        if (ingredients != null && ingredients.Count > 0)
+        if (WorkStationData == null)
+            Debug.LogError("ItemData.WorkStationData Can't be null");
+
+        if (Ingredients != null && Ingredients.Count > 0)
         {
-            PrepareTasks = new ITask[ingredients.Count];
-            for(int i =0;i<ingredients.Count;i++)
+            PrepareTasks = new ITask[Ingredients.Count];
+            for(int i =0;i<Ingredients.Count;i++)
             {
-                var _task = new AddItemToInverse(this, ingredients[i]);
+                var _task = new AddItemToTask(this, Ingredients[i]);
                 PrepareTasks[i] = _task;
                 _task.Pending += delegate
                 {

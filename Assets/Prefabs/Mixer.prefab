@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 7504127140923744636}
   - component: {fileID: 3730177324493523427}
   - component: {fileID: 4957229637074640045}
+  - component: {fileID: 7978652900785114537}
   m_Layer: 0
-  m_Name: CuttingBoard
+  m_Name: Mixer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7504127140923744636
 Transform:
   m_ObjectHideFlags: 0
@@ -32,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 792682182659706583}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3730177324493523427
 SpriteRenderer:
@@ -98,6 +99,25 @@ SortingGroup:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_SortAtRoot: 0
+--- !u!114 &7978652900785114537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545590704353367036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 778f835115b120e4583a2ace1fca0cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <WorkingPoint>k__BackingField: {fileID: 792682182659706583}
+  <WorkStationData>k__BackingField: {fileID: 11400000, guid: bc793f5da1be1694ab628a306d93db3d, type: 2}
+  <Worker>k__BackingField: {fileID: 0}
+  <Recipes>k__BackingField: []
+  <WorkingMenu>k__BackingField: {fileID: 0}
+  <Items>k__BackingField: []
+  <ToUsed>k__BackingField: []
 --- !u!1 &7683946550765123931
 GameObject:
   m_ObjectHideFlags: 0

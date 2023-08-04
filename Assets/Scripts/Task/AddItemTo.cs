@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class AddItemToInverse : BaseTask
+public class AddItemToTask : BaseTask
 {
     public override float Duration => .5f;
     [field:SerializeField] public ItemData ItemData { get; private set; }
     public ITask NextTask { get; }
 
-    public AddItemToInverse(ITask nextTask,ItemData itemData)
+    public AddItemToTask(ITask nextTask,ItemData itemData)
     {
         NextTask = nextTask;
         ItemData = itemData;
@@ -22,7 +22,7 @@ public class AddItemToInverse : BaseTask
                 Worker.HoldingItem = null;
             }
         };
-        var GetItemTask = new GetItemInverse(ItemData);
+        var GetItemTask = new GetItemTask(ItemData);
         PrepareTasks = new ITask[] {GetItemTask};
     }
 

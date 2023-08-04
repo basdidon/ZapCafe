@@ -1,15 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using System.Collections.ObjectModel;
 
 [CreateAssetMenu(menuName = "ScriptableObject/Item")]
 public class ItemData : ScriptableObject
 {
-    [field: SerializeField] public Sprite Sprite { get; set; }
-    public WorkStationData WorkStation;
+    [field: SerializeField] public Sprite Sprite { get; private set; }
+    [field: SerializeField] public WorkStationData WorkStation { get; private set; }
 
     [BoxGroup("Ingredients")]
-    public List<ItemData> RequiredIngredients;
-    [BoxGroup("Ingredients")]
-    public List<ItemData> OptionalIngredients;
+    [field: SerializeField] List<ItemData> ingredients;
+    public ReadOnlyCollection<ItemData> Ingredients => ingredients.AsReadOnly();
 }

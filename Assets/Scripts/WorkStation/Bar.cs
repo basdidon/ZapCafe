@@ -11,9 +11,7 @@ public class Bar : BoardObject,IWorkStation
     public Vector3Int ExitCell { get => BoardManager.GetCellPos(exitAt.position); }
 
     // Customer
-    [OdinSerialize] 
-    [BoxGroup("user")]
-    [field:SerializeField] public Customer Customer { get; set; }
+    [field: SerializeField] public Customer Customer { get; set; }
     [field: SerializeField] public Transform ServicePoint { get; set; }
     public Vector3Int ServiceCell { get => BoardManager.GetCellPos(ServicePoint.position); }
 

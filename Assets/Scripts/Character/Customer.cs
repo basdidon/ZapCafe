@@ -63,9 +63,9 @@ public class Customer : Charecter
     public void GetOrder()
     {
         var order = new Order(this);
-        order.CreateMenu(Orders[Random.Range(0, Orders.Count)]);
+        order.AddMenu(Orders[Random.Range(0, Orders.Count)]);
         OrderManager.Instance.AddOrder(order);
-        OrderSprite = order.Menu.ItemData.Sprite;
+        OrderSprite = order.Menus[0].Sprite;
     }
 
     #region State
@@ -86,7 +86,7 @@ public class Customer : Charecter
                 if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
                 {
                     Charecter.Bar.Customer = Charecter;
-                    var newTask = new GetOrderTask(Charecter, Charecter.Bar);
+                    var newTask = new GetOrderTask(Charecter.Bar);
                     newTask.Performed += Charecter.GetOrder;
                     TaskManager.Instance.AddTask(newTask);
                 }

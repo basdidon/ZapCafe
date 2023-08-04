@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5e4480c1051f1439baf013be0708dc, type: 3}
   m_Name: Cooker
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  prefab: {fileID: 3919638321625872095, guid: aab80df68ea438b4abd11e7a8ec337d7, type: 3}
-  price: 200
+  <Sprite>k__BackingField: {fileID: 0}
+  <Prefab>k__BackingField: {fileID: 3919638321625872095, guid: aab80df68ea438b4abd11e7a8ec337d7, type: 3}
+  <Price>k__BackingField: 0

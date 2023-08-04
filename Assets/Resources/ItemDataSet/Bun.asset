@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976e3f51525f45a4895bf222d981e70b, type: 3}
   m_Name: Bun
   m_EditorClassIdentifier: 
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 21dc777e721375d4e9836b533d98e687, type: 3}
-  WorkStation: {fileID: 11400000, guid: 8cf457be858ba6c4487bea43dd687a4f, type: 2}
-  RequiredIngredients: []
-  OptionalIngredients: []
+  <Sprite>k__BackingField: {fileID: 21300000, guid: a05aa9fed97934f4cab4e5f3c970fb7c, type: 3}
+  <WorkStation>k__BackingField: {fileID: 11400000, guid: 8cf457be858ba6c4487bea43dd687a4f, type: 2}
+  ingredients: []

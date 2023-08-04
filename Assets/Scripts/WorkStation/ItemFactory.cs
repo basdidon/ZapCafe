@@ -2,22 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
+public sealed class ItemFactory : BoardObject, IWorkStation//, IUiObject
 {
+    // Required
+    [field: SerializeField] public Transform WorkingPoint { get; set; }
+    [field:SerializeField] public WorkStationData WorkStationData { get; private set; }
     // IWorkStation
     [field: SerializeField] public Worker Worker { get; set; }
-    [field: SerializeField] public Transform WorkingPoint { get; set; }
     public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
-
-    public string WorkStationName => $"{GetType()}";
-    public WorkStationData WorkStationData { get; private set; }
 
     [field: SerializeField] public List<ItemData> Recipes { get; set; }
     [field: SerializeField] public ItemData WorkingMenu { get; set; }
     [field: SerializeField] public List<Item> Items { get; set; }
     [field: SerializeField] public List<Item> ToUsed { get; set; }
 
-    protected int level = 1;
+    int level = 1;
     public int Level
     {
         get => level;
@@ -32,16 +31,17 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
     public float Price { get; set; }
     public float Cost { get; set; }
 
-    protected virtual void Start()
+    private void Start()
     {
         Items = new();
+        /*
         Debug.Log(WorkStationName);
         WorkStationData = Resources.Load<WorkStationData>($"WorkStationDataSet/{WorkStationName}");
         if (WorkStationData == null)
         {
             Debug.LogError($"Resources.Load<WorkStationData>(WorkStationDataSet/{WorkStationName}) was failed.");
         }
-
+        */
         foreach(var itemData in Resources.LoadAll<ItemData>("ItemDataSet"))
         {
             if(itemData.WorkStation == WorkStationData)
@@ -67,7 +67,7 @@ public abstract class ItemFactory : BoardObject, IWorkStation//, IUiObject
         if (recipe != null)
         {
             //check ingredeints
-            foreach(var requiredIngredeint in recipe.RequiredIngredients)
+            foreach(var requiredIngredeint in recipe.Ingredients)
             {
                 Debug.Log(requiredIngredeint.name);
 
