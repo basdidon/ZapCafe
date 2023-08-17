@@ -1,16 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
-public sealed class ItemFactory : BoardObject, IWorkStation//, IUiObject
+public sealed class ItemFactory : WorkStation
 {
-    // Required
-    [field: SerializeField] public Transform WorkingPoint { get; set; }
-    [field:SerializeField] public WorkStationData WorkStationData { get; private set; }
-    // IWorkStation
-    [field: SerializeField] public Worker Worker { get; set; }
-    public Vector3Int WorkingCell { get => BoardManager.GetCellPos(WorkingPoint.position); }
-
     [field: SerializeField] public List<ItemData> Recipes { get; set; }
     [field: SerializeField] public ItemData WorkingMenu { get; set; }
     [field: SerializeField] public List<Item> Items { get; set; }
@@ -34,14 +28,6 @@ public sealed class ItemFactory : BoardObject, IWorkStation//, IUiObject
     private void Start()
     {
         Items = new();
-        /*
-        Debug.Log(WorkStationName);
-        WorkStationData = Resources.Load<WorkStationData>($"WorkStationDataSet/{WorkStationName}");
-        if (WorkStationData == null)
-        {
-            Debug.LogError($"Resources.Load<WorkStationData>(WorkStationDataSet/{WorkStationName}) was failed.");
-        }
-        */
         foreach(var itemData in Resources.LoadAll<ItemData>("ItemDataSet"))
         {
             if(itemData.WorkStation == WorkStationData)

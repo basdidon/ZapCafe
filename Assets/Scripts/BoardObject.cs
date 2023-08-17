@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public interface IBoardObject
 {
@@ -10,10 +11,10 @@ public interface IBoardObject
     public Vector3 CellCenterWorld { get; }
 }
 
-public class BoardObject : MonoBehaviour,IBoardObject
+public class BoardObject : MonoBehaviour, IBoardObject
 {
     protected BoardManager BoardManager { get { return BoardManager.Instance; } }
 
-    public Vector3Int CellPosition { get => BoardManager.GetCellPos(transform.position); }
-    public Vector3 CellCenterWorld { get => BoardManager.GetCellCenterWorld(CellPosition); }
+    public Vector3Int CellPosition => BoardManager.GetCellPos(transform.position);
+    public Vector3 CellCenterWorld => BoardManager.GetCellCenterWorld(CellPosition);
 }

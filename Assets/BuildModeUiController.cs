@@ -61,7 +61,7 @@ public class BuildModeUiController : PanelControl
         var cellPos = MainGrid.WorldToCell(worldPoint);
 
         if (!TileOverlay.Instance.TilesPos.Contains(cellPos))
-            return;
+            return;     
 
         buildPreview.position = MainGrid.GetCellCenterWorld(cellPos);
 

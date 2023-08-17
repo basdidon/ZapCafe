@@ -46,13 +46,18 @@ public class GetItemTask:BaseTask
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
     {
-        if(WorkStation != null)
+        Debug.Log("TryGetWorkStation");
+        if (WorkStation != null)
         {
             workStation = WorkStation;
             return true;
         }
 
-        workStation = WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).ReadyToUse().FindClosest(worker);
+        var workStations = WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation);
+        Debug.Log(workStations.Count);
+        workStations = workStations.ReadyToUse();
+        Debug.Log(workStations.Count);
+        workStation = workStations.FindClosest(worker);
         if (workStation != null)
             return true;
 

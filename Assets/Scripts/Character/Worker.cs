@@ -22,7 +22,6 @@ public class Worker : Charecter
             currentTask = value;
             if(CurrentTask != null)
             {
-                Debug.Log(currentTask.Waypoints == null);
                 CurrentState = new WorkerMove(this, currentTask.Waypoints, new ExecutingTask(this));
                 CurrentTask.Pending?.Invoke();
             }
@@ -61,6 +60,8 @@ public class Worker : Charecter
     }
 
     public override bool CanMoveTo(Vector3Int cellPos){
+        
+        /*
         RaycastHit2D[] hits = new RaycastHit2D[100];
         int hits_n = Physics2D.RaycastNonAlloc(BoardManager.GetCellCenterWorld(cellPos), Vector2.down, hits,0.1f);
         bool isCollided = false;
@@ -72,10 +73,10 @@ public class Worker : Charecter
             }
             //Debug.Log($"{hits[i].transform.tag} : {hits[i].transform.name} contacctPoint at {hits[i].point} & at {cellPos}");
         }
-
+        */
         // Debug.DrawRay(BoardManager.GetCellCenterWorld(cellPos), Vector2.down * 0.1f, Color.black, 5f);
 
-        return PathTilemap.HasTile(cellPos) && !isCollided;
+        return PathTilemap.HasTile(cellPos) && !WorkStationRegistry.Instance.IsWorkStationCells(cellPos);
     }
 }
 

@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 9088215014415696478}
   - component: {fileID: 7950381476233844940}
   - component: {fileID: 5903557774870984772}
-  - component: {fileID: 2986700947147577488}
-  m_Layer: 0
+  - component: {fileID: 6828532762592861826}
+  m_Layer: 7
   m_Name: Fridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +35,7 @@ Transform:
   - {fileID: 5652847230592477098}
   - {fileID: 8095366759858150897}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &9088215014415696478
 SpriteRenderer:
@@ -152,7 +152,7 @@ SortingGroup:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_SortAtRoot: 0
---- !u!114 &2986700947147577488
+--- !u!114 &6828532762592861826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,9 +164,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778f835115b120e4583a2ace1fca0cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <WorkingPoint>k__BackingField: {fileID: 8095366759858150897}
+  localCellsPos:
+  - {x: 0, y: 0, z: 0}
+  <WorkingCellLocal>k__BackingField: {x: 0, y: -1, z: 0}
   <WorkStationData>k__BackingField: {fileID: 11400000, guid: 8cf457be858ba6c4487bea43dd687a4f, type: 2}
-  <Worker>k__BackingField: {fileID: 0}
   <Recipes>k__BackingField: []
   <WorkingMenu>k__BackingField: {fileID: 0}
   <Items>k__BackingField: []
@@ -181,7 +182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5652847230592477098}
   - component: {fileID: 4015947632673801144}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8095366759858150897}
   - component: {fileID: 2039936673285687184}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: WorkingPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +326,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 71d4ab307bdee4f47830b1b1f5535374, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c2b4e7145d9bb99458ac21f5c1fa5088, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

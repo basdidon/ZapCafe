@@ -31,14 +31,12 @@ public class WorkStations : IEnumerable<IWorkStation>
         for (int i = 1; i < workStations.Count; i++)
         {
             var sqrMagnitude = workStations[i].SqrMagnitude(boardObject);
-            //Debug.Log($"{workStation.GetType()} = {minSqrMagnitude} : {workStations[i]} = {sqrMagnitude}"   );
             if (sqrMagnitude < minSqrMagnitude)
             {
                 workStation = workStations[i];
                 minSqrMagnitude = sqrMagnitude;
             }
         }
-        //Debug.Log($" => {workStation.GetType()}");
 
         return workStation;
     }
@@ -50,54 +48,22 @@ public class WorkStations : IEnumerable<IWorkStation>
     #endregion
 }
 
-/*
-public class WorkStations : IEnumerable<IWorkStation<Item>>
-{
-    [SerializeField] List<IWorkStation<Item>> workStations;
-    public int Count => workStations.Count;
-
-    public WorkStations() { workStations = new(); }
-    public WorkStations(List<IWorkStation<Item>> workStations) { this.workStations = workStations; }
-    public WorkStations(IEnumerable<IWorkStation<Item>> workStations) { this.workStations = new(workStations); }
-
-    public void Add(IWorkStation<Item> workStation) { workStations.Add(workStation); }
-    public WorkStations Where(System.Func<IWorkStation<Item>, bool> match) => new(workStations.Where(match));
-    public WorkStations FindAll(System.Predicate<IWorkStation<Item>> match) => new(workStations.FindAll(match));
-
-    public IWorkStation<Item> FindClosest(BoardObject boardObject)
-    {
-        if (workStations == null || workStations.Count == 0) return null;
-
-        var workStation = workStations[0];
-
-        // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
-        // both method need to use square root for get the result
-        // but in this function, distance is no matter
-        // so i just use Vector3.sqrMagnitude find which object is closer
-
-        float minSqrMagnitude = (boardObject.CellCenterWorld - workStation.CellCenterWorld).sqrMagnitude;
-        for (int i = 1; i < workStations.Count; i++)
-        {
-            var sqrMagnitude = (boardObject.CellCenterWorld - workStations[i].CellCenterWorld).sqrMagnitude;
-            if (sqrMagnitude < minSqrMagnitude)
-            {
-                workStation = workStations[i];
-                minSqrMagnitude = sqrMagnitude;
-            }
-        }
-
-        return workStation;
-    }
-
-    #region Implementation of IEnumerable
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    public IEnumerator<IWorkStation<Item>> GetEnumerator() => workStations.GetEnumerator();
-    #endregion
-}
-*/
 public class WorkStationRegistry : SerializedMonoBehaviour
 {
     public static WorkStationRegistry Instance { get; private set; }
+    
+    // WorkingCell
+    bool isShowWorkingCells;
+    public bool IsShowWorkingCells {
+        get => isShowWorkingCells;
+        set
+        {
+            isShowWorkingCells = value;
+        } 
+    }
+    [field: SerializeField] public GameObject WorkingCellOverlayPrefab { get; set; }
+    [field: SerializeField] public int WorkingCellOverlayPoolSize { get; set; }
+    List<GameObject> WorkingCellOverlayPool { get; set; }
 
     [OdinSerialize] WorkStations workStations;
 
@@ -113,12 +79,22 @@ public class WorkStationRegistry : SerializedMonoBehaviour
         }
 
         workStations = new();
+        for (int i = 0; i < WorkingCellOverlayPoolSize; i++)
+        {
+            var clone = Instantiate(WorkingCellOverlayPrefab,transform);
+            clone.SetActive(false);
+            WorkingCellOverlayPool.Add(clone);
+        }
     }
-
     public void AddWorkStation(IWorkStation workStation) { workStations.Add(workStation); }
-
     public WorkStations GetWorkStations(WorkStationData workStationData) => workStations.Where(workStation => workStation.WorkStationData == workStationData);
 
     public IEnumerable<T> GetWorkStationsByType<T>() where T : IWorkStation
         => workStations.OfType<T>();
+
+    // WorkStationCell
+    IEnumerable<Vector3Int> WorkStationCells => workStations.SelectMany(workStation => workStation.WorldCellsPos);
+    public bool IsWorkStationCells(Vector3Int cellPos) => WorkStationCells.Contains(cellPos);
+
+    IEnumerable<Vector3Int> WorkingCells => workStations.Select(workStation => workStation.WorkingCell);
 }

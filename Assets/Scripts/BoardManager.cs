@@ -9,6 +9,7 @@ public class BoardManager : MonoBehaviour
     public static BoardManager Instance { get; private set; }
 
     [field: SerializeField] public Grid MainGrid { get; set; }
+    //[field: SerializeField] public Dic
 
     private void Awake()
     {
