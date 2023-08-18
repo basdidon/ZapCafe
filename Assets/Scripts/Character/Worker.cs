@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
+using WorkerState;
 
 public class Worker : Charecter
 {
@@ -22,7 +23,7 @@ public class Worker : Charecter
             currentTask = value;
             if(CurrentTask != null)
             {
-                CurrentState = new WorkerMove(this, currentTask.Waypoints, new ExecutingTask(this));
+                CurrentState = new MoveState(this, currentTask.Waypoints, new ExecutingTask(this));
                 CurrentTask.Pending?.Invoke();
             }
         }
@@ -32,25 +33,12 @@ public class Worker : Charecter
     {
         return PathFinder.TryFindWaypoint(this, CellPosition, targetCellPos, dirs, out waypoints);
     }
-    /*
-    // Can Worker go to workStation
-    public bool TrySetWorkStaion(IWorkStation workStation)
-    {
-        // move worker to workStation
-        if (PathFinder.TryFindWaypoint(this, CellPosition, workStation.WorkingCell, dirs, out List<Vector3Int> waypoints))
-        {
-            
-            return true;
-        }
-
-        Debug.LogError("<color=red> Can't Move To workStation</color>");
-        return false;
-    }*/
 
     // State
-    protected void Awake()
+    protected override void Awake()
     {
-        IdleState = new WorkerIdle(this);
+        base.Awake();
+        IdleState = new IdleState(this);
     }
 
     protected override void Start()
@@ -59,105 +47,8 @@ public class Worker : Charecter
         TaskProgress.SetActive(false);
     }
 
-    public override bool CanMoveTo(Vector3Int cellPos){
-        
-        /*
-        RaycastHit2D[] hits = new RaycastHit2D[100];
-        int hits_n = Physics2D.RaycastNonAlloc(BoardManager.GetCellCenterWorld(cellPos), Vector2.down, hits,0.1f);
-        bool isCollided = false;
-        for (int i = 0; i < hits_n; i++){
-            if (hits[i].transform.CompareTag("Collider"))
-            {
-                isCollided = true;
-                break;
-            }
-            //Debug.Log($"{hits[i].transform.tag} : {hits[i].transform.name} contacctPoint at {hits[i].point} & at {cellPos}");
-        }
-        */
-        // Debug.DrawRay(BoardManager.GetCellCenterWorld(cellPos), Vector2.down * 0.1f, Color.black, 5f);
-
-        return PathTilemap.HasTile(cellPos) && !WorkStationRegistry.Instance.IsWorkStationCells(cellPos);
-    }
-}
-
-public class WorkerIdle : IdleState<Worker>
-{
-    public WorkerIdle(Worker worker) : base(worker) {}
-
-    public override void EnterState()
+    public override bool CanMoveTo(Vector3Int cellPos)
     {
-        Debug.Log("Player Idle");
-        TaskManager.Instance.AddAvaliableWorker(Charecter);
-    }
-
-    public override void ExitState(){}
-}
-
-public class WorkerMove : MoveState<Worker>
-{
-    public IState NextState { get; set; }
-    public WorkerMove(Worker worker, List<Vector3Int> waypoints, IState nextState = null) : base(worker, waypoints)
-    {
-        NextState = nextState;
-    }
-
-    public override void SetNextState()
-    {
-        if(WayPoints.Count == 0)
-        {
-            Charecter.CurrentState = NextState;
-        }
-        else
-        {
-            // self transition
-            Charecter.CurrentState = new WorkerMove(Charecter,WayPoints,NextState);
-        }
-    }
-}
-
-public class ExecutingTask : ISelfExitState
-{
-    Worker Worker { get; }
-    float timeElapsed;
-    float duration;
-
-    public ExecutingTask(Worker worker)
-    {
-        Worker = worker;
-    }
-
-    public void EnterState()
-    {
-        Worker.TaskProgress.SetActive(true);
-        Worker.ProgressImg.fillAmount = 0f;
-        duration = Worker.CurrentTask.Duration;
-        timeElapsed = 0f;
-        Worker.StartCoroutine(StartTask());
-    }
-
-    IEnumerator StartTask()
-    {
-        Worker.CurrentTask.Started?.Invoke();
-        while (timeElapsed < duration)
-        {
-            Worker.ProgressImg.fillAmount = timeElapsed / duration;
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        Debug.Log($"{Worker.name} performed {Worker.CurrentTask}");
-        Worker.CurrentTask.Performed?.Invoke();
-
-        SetNextState();
-    }
-
-    public void ExitState(){
-        Worker.TaskProgress.SetActive(false);
-        Worker.CurrentTask = null;
-    }
-
-    public void SetNextState()
-    {
-            Worker.CurrentState = Worker.IdleState;   
+        return PathTilemap.HasTile(cellPos) && !WorkStationRegistry.Instance.IsWorkStationCell(cellPos);
     }
 }

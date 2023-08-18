@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public sealed class ItemFactory : WorkStation
 {
@@ -77,7 +75,7 @@ public sealed class ItemFactory : WorkStation
         }
         else
         {
-            Debug.LogError("item not found");
+            Debug.LogError("recipe not found");
         }
     }
 

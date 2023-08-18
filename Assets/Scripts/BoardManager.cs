@@ -6,10 +6,11 @@ using Sirenix.OdinInspector;
 
 public class BoardManager : MonoBehaviour
 {
+    WorkStationRegistry WorkStationRegistry => WorkStationRegistry.Instance;
+
     public static BoardManager Instance { get; private set; }
 
     [field: SerializeField] public Grid MainGrid { get; set; }
-    //[field: SerializeField] public Dic
 
     private void Awake()
     {
@@ -25,9 +26,12 @@ public class BoardManager : MonoBehaviour
         MainGrid = FindObjectOfType<Grid>();
     }
 
-    // public bool IsFreeTile(Vector3Int cellPos) =>  GroundTileMap.HasTile(cellPos) && !ObjectsPosition.ContainsValue(cellPos);
     // GetWorldPosition
     public Vector3 GetCellCenterWorld(Vector3Int cellPos) => MainGrid.GetCellCenterWorld(cellPos);
-    // 
+    // CessPos
     public Vector3Int GetCellPos(Vector3 worldPos) => MainGrid.WorldToCell(worldPos);
+
+    public bool IsBlankCell(Vector3Int cellPos) => !WorkStationRegistry.IsWorkStationCell(cellPos);
+    public bool IsBuildableCell(Vector3Int cellPos) => !WorkStationRegistry.IsWorkStationCell(cellPos) && !WorkStationRegistry.IsWorkingCell(cellPos);
+
 }

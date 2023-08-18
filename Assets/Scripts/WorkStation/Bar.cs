@@ -26,7 +26,7 @@ public class Bar : WorkStation
 
         if (PathFinder.TryFindWaypoint(Customer, ServiceCell, ExitCell, Customer.dirs, out List<Vector3Int> waypoints))
         {
-            Customer.CurrentState = new Customer.CustomerExitState(Customer, waypoints);
+            Customer.CurrentState = new CustomerState.MoveToExitState(Customer, waypoints);
         }
         else
         {

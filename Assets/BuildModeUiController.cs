@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -60,7 +59,7 @@ public class BuildModeUiController : PanelControl
         Vector2 worldPoint = Camera.main.ScreenToWorldPoint(ctx.ReadValue<Vector2>());
         var cellPos = MainGrid.WorldToCell(worldPoint);
 
-        if (!TileOverlay.Instance.TilesPos.Contains(cellPos))
+        if (!BoardManager.Instance.IsBlankCell(cellPos))
             return;     
 
         buildPreview.position = MainGrid.GetCellCenterWorld(cellPos);

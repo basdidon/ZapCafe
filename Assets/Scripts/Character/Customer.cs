@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using System.Linq;
+using CustomerState;
 
 public class Customer : Charecter
 {
@@ -37,11 +37,9 @@ public class Customer : Charecter
         PathTilemap = pathTilemap;
         HoldingItem = null;
 
-        var dirs = new List<Vector3Int>() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-
         if (PathFinder.TryFindWaypoint(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, dirs, out List<Vector3Int> waypoints))
         {
-            CurrentState = new CustomerMoveState(this, waypoints);
+            CurrentState = new MoveState(this, waypoints);
         }
         else
         {
@@ -50,9 +48,10 @@ public class Customer : Charecter
     }
 
     // Monobehaviour
-    protected void Awake()
+    protected override void Awake()
     {
-        IdleState = new CustomerIdleState();
+        base.Awake();
+        IdleState = new IdleState();
         OrderSprite = null;
     }
     
@@ -67,59 +66,6 @@ public class Customer : Charecter
         OrderManager.Instance.AddOrder(order);
         OrderSprite = order.Menus[0].Sprite;
     }
-
-    #region State
-    public class CustomerIdleState : IState
-    {
-        public void EnterState(){}
-        public void ExitState(){}
-    }
-
-    public class CustomerMoveState : MoveState<Customer>
-    {
-        public CustomerMoveState(Customer charecter,List<Vector3Int> waypoints):base(charecter,waypoints){}
-
-        public override void SetNextState()
-        {
-            if (WayPoints.Count == 0)
-            {
-                if (Charecter.CellPosition == Charecter.Bar.ServiceCell)
-                {
-                    Charecter.Bar.Customer = Charecter;
-                    var newTask = new GetOrderTask(Charecter.Bar);
-                    newTask.Performed += Charecter.GetOrder;
-                    TaskManager.Instance.AddTask(newTask);
-                }
-
-                Charecter.CurrentState = Charecter.IdleState;
-            }
-            else
-            {
-                // self transition
-                Charecter.CurrentState = new CustomerMoveState(Charecter,WayPoints);
-            }
-        }
-    }
-
-    public class CustomerExitState : MoveState<Customer>
-    {
-        public CustomerExitState(Customer charecter, List<Vector3Int> waypoints) : base(charecter, waypoints) { }
-
-        public override void SetNextState()
-        {
-            if (WayPoints.Count == 0)
-            {
-                //Debug.Log(Charecter.name);
-                Charecter.gameObject.SetActive(false);
-            }
-            else
-            {
-                // self transition
-                Charecter.CurrentState = new CustomerExitState(Charecter, WayPoints);
-            }
-        }
-    }
-    #endregion
 }
 
 

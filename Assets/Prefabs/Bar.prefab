@@ -295,10 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f569ff04008ca24282110c711145f48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localCellsPos:
-  - {x: 0, y: 0, z: 0}
-  <WorkingCellLocal>k__BackingField: {x: 1, y: 0, z: 0}
-  <WorkStationData>k__BackingField: {fileID: 0}
+  <WorkStationData>k__BackingField: {fileID: 11400000, guid: 3bedf454c5251ba4d982403279722119, type: 2}
   exitAt: {fileID: 0}
   <Customer>k__BackingField: {fileID: 0}
   <ServiceCellLocal>k__BackingField: {x: -1, y: 0, z: 0}

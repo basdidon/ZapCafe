@@ -15,3 +15,6 @@ MonoBehaviour:
   <Sprite>k__BackingField: {fileID: 0}
   <Prefab>k__BackingField: {fileID: 3919638321625872095, guid: aab80df68ea438b4abd11e7a8ec337d7, type: 3}
   <Price>k__BackingField: 0
+  localCellsPos:
+  - {x: 0, y: 0, z: 0}
+  <WorkingCellLocal>k__BackingField: {x: 1, y: 0, z: 0}

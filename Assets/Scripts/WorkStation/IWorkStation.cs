@@ -7,9 +7,11 @@ using Sirenix.Serialization;
 
 public interface IWorkStation : IBoardObject
 {
+    // Data
+    WorkStationData WorkStationData { get; }
     Worker Worker { get; set; }
     // WorkStationPos
-    public Vector3Int[] LocalCellsPos { get; set; }
+    public Vector3Int[] LocalCellsPos { get; }
     public Vector3Int[] WorldCellsPos { get; }
 
     public bool IsAvailable { get => Worker == null; }
@@ -18,8 +20,6 @@ public interface IWorkStation : IBoardObject
     Vector3Int WorkingCellLocal { get; }
     Vector3Int WorkingCell => CellPosition + WorkingCellLocal;
 
-    // Data
-    WorkStationData WorkStationData { get; }
 
     // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
     // both method need to use square root for get the result
@@ -30,26 +30,19 @@ public interface IWorkStation : IBoardObject
 
 public class WorkStation : BoardObject, IWorkStation
 {
+    [field: SerializeField] public WorkStationData WorkStationData { get; private set; }
     public Worker Worker { get; set; }
 
-    [SerializeField] Vector3Int[] localCellsPos = new Vector3Int[] { Vector3Int.zero };
-    public Vector3Int[] LocalCellsPos
-    {
-        get => localCellsPos;
-        set
-        {
-            localCellsPos = value;
-        }
-    }
+    public Vector3Int[] LocalCellsPos => WorkStationData.LocalCellsPos;
     public Vector3Int[] WorldCellsPos => LocalCellsPos.Select(cell => CellPosition + cell).ToArray();
 
-    [field: SerializeField] public Vector3Int WorkingCellLocal { get; set; }
-
-    [field: SerializeField] public WorkStationData WorkStationData { get; private set; }
+    public Vector3Int WorkingCellLocal => WorkStationData.WorkingCellLocal;
 
     private void Awake()
     {
         if (WorkStationData == null)
+        {
             Debug.LogWarning($"{gameObject.name} : WorkStationData is null");
+        }
     }
 }

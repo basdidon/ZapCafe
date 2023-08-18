@@ -94,7 +94,8 @@ public class WorkStationRegistry : SerializedMonoBehaviour
 
     // WorkStationCell
     IEnumerable<Vector3Int> WorkStationCells => workStations.SelectMany(workStation => workStation.WorldCellsPos);
-    public bool IsWorkStationCells(Vector3Int cellPos) => WorkStationCells.Contains(cellPos);
+    public bool IsWorkStationCell(Vector3Int cellPos) => WorkStationCells.Contains(cellPos);
 
     IEnumerable<Vector3Int> WorkingCells => workStations.Select(workStation => workStation.WorkingCell);
+    public bool IsWorkingCell(Vector3Int cellPos) => WorkingCells.Contains(cellPos); 
 }

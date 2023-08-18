@@ -1,16 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+
+public enum FacingDirs { Up, Down, Left, Right }
 
 public abstract class Charecter : BoardObject,PathFinder.IMoveable
 {
-     public readonly List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+    public readonly List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+
+    [SerializeField] FacingDirs facingDir;
+    public FacingDirs FacingDir
+    {
+        get => facingDir;
+        set
+        {
+            facingDir = value;
+            
+            if (Animator != null)
+            {
+                Animator.SetBool("IsFront", FacingDir == FacingDirs.Down ||FacingDir == FacingDirs.Left);
+                if (FacingDir == FacingDirs.Right || FacingDir == FacingDirs.Down)
+                {
+                    SpriteRenderer.flipX = true;
+                    //transform.localScale = new Vector3(-1, 1, 1);
+                }
+                else
+                {
+                    SpriteRenderer.flipX = false;
+                    //transform.localScale = Vector3.one;
+                }
+            }
+        }
+    }
+
     public abstract bool CanMoveTo(Vector3Int cellPos);
 
+    // SpriteRender
+    [field: SerializeField] public SpriteRenderer SpriteRenderer { get; private set; }
     // Hold Item
     [SerializeField] SpriteRenderer ItemSpriteRenderer;
+    // Animator
+    [field :SerializeField] public Animator Animator { get; private set; }
 
     [SerializeField] Item holdingItem = null;
     public Item HoldingItem
@@ -25,9 +55,6 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
             }
             else
             {
-                /*
-                Debug.Log(HoldingItem);
-                Debug.Log(HoldingItem.Sprite.ToString());*/
                 ItemSpriteRenderer.sprite = HoldingItem.Sprite;
             }
         }
@@ -45,6 +72,18 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
             CurrentState?.ExitState();
             currentState = value ?? IdleState;
             CurrentState.EnterState();
+        }
+    }
+
+    protected virtual void Awake()
+    {
+        if(TryGetComponent(out Animator animator)){
+            Animator = animator;
+        }
+        
+        if(TryGetComponent(out SpriteRenderer spriteRenderer))
+        {
+            SpriteRenderer = spriteRenderer;
         }
     }
 
@@ -88,10 +127,25 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
 
     public virtual void EnterState()
     {
+        var dir = WayPoints[0] - BoardManager.Instance.GetCellPos(Charecter.transform.position);
+        Charecter.FacingDir = dir.y > 0 ? FacingDirs.Up : dir.x > 0 ? FacingDirs.Right : dir.x < 0 ? FacingDirs.Left : FacingDirs.Down;
+
+        if(Charecter.Animator != null)
+        {
+            Charecter.Animator.SetBool("IsWalking", true);
+            //Charecter.Animator.SetBool("IsFront", Charecter.FacingDir == FacingDirs.Down || Charecter.FacingDir == FacingDirs.Left);
+        }
+
         Charecter.StartCoroutine(MoveRoutine());
     }
 
-    public virtual void ExitState() { }
+    public virtual void ExitState()
+    {
+        if (Charecter.Animator != null)
+        {
+            Charecter.Animator.SetBool("IsWalking", false);
+        }
+    }
 
     IEnumerator MoveRoutine()
     {
