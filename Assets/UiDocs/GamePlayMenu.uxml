@@ -3,5 +3,6 @@
     <ui:VisualElement name="gameplay-menu-contrainer" class="BottomPanel">
         <ui:VisualElement name="build-menu-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/002-hammer.png?fileID=2800000&amp;guid=95cf47dcec65f454e9aebd2238dff53a&amp;type=3#002-hammer&apos;);" />
         <ui:VisualElement name="worker-menu-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/CatBoy2.png?fileID=2800000&amp;guid=708d1554501d03c438400d192d22a68d&amp;type=3#CatBoy2&apos;); -unity-background-scale-mode: scale-to-fit;" />
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" />
     </ui:VisualElement>
 </ui:UXML>

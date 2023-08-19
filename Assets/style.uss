@@ -40,9 +40,11 @@ Button:active {
 }
 
 .secondary-bg {
-
 }
 
 .tranparent-bg {
-    background-color: rgb(0,0,0,0);
+    background-color: ;
+}
+
+.Button {
 }

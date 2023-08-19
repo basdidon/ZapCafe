@@ -3,44 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class WorkStationListEntryController
-{
-    VisualElement button;
-    VisualElement img;
-    Label priceLabel;
-    Label nameLabel;
-
-    WorkStationData workStationData;
-    public WorkStationData WorkStationData 
-    {
-        get => workStationData;
-        set
-        {
-            workStationData = value;
-            img.style.backgroundImage = new StyleBackground(workStationData.Sprite);
-            priceLabel.text = $"{workStationData.Price} C";
-            nameLabel.text = workStationData.name;
-        }
-    }
-
-    //This function retrieves a reference to the 
-    //character name label inside the UI element.
-    public void SetVisualElement(VisualElement visualElement)
-    {
-        button = visualElement.Q<VisualElement>("btn");
-        img = visualElement.Q<VisualElement>("img");
-        priceLabel = visualElement.Q<Label>("price-label");
-        nameLabel = visualElement.Q<Label>("name-label");
-
-        button.RegisterCallback<ClickEvent>(evt => {
-            UiEvents.instance.HideUiTriggerEvent("BuildMenu");
-            UiEvents.instance.DisplayUiTriggerEvent("BuildMode");
-            BuildModeUiController.Instance.WorkStationData = WorkStationData;
-            Debug.Log($"Enter build mode : {nameLabel.text}");
-        });
-    }
-}
-
 public class BuildMenuControler : PanelControl
 {
     public override string Key => "BuildMenu";
@@ -51,8 +13,7 @@ public class BuildMenuControler : PanelControl
     [SerializeField] VisualTreeAsset ListEntryTemplate;
 
     // UI element references
-    VisualElement workStationListView;
-
+    ListView listView;
 
     protected override void Awake()
     {
@@ -60,23 +21,74 @@ public class BuildMenuControler : PanelControl
         WorkStationDataSet = new();
         WorkStationDataSet.AddRange(Resources.LoadAll<WorkStationData>("WorkStationDataSet"));
 
-        workStationListView = Root.Q("build-menu-panel");
+        //workStationListView = Root.Q<ListView>("build-menu-listview");
+        listView = Root.Q<ListView>();
+        listView.makeItem = () =>
+         {
+             var clone = ListEntryTemplate.Instantiate();
+             var newListEntryLogic = new WorkStationListEntryController();
+             clone.userData = newListEntryLogic;
+             newListEntryLogic.SetVisualElement(clone);
+             return clone;
+         };
 
-        WorkStationDataSet.ForEach(data => {
-            var clone = ListEntryTemplate.Instantiate();
-            SetClickAnimation(clone.Q<VisualElement>("btn"), mainColor, onMouseDownColor);
-            var newListEntryLogic = new WorkStationListEntryController();
-            //clone.userData = newListEntryLogic;
-            newListEntryLogic.SetVisualElement(clone);
-            newListEntryLogic.WorkStationData = data;
-            workStationListView.Add(clone);
-        });
+        // Set up bind function for a specific list entry
+        listView.bindItem = (item, index) =>
+        {
+            (item.userData as WorkStationListEntryController).WorkStationData = WorkStationDataSet[index];// .SetCharacterData(AllCharacters[index]);
+        };
 
-        workStationListView.RegisterCallback<ClickEvent>(evt => Debug.Log("clicked"));
+        // Set a fixed item height
+        listView.fixedItemHeight = 500;
+
+        // Set the actual item's source list/array
+        listView.itemsSource = WorkStationDataSet;
+
     }
-
+    /*
     private void Start()
     {
         Hide();
+    }*/
+}
+
+public class WorkStationListEntryController
+{
+    VisualElement purchaseBtn;
+    VisualElement img;
+    Label nameTxt;
+    Label priceTxt;
+    Label descriptionTxt;
+
+    WorkStationData workStationData;
+    public WorkStationData WorkStationData
+    {
+        get => workStationData;
+        set
+        {
+            workStationData = value;
+            img.style.backgroundImage = new StyleBackground(workStationData.Sprite);
+            nameTxt.text = workStationData.name;
+            descriptionTxt.text = workStationData.Description;
+            priceTxt.text = $"{workStationData.Price} C";
+        }
+    }
+
+    //This function retrieves a reference to the 
+    //character name label inside the UI element.
+    public void SetVisualElement(VisualElement visualElement)
+    {
+        purchaseBtn = visualElement.Q<VisualElement>("purchase-btn");
+        img = visualElement.Q<VisualElement>("img");
+        nameTxt = visualElement.Q<Label>("name-txt");
+        descriptionTxt = visualElement.Q<Label>("description-txt");
+        priceTxt = visualElement.Q<Label>("price-txt");
+        /*
+        purchaseBtn.RegisterCallback<ClickEvent>(evt => {
+            UiEvents.instance.HideUiTriggerEvent("BuildMenu");
+            UiEvents.instance.DisplayUiTriggerEvent("BuildMode");
+            BuildModeUiController.Instance.WorkStationData = WorkStationData;
+            Debug.Log($"Enter build mode : {nameTxt.text}");
+        });*/
     }
 }
