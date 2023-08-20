@@ -8,7 +8,7 @@ public abstract class PanelControl : MonoBehaviour
 {
     public VisualElement Root { get; set; }
     public abstract string Key { get; }
-
+    /*
     #region ButtoonAnimate
     [Header("buttonColor")]
     public Color mainColor;
@@ -20,7 +20,7 @@ public abstract class PanelControl : MonoBehaviour
         _v.RegisterCallback<MouseUpEvent>(evt => _v.style.backgroundColor = new StyleColor(_mainColor));
     }
     #endregion
-
+    */
     protected virtual void Awake()
     {
         if (TryGetComponent(out UIDocument uiDoc))

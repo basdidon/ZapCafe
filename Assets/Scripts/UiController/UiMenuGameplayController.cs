@@ -8,19 +8,17 @@ public class UiMenuGameplayController : PanelControl
     [SerializeField] PanelControl buildMenuPanel;
     public override string Key => "MenuGameplay";
 
+    Button buildMenuBtn;
+    Button workerMenuBtn;
+
     protected override void Awake()
     {
         base.Awake();
-        List <VisualElement> btnList = new() 
-        {
-            Root.Q<VisualElement>("build-menu-btn"),
-            Root.Q<VisualElement>("worker-menu-btn"),
-        };
+        buildMenuBtn = Root.Q<Button>("build-menu-btn");
+        workerMenuBtn = Root.Q<Button>("worker-menu-btn");
 
-        btnList[0].RegisterCallback<ClickEvent>(evt=> GotoBuildMenu());
-        btnList[1].RegisterCallback<ClickEvent>(evt => Debug.Log("worker-btn"));
-
-        btnList.ForEach(btn => SetClickAnimation(btn, mainColor, onMouseDownColor));
+        buildMenuBtn.RegisterCallback<ClickEvent>(evt=> GotoBuildMenu());
+        workerMenuBtn.RegisterCallback<ClickEvent>(evt => Debug.Log("worker-btn"));
     }
 
     public void GotoBuildMenu()

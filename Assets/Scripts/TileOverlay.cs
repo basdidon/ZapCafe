@@ -9,8 +9,7 @@ public class TileOverlay : MonoBehaviour
     WorkStationRegistry WorkStationRegistry => WorkStationRegistry.Instance;
 
     public static TileOverlay Instance { get; private set; }
-    [SerializeField] Tilemap targetTilemap;
-    //[field: SerializeField] public List<Vector3Int> BlankSpacePos { get; set; }
+    Tilemap TargetTilemap => BoardManager.Instance.WorkerArea;
     [field: SerializeField] public List<GameObject> ActivatedOverlayTile { get; set; }
 
     [field:SerializeField]public Sprite BlankSpaceOverlaySprite { get; private set; }
@@ -38,19 +37,19 @@ public class TileOverlay : MonoBehaviour
     public void Reset()
     {
         //BlankSpacePos.Clear();
-        area = targetTilemap.cellBounds;
+        area = TargetTilemap.cellBounds;
 
         for (int x = area.xMin; x < area.xMax; x++)
         {
             for (int y = area.yMin; y < area.yMax; y++)
             {
                 var _cell = new Vector3Int(x, y, 0);
-                if (targetTilemap.HasTile(_cell) && !BoardManager.IsBlankCell(_cell)) 
+                if (TargetTilemap.HasTile(_cell))// && !BoardManager.IsBlankCell(_cell)) 
                 {
                     if (ObjectPool.Instance.TryGetPoolObject("TileOverlay", out GameObject poolObject))
                     {
                         poolObject.SetActive(true);
-                        poolObject.transform.position = targetTilemap.GetCellCenterWorld(_cell);
+                        poolObject.transform.position = TargetTilemap.GetCellCenterWorld(_cell);
                         ActivatedOverlayTile.Add(poolObject);
 
                         if(poolObject.TryGetComponent(out SpriteRenderer spriteRenderer))

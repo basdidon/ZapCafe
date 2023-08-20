@@ -1,50 +1,39 @@
-Button {
-    background-color: rgb(209, 208, 88);
+.menu-btn {
+    max-width: 150px;
+    min-width: 150px;
+    max-height: 150px;
+    min-height: 150px;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgb(9, 177, 236);
+    border-width: 5px;
+    border-color: rgb(4, 99, 202);
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    align-items: center;
+    justify-content: center;
 }
 
-Button:active {
-    background-color: rgb(164, 164, 88);
+.menu-btn:hover {
+    background-color: rgb(183, 226, 243);
+    border-color: rgb(255, 255, 255);
 }
 
-.BottomPanel {
-    flex-direction: row;
-    max-height: 250px;
-    min-height: 250px;
-    border-top-width: 16px;
-    border-top-color: rgb(255, 243, 81);
-    margin-top: auto;
-    padding-left: 12px;
-    padding-right: 12px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+.menu-icon {
+    max-width: 96px;
+    max-height: 96px;
+    min-width: 96px;
+    min-height: 96px;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
-.icon-btn {
-    background-color: rgb(209, 208, 88);
-    max-height: 180px;
-    min-height: 180px;
-    max-width: 180px;
-    min-width: 180px;
-    margin-top: auto;
-    margin-bottom: auto;
-    border-top-left-radius: 24px;
-    border-bottom-left-radius: 24px;
-    border-top-right-radius: 24px;
-    border-bottom-right-radius: 24px;
-    margin-left: 8px;
-    margin-right: 8px;
+.build-menu-entry-btn {
 }
 
-.main-bg {
-    background-color: rgb(209, 208, 88);
+.unity-collection-view__item{
+    color: rgb(0,0,0); /* repalce "color : white" */
 }
 
-.secondary-bg {
-}
-
-.tranparent-bg {
-    background-color: ;
-}
-
-.Button {
+.unity-list-view {
 }

@@ -24,8 +24,6 @@ public class TextSpawner : MonoBehaviour
 
         uIDoc = GetComponent<UIDocument>();
         root = uIDoc.rootVisualElement;
-
-        //SpawnText("start", Vector3.zero);
     }
 
     public void SpawnText(string message,Vector3 targetPos)

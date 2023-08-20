@@ -12,7 +12,10 @@ public class BuildMenuControler : PanelControl
     // UXML template for list entries
     [SerializeField] VisualTreeAsset ListEntryTemplate;
 
+    [field: SerializeField] int FixedItemHeight{ get; set; }
+
     // UI element references
+    Button closeBtn;
     ListView listView;
 
     protected override void Awake()
@@ -21,7 +24,9 @@ public class BuildMenuControler : PanelControl
         WorkStationDataSet = new();
         WorkStationDataSet.AddRange(Resources.LoadAll<WorkStationData>("WorkStationDataSet"));
 
-        //workStationListView = Root.Q<ListView>("build-menu-listview");
+        closeBtn = Root.Q<Button>("close-btn");
+        closeBtn.RegisterCallback<ClickEvent>(evt => BackToMainMenu());
+
         listView = Root.Q<ListView>();
         listView.makeItem = () =>
          {
@@ -39,22 +44,28 @@ public class BuildMenuControler : PanelControl
         };
 
         // Set a fixed item height
-        listView.fixedItemHeight = 500;
+        listView.fixedItemHeight = FixedItemHeight;
 
         // Set the actual item's source list/array
         listView.itemsSource = WorkStationDataSet;
 
     }
-    /*
+    
     private void Start()
     {
         Hide();
-    }*/
+    }
+
+    void BackToMainMenu()
+    {
+        Hide();
+        UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
+    }
 }
 
 public class WorkStationListEntryController
 {
-    VisualElement purchaseBtn;
+    Button purchaseBtn;
     VisualElement img;
     Label nameTxt;
     Label priceTxt;
@@ -78,17 +89,20 @@ public class WorkStationListEntryController
     //character name label inside the UI element.
     public void SetVisualElement(VisualElement visualElement)
     {
-        purchaseBtn = visualElement.Q<VisualElement>("purchase-btn");
+        purchaseBtn = visualElement.Q<Button>("purchase-btn");
         img = visualElement.Q<VisualElement>("img");
         nameTxt = visualElement.Q<Label>("name-txt");
         descriptionTxt = visualElement.Q<Label>("description-txt");
         priceTxt = visualElement.Q<Label>("price-txt");
-        /*
+        
         purchaseBtn.RegisterCallback<ClickEvent>(evt => {
+            if (workStationData == null)
+                return;
+
             UiEvents.instance.HideUiTriggerEvent("BuildMenu");
             UiEvents.instance.DisplayUiTriggerEvent("BuildMode");
             BuildModeUiController.Instance.WorkStationData = WorkStationData;
             Debug.Log($"Enter build mode : {nameTxt.text}");
-        });*/
+        });
     }
 }

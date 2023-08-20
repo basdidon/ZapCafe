@@ -8,10 +8,19 @@ public class BuildModeUiController : PanelControl
     public static BuildModeUiController Instance;
     public override string Key => "BuildMode";
 
+    public UIDocument uIDoc;
+    VisualElement root;
+
     [SerializeField] Transform buildPreview;
-    [SerializeField] InputActionReference actionReference;
-    [SerializeField] Grid MainGrid { get; set; }
     SpriteRenderer SpriteRenderer { get; set; }
+    GameObject previewWorkingCell;
+    
+    // Input
+    [field: SerializeField] public InputActionReference TouchPosInputRef { get; set; }
+    InputAction TouchPosAction => TouchPosInputRef.action;
+
+    Grid MainGrid => BoardManager.Instance.MainGrid;
+
     [SerializeField] Transform WorkStationsTransform;
     WorkStationData workStationData;
     public WorkStationData WorkStationData { get => workStationData;
@@ -21,6 +30,15 @@ public class BuildModeUiController : PanelControl
             SpriteRenderer.sprite = workStationData.Sprite;
         }
     }
+
+    //  ui element refs
+    VisualElement buildMenuPanel;
+    Button confirmBtn;
+    Button rotateBtn;
+    Button cancleBtn;
+
+    [field: SerializeField] Vector2 Offset { get; set; }
+    [field: SerializeField] Vector2 CenterOffset { get; set; }
 
     protected override void Awake()
     {
@@ -34,19 +52,17 @@ public class BuildModeUiController : PanelControl
         }
 
         base.Awake();
-        List<VisualElement> btnList = new() {
-            Root.Q<VisualElement>("confirm-btn"),
-            Root.Q<VisualElement>("rotate-btn"),
-            Root.Q<VisualElement>("cancle-btn"),
-        };
 
-        MainGrid = FindObjectOfType<Grid>();
+        root = uIDoc.rootVisualElement;
 
-        btnList.ForEach(btn => SetClickAnimation(btn, mainColor, onMouseDownColor));
+        buildMenuPanel = Root.Q<VisualElement>("build-menu-panel");
+        confirmBtn = Root.Q<Button>("confirm-btn");
+        rotateBtn = Root.Q<Button>("rotate-btn");
+        cancleBtn = Root.Q<Button>("cancle-btn");
 
-        btnList[0].RegisterCallback<ClickEvent>(evt => OnConfirm(evt));
-        btnList[1].RegisterCallback<ClickEvent>(evt => OnRatate(evt));
-        btnList[2].RegisterCallback<ClickEvent>(evt => OnCancle(evt));
+        confirmBtn.RegisterCallback<ClickEvent>(evt => OnConfirm(evt));
+        rotateBtn.RegisterCallback<ClickEvent>(evt => OnRatate(evt));
+        cancleBtn.RegisterCallback<ClickEvent>(evt => OnCancle(evt));
 
         if(buildPreview.TryGetComponent(out SpriteRenderer spriteRenderer))
         {
@@ -54,18 +70,53 @@ public class BuildModeUiController : PanelControl
         }
     }
 
+    Vector3Int previewCell;
+    Vector3Int PreviewCell {
+        get => previewCell;
+        set
+        {
+            if(previewCell != value)
+            {
+                previewCell = value;
+
+                if (BoardManager.Instance.IsBuildableCell(previewCell))
+                {
+                    SpriteRenderer.color = Color.green;
+                    confirmBtn.style.display = DisplayStyle.Flex;
+                }
+                else
+                {
+                    SpriteRenderer.color = Color.red;
+                    confirmBtn.style.display = DisplayStyle.None;
+                }
+                /*
+                if (!BoardManager.Instance.IsBuildableCell(PreviewCell) || !BoardManager.Instance.IsBuildableCell(PreviewCell + WorkStationData.WorkingCellLocal))
+                    return;
+                */
+                buildPreview.position = MainGrid.GetCellCenterWorld(PreviewCell);
+
+                CenterOffset = -new Vector2(buildMenuPanel.resolvedStyle.width, buildMenuPanel.resolvedStyle.height) / 2 + Offset;
+                buildMenuPanel.transform.position = RuntimePanelUtils.CameraTransformWorldToPanel(root.panel, buildPreview.position, Camera.main) + CenterOffset;
+
+                if (buildPreview.gameObject.activeSelf == false)
+                    buildPreview.gameObject.SetActive(true);
+            }
+        }
+    }
+
     private void SetPreviewPosition(InputAction.CallbackContext ctx)
     {
+        if (UItoolkitRayCastBlocker.IsPointerOverBlockers(ctx.ReadValue<Vector2>()))
+        {
+            Debug.Log("raycast blocked");
+            return;
+        }
+
         Vector2 worldPoint = Camera.main.ScreenToWorldPoint(ctx.ReadValue<Vector2>());
         var cellPos = MainGrid.WorldToCell(worldPoint);
 
-        if (!BoardManager.Instance.IsBlankCell(cellPos))
-            return;     
-
-        buildPreview.position = MainGrid.GetCellCenterWorld(cellPos);
-
-        if (buildPreview.gameObject.activeSelf == false)
-            buildPreview.gameObject.SetActive(true);
+        if(BoardManager.Instance.WorkerArea.HasTile(cellPos))
+            PreviewCell = cellPos;
     }
 
     private void Start()
@@ -77,8 +128,8 @@ public class BuildModeUiController : PanelControl
     {
         base.Display();
         TileOverlay.Instance.Active();
-        actionReference.action.Enable();
-        actionReference.action.performed += SetPreviewPosition;
+        TouchPosAction.Enable();
+        TouchPosAction.performed += SetPreviewPosition;
     }
 
     protected override void Hide()
@@ -86,8 +137,8 @@ public class BuildModeUiController : PanelControl
         base.Hide();
         TileOverlay.Instance.Deactive();
         buildPreview.gameObject.SetActive(false);
-        actionReference.action.Disable();
-        actionReference.action.performed -= SetPreviewPosition;
+        TouchPosAction.Disable();
+        TouchPosAction.performed -= SetPreviewPosition;
     }
 
     public void OnConfirm(ClickEvent clickEvent)

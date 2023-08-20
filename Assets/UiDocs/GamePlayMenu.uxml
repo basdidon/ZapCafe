@@ -1,8 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/style.uss?fileID=7433441132597879392&amp;guid=c323ea079de76df49be255f83bfcc748&amp;type=3#style" />
-    <ui:VisualElement name="gameplay-menu-contrainer" class="BottomPanel">
-        <ui:VisualElement name="build-menu-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/002-hammer.png?fileID=2800000&amp;guid=95cf47dcec65f454e9aebd2238dff53a&amp;type=3#002-hammer&apos;);" />
-        <ui:VisualElement name="worker-menu-btn" class="icon-btn" style="background-image: url(&apos;project://database/Assets/Sprites/CatBoy2.png?fileID=2800000&amp;guid=708d1554501d03c438400d192d22a68d&amp;type=3#CatBoy2&apos;); -unity-background-scale-mode: scale-to-fit;" />
-        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" />
+    <ui:VisualElement name="gameplay-menu-contrainer" class="BottomPanel" style="margin-top: auto; flex-direction: row; padding-left: 24px; padding-right: 24px; padding-top: 28px; padding-bottom: 16px; background-color: rgb(176, 214, 245); justify-content: space-around; border-top-width: 12px; border-left-color: rgb(0, 191, 255); border-right-color: rgb(0, 191, 255); border-top-color: rgb(0, 191, 255); border-bottom-color: rgb(0, 191, 255);">
+        <ui:Button text="Button" display-tooltip-when-elided="true" name="build-menu-btn" class="menu-btn">
+            <ui:VisualElement name="build-menu-icon" class="menu-icon" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: url(&apos;project://database/Assets/Sprites/002-hammer.png?fileID=2800000&amp;guid=95cf47dcec65f454e9aebd2238dff53a&amp;type=3#002-hammer&apos;);" />
+        </ui:Button>
+        <ui:Button text="Button" display-tooltip-when-elided="true" name="worker-menu-btn" class="menu-btn">
+            <ui:VisualElement name="worker-icon" class="menu-icon" style="background-color: rgba(0, 0, 0, 0); background-image: url(&apos;project://database/Assets/Sprites/CatBoy1.png?fileID=2800000&amp;guid=e061ac0fca7e2d744aad02ca1f33751c&amp;type=3#CatBoy1&apos;); max-width: 96px; max-height: 96px; min-width: 96px; min-height: 96px;" />
+        </ui:Button>
+        <ui:Button display-tooltip-when-elided="true" name="recipe-menu-btn" class="menu-btn">
+            <ui:VisualElement name="worker-menu-icon" class="menu-icon" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); background-image: url(&apos;project://database/Assets/Sprites/burger.png?fileID=2800000&amp;guid=1ec937fa45d89264d9daa67c5bc4cc59&amp;type=3#burger&apos;);" />
+        </ui:Button>
     </ui:VisualElement>
 </ui:UXML>

@@ -11,6 +11,7 @@ public class BoardManager : MonoBehaviour
     public static BoardManager Instance { get; private set; }
 
     [field: SerializeField] public Grid MainGrid { get; set; }
+    [field: SerializeField] public Tilemap WorkerArea { get; set; }
 
     private void Awake()
     {
@@ -32,6 +33,6 @@ public class BoardManager : MonoBehaviour
     public Vector3Int GetCellPos(Vector3 worldPos) => MainGrid.WorldToCell(worldPos);
 
     public bool IsBlankCell(Vector3Int cellPos) => !WorkStationRegistry.IsWorkStationCell(cellPos);
-    public bool IsBuildableCell(Vector3Int cellPos) => !WorkStationRegistry.IsWorkStationCell(cellPos) && !WorkStationRegistry.IsWorkingCell(cellPos);
+    public bool IsBuildableCell(Vector3Int cellPos) => WorkerArea.HasTile(cellPos) && !WorkStationRegistry.IsWorkStationCell(cellPos) && !WorkStationRegistry.IsWorkingCell(cellPos);
 
 }

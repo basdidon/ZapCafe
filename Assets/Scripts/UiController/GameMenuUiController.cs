@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class GameMenuUiController : MonoBehaviour
 {
     //[SerializeField] GameObject gameMenuUi;
@@ -17,4 +17,4 @@ public class GameMenuUiController : MonoBehaviour
 
 
     
-}
+}*/
