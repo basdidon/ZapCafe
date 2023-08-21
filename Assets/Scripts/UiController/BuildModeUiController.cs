@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
+using System;
 
 public class BuildModeUiController : PanelControl
 {
@@ -10,6 +11,8 @@ public class BuildModeUiController : PanelControl
 
     public UIDocument uIDoc;
     VisualElement root;
+
+    IsometricDirections direction = IsometricDirections.NegativeX;
 
     [SerializeField] Transform buildPreview;
     SpriteRenderer SpriteRenderer { get; set; }
@@ -27,7 +30,7 @@ public class BuildModeUiController : PanelControl
         set 
         {
             workStationData = value;
-            SpriteRenderer.sprite = workStationData.Sprite;
+            SpriteRenderer.sprite = WorkStationData.GetPreviewSprite(direction);
         }
     }
 
@@ -130,6 +133,7 @@ public class BuildModeUiController : PanelControl
         TileOverlay.Instance.Active();
         TouchPosAction.Enable();
         TouchPosAction.performed += SetPreviewPosition;
+        direction = IsometricDirections.NegativeX;
     }
 
     protected override void Hide()
@@ -143,7 +147,7 @@ public class BuildModeUiController : PanelControl
 
     public void OnConfirm(ClickEvent clickEvent)
     {
-        if(!LevelManager.Instance.TrySpend(workStationData.Price))
+        if(!LevelManager.Instance.TrySpend(WorkStationData.Price))
         {
             Debug.LogWarning("Coin not enough.");
             return;
@@ -151,12 +155,18 @@ public class BuildModeUiController : PanelControl
 
         Hide();
         Debug.Log("confirm");
-        Instantiate(workStationData.Prefab, buildPreview.position, Quaternion.identity, WorkStationsTransform);
+        Instantiate(WorkStationData.Prefab, buildPreview.position, Quaternion.identity, WorkStationsTransform);
         UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
     }
 
     public void OnRatate(ClickEvent clickEvent)
     {
+        direction += 1;
+        if (Enum.GetNames(typeof(IsometricDirections)).Length <= (int) direction)
+        {
+            direction = 0;
+        }
+        SpriteRenderer.sprite = WorkStationData.GetPreviewSprite(direction);
         Debug.Log("rotate");
     }
 
