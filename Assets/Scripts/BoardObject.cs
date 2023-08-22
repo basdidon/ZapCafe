@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Sirenix.Serialization;
+using Sirenix.OdinInspector;
+
+public enum IsometricDirections
+{
+    NegativeX,  // left-down
+    PositiveX,  // right-up
+    NegativeY,  // right-down
+    PositiveY,  // left-up
+}
 
 public interface IBoardObject
 {
@@ -14,6 +24,11 @@ public interface IBoardObject
 public class BoardObject : MonoBehaviour, IBoardObject
 {
     protected BoardManager BoardManager { get { return BoardManager.Instance; } }
+
+    [OdinSerialize, OnValueChanged("OnDirectionChanged")]
+    [SerializeField] IsometricDirections direction;
+    public virtual IsometricDirections Direction { get => direction; set => direction = value; }
+
 
     public Vector3Int CellPosition => BoardManager.GetCellPos(transform.position);
     public Vector3 CellCenterWorld => BoardManager.GetCellCenterWorld(CellPosition);

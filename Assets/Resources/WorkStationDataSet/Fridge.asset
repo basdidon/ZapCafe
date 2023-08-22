@@ -15,8 +15,13 @@ MonoBehaviour:
   <PreviewSprites>k__BackingField:
     negativeX: {fileID: -1793209411, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
     positiveX: {fileID: -1123430336, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
-    negativeY: {fileID: 792518115, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
-    positiveY: {fileID: -814428558, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+    negativeY: {fileID: -814428558, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+    positiveY: {fileID: 792518115, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+  <Sprites>k__BackingField:
+    negativeX: {fileID: 1236838490, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+    positiveX: {fileID: -371621661, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+    negativeY: {fileID: 362179904, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+    positiveY: {fileID: 1689477852, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
   <Sprite>k__BackingField: {fileID: 21300000, guid: 7a7b91275b86350428a6cfee34667662, type: 3}
   <Prefab>k__BackingField: {fileID: 2284181946192601432, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
   <Description>k__BackingField: Grandma's Fridge, a legendary artifact, holds enchanted
@@ -25,4 +30,4 @@ MonoBehaviour:
   <Price>k__BackingField: 0
   localCellsPos:
   - {x: 0, y: 0, z: 0}
-  <WorkingCellLocal>k__BackingField: {x: 0, y: -1, z: 0}
+  <WorkingCellLocalDefault>k__BackingField: {x: 0, y: 1, z: 0}

@@ -4,7 +4,6 @@ using UnityEngine;
 public sealed class ItemFactory : WorkStation
 {
     [field: SerializeField] public List<ItemData> Recipes { get; set; }
-    [field: SerializeField] public ItemData WorkingMenu { get; set; }
     [field: SerializeField] public List<Item> Items { get; set; }
     [field: SerializeField] public List<Item> ToUsed { get; set; }
 
@@ -26,6 +25,8 @@ public sealed class ItemFactory : WorkStation
     private void Start()
     {
         Items = new();
+        Recipes = new();
+        ToUsed = new();
         foreach(var itemData in Resources.LoadAll<ItemData>("ItemDataSet"))
         {
             if(itemData.WorkStation == WorkStationData)
@@ -39,11 +40,6 @@ public sealed class ItemFactory : WorkStation
         TaskManager.Instance.TrySetTask();
     }
 
-    public void RequestItem(ItemData itemData)
-    {
-        WorkingMenu = itemData;
-    }
-    
     public void CreateItem(ItemData itemData,Worker worker)
     {
         Debug.Log("createItem");

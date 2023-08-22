@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using System;
@@ -16,8 +17,11 @@ public class BuildModeUiController : PanelControl
 
     [SerializeField] Transform buildPreview;
     SpriteRenderer SpriteRenderer { get; set; }
-    GameObject previewWorkingCell;
-    
+
+    [SerializeField] Transform workingCellPreview;
+    SpriteRenderer WorkingCellRenderer { get; set; }
+    [field: SerializeField] public Sprite WorkingCellOverlaySprite { get; private set; }
+
     // Input
     [field: SerializeField] public InputActionReference TouchPosInputRef { get; set; }
     InputAction TouchPosAction => TouchPosInputRef.action;
@@ -27,7 +31,7 @@ public class BuildModeUiController : PanelControl
     [SerializeField] Transform WorkStationsTransform;
     WorkStationData workStationData;
     public WorkStationData WorkStationData { get => workStationData;
-        set 
+        set
         {
             workStationData = value;
             SpriteRenderer.sprite = WorkStationData.GetPreviewSprite(direction);
@@ -45,7 +49,7 @@ public class BuildModeUiController : PanelControl
 
     protected override void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this);
         }
@@ -67,9 +71,14 @@ public class BuildModeUiController : PanelControl
         rotateBtn.RegisterCallback<ClickEvent>(evt => OnRatate(evt));
         cancleBtn.RegisterCallback<ClickEvent>(evt => OnCancle(evt));
 
-        if(buildPreview.TryGetComponent(out SpriteRenderer spriteRenderer))
+        if (buildPreview.TryGetComponent(out SpriteRenderer spriteRenderer))
         {
             SpriteRenderer = spriteRenderer;
+        }
+
+        if (workingCellPreview.TryGetComponent(out SpriteRenderer renderer))
+        {
+            WorkingCellRenderer = renderer;
         }
     }
 
@@ -78,34 +87,32 @@ public class BuildModeUiController : PanelControl
         get => previewCell;
         set
         {
-            if(previewCell != value)
+            if (previewCell != value)
             {
                 previewCell = value;
 
-                if (BoardManager.Instance.IsBuildableCell(previewCell))
-                {
-                    SpriteRenderer.color = Color.green;
-                    confirmBtn.style.display = DisplayStyle.Flex;
-                }
-                else
-                {
-                    SpriteRenderer.color = Color.red;
-                    confirmBtn.style.display = DisplayStyle.None;
-                }
-                /*
-                if (!BoardManager.Instance.IsBuildableCell(PreviewCell) || !BoardManager.Instance.IsBuildableCell(PreviewCell + WorkStationData.WorkingCellLocal))
-                    return;
-                */
+                SpriteRenderer.color = BoardManager.Instance.IsBuildableCell(previewCell) ? Color.green : Color.red;
+                WorkingCellRenderer.color = BoardManager.Instance.IsBuildableCell(WorkingCell)?Color.green:Color.red;
+
+                //confirmBtn.style.display = IsBuildable ? DisplayStyle.Flex : DisplayStyle.None;
+                confirmBtn.SetEnabled(IsBuildable);
+
                 buildPreview.position = MainGrid.GetCellCenterWorld(PreviewCell);
+                workingCellPreview.position = MainGrid.GetCellCenterWorld(WorkingCell);
 
                 CenterOffset = -new Vector2(buildMenuPanel.resolvedStyle.width, buildMenuPanel.resolvedStyle.height) / 2 + Offset;
                 buildMenuPanel.transform.position = RuntimePanelUtils.CameraTransformWorldToPanel(root.panel, buildPreview.position, Camera.main) + CenterOffset;
 
                 if (buildPreview.gameObject.activeSelf == false)
                     buildPreview.gameObject.SetActive(true);
+
+                if (workingCellPreview.gameObject.activeSelf == false)
+                    workingCellPreview.gameObject.SetActive(true);
             }
         }
     }
+
+    Vector3Int WorkingCell => previewCell + WorkStationData.GetWorkingCellLocal(direction);
 
     private void SetPreviewPosition(InputAction.CallbackContext ctx)
     {
@@ -118,7 +125,7 @@ public class BuildModeUiController : PanelControl
         Vector2 worldPoint = Camera.main.ScreenToWorldPoint(ctx.ReadValue<Vector2>());
         var cellPos = MainGrid.WorldToCell(worldPoint);
 
-        if(BoardManager.Instance.WorkerArea.HasTile(cellPos))
+        if (BoardManager.Instance.WorkerArea.HasTile(cellPos))
             PreviewCell = cellPos;
     }
 
@@ -141,13 +148,14 @@ public class BuildModeUiController : PanelControl
         base.Hide();
         TileOverlay.Instance.Deactive();
         buildPreview.gameObject.SetActive(false);
+        workingCellPreview.gameObject.SetActive(false);
         TouchPosAction.Disable();
         TouchPosAction.performed -= SetPreviewPosition;
     }
 
     public void OnConfirm(ClickEvent clickEvent)
     {
-        if(!LevelManager.Instance.TrySpend(WorkStationData.Price))
+        if (!LevelManager.Instance.TrySpend(WorkStationData.Price))
         {
             Debug.LogWarning("Coin not enough.");
             return;
@@ -155,18 +163,41 @@ public class BuildModeUiController : PanelControl
 
         Hide();
         Debug.Log("confirm");
-        Instantiate(WorkStationData.Prefab, buildPreview.position, Quaternion.identity, WorkStationsTransform);
+        var go = new GameObject(workStationData.name);
+        go.transform.position = buildPreview.position;
+        go.transform.parent = WorkStationsTransform;
+        go.AddComponent<SpriteRenderer>();
+        var sortingGroup = go.AddComponent<SortingGroup>();
+        sortingGroup.sortingLayerName = "Object";
+
+        if (WorkStationData.name != "Bar")
+        {
+            var itemFactory = go.AddComponent<ItemFactory>();
+            itemFactory.Initialize(WorkStationData, direction);
+        }
+        else
+        {
+            throw new System.NotImplementedException();
+        }
+
         UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
     }
 
     public void OnRatate(ClickEvent clickEvent)
     {
         direction += 1;
-        if (Enum.GetNames(typeof(IsometricDirections)).Length <= (int) direction)
+        if (Enum.GetNames(typeof(IsometricDirections)).Length <= (int)direction)
         {
             direction = 0;
         }
+
         SpriteRenderer.sprite = WorkStationData.GetPreviewSprite(direction);
+        WorkingCellRenderer.color = BoardManager.Instance.IsBuildableCell(WorkingCell) ? Color.green : Color.red;
+        workingCellPreview.position = MainGrid.GetCellCenterWorld(WorkingCell);
+
+        //confirmBtn.style.display = IsBuildable ? DisplayStyle.Flex : DisplayStyle.None;
+        confirmBtn.SetEnabled(IsBuildable);
+
         Debug.Log("rotate");
     }
 
@@ -176,4 +207,6 @@ public class BuildModeUiController : PanelControl
         Debug.Log("cancle");
         UiEvents.instance.DisplayUiTriggerEvent("BuildMenu");
     }
+
+    bool IsBuildable => BoardManager.Instance.IsBuildableCell(previewCell) && BoardManager.Instance.IsBuildableCell(WorkingCell);
 }

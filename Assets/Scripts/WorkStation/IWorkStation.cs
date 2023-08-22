@@ -30,19 +30,57 @@ public interface IWorkStation : IBoardObject
 
 public class WorkStation : BoardObject, IWorkStation
 {
-    [field: SerializeField] public WorkStationData WorkStationData { get; private set; }
+    // component
+    SpriteRenderer SpriteRenderer { get; set; }
+
+    [field: SerializeField] public WorkStationData WorkStationData { get; set; }
     public Worker Worker { get; set; }
 
     public Vector3Int[] LocalCellsPos => WorkStationData.LocalCellsPos;
     public Vector3Int[] WorldCellsPos => LocalCellsPos.Select(cell => CellPosition + cell).ToArray();
 
-    public Vector3Int WorkingCellLocal => WorkStationData.WorkingCellLocal;
+    public Vector3Int WorkingCellLocal => WorkStationData.GetWorkingCellLocal(Direction);
+
+    public override IsometricDirections Direction {
+        get => base.Direction;
+        set 
+        { 
+            base.Direction = value;
+            var sprite = WorkStationData.GetSprite(Direction);
+
+            if (sprite != null)
+                SpriteRenderer.sprite = sprite;
+        } 
+    }
+
+    // OdinCallback
+    private void OnDirectionChanged()
+    {
+        var sprite = WorkStationData.GetSprite(Direction);
+        if (sprite != null)
+            if(TryGetComponent(out SpriteRenderer renderer))
+                renderer.sprite = sprite;
+    }
+
+    public void Initialize(WorkStationData data, IsometricDirections dir)
+    {
+        if (TryGetComponent(out SpriteRenderer renderer))
+        {
+            SpriteRenderer = renderer;
+            WorkStationData = data;
+            Direction = dir;
+        }
+        else
+        {
+            Debug.LogError($"SpriteRenderer are required. ({gameObject.name})");
+        }
+    }
 
     private void Awake()
     {
-        if (WorkStationData == null)
+        if (WorkStationData != null)
         {
-            Debug.LogWarning($"{gameObject.name} : WorkStationData is null");
+            Initialize(WorkStationData, Direction);
         }
     }
 }

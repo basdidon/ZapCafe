@@ -8,7 +8,7 @@ public class ServeOrderTaskInverse : BaseTask
     Order Order { get; }
     Customer Customer => Order.OrderBy;
     ItemData ItemData { get; }
-    int price = 50;
+
     public ServeOrderTaskInverse(Order order,ItemData itemData)
     {
         Order = order;
@@ -21,8 +21,8 @@ public class ServeOrderTaskInverse : BaseTask
             Customer.OrderSprite = null;
             Customer.HoldingItem = Worker.HoldingItem;
             Worker.HoldingItem = null;
-            LevelManager.Instance.Coin += price;
-            TextSpawner.Instance.SpawnText($"+ {price}", Customer.transform.position + Vector3.up * 2);
+            LevelManager.Instance.Coin += itemData.Price;
+            TextSpawner.Instance.SpawnText($"+ {itemData.Price}", Customer.transform.position + Vector3.up * 2);
             (WorkStation as Bar).CustomerLeave();
         };
     }

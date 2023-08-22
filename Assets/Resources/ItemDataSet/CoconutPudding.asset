@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Sprite>k__BackingField: {fileID: 21300000, guid: 738b203f9dede8945bb5d33f3b97bbcc, type: 3}
   <WorkStation>k__BackingField: {fileID: 11400000, guid: 836ba5ca2ce42734d9c9f66aa638e742, type: 2}
+  <Price>k__BackingField: 180
   ingredients:
   - {fileID: 11400000, guid: 4817a8614985aeb41b7766ace0b2bb1f, type: 2}

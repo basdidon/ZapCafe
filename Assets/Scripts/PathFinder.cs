@@ -40,7 +40,7 @@ public class PathFinder
 
         if (!moveableObject.CanMoveTo(targetCell))
         {
-            Debug.Log("target can't reach");
+            Debug.Log($"targetCell({targetCell}) can't reach");
             return false;
         }else if(startCell == targetCell)
         {

@@ -2,14 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum IsometricDirections
-{
-    NegativeX,  // left-down
-    PositiveX,  // right-up
-    NegativeY,  // left-up
-    PositiveY,  // right-down
-}
-
 [System.Serializable]
 public struct Sprite4Dir
 {
@@ -23,6 +15,7 @@ public struct Sprite4Dir
 public class WorkStationData : ScriptableObject
 {
     [field: SerializeField] Sprite4Dir PreviewSprites { get; set; }
+    [field: SerializeField] Sprite4Dir Sprites { get; set; }
     [field: SerializeField] public Sprite Sprite { get; private set; }
     [field: SerializeField] public GameObject Prefab { get; private set; }
     [field: SerializeField] public string Description { get; set; }
@@ -33,7 +26,20 @@ public class WorkStationData : ScriptableObject
         get => localCellsPos;
         set => localCellsPos = value;
     }
-    [field: SerializeField] public Vector3Int WorkingCellLocal { get; set; }
+
+    [field: SerializeField] Vector3Int WorkingCellLocalDefault { get; set; }
+
+    public Sprite GetSprite(IsometricDirections direction)
+    {
+        return direction switch
+        {
+            IsometricDirections.NegativeX => Sprites.negativeX,
+            IsometricDirections.PositiveX => Sprites.positiveX,
+            IsometricDirections.NegativeY => Sprites.negativeY,
+            IsometricDirections.PositiveY => Sprites.positiveY,
+            _ => null,
+        };
+    }
 
     public Sprite GetPreviewSprite(IsometricDirections direction)
     {
@@ -44,6 +50,19 @@ public class WorkStationData : ScriptableObject
             IsometricDirections.NegativeY => PreviewSprites.negativeY,
             IsometricDirections.PositiveY => PreviewSprites.positiveY,
             _ => null,
+        };
+    }
+
+    public Vector3Int GetWorkingCellLocal(IsometricDirections direction)
+    {
+        var cell = WorkingCellLocalDefault;
+        return direction switch
+        {
+            IsometricDirections.NegativeX => new(-cell.y,cell.x,0),
+            IsometricDirections.NegativeY => -cell,
+            IsometricDirections.PositiveX => new(cell.y,-cell.x,0),
+            IsometricDirections.PositiveY => cell,
+            _ => Vector3Int.zero,
         };
     }
 }
