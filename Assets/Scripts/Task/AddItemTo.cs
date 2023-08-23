@@ -9,7 +9,7 @@ public class AddItemToTask : BaseTask
     [field:SerializeField] public ItemData ItemData { get; private set; }
     public ITask NextTask { get; }
 
-    public AddItemToTask(ITask nextTask,ItemData itemData)
+    public AddItemToTask(ITask nextTask,ItemData itemData,int parentDepth):base(parentDepth)
     {
         NextTask = nextTask;
         ItemData = itemData;
@@ -22,8 +22,8 @@ public class AddItemToTask : BaseTask
                 Worker.HoldingItem = null;
             }
         };
-        var GetItemTask = new GetItemTask(ItemData);
-        PrepareTasks = new ITask[] {GetItemTask};
+
+        SetDependencyTasks(new ITask[] { new GetItemTask(ItemData,Depth) });
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)

@@ -35,9 +35,6 @@ public sealed class ItemFactory : WorkStation
             }
         }
         //UpdateFactoryData();
-
-        WorkStationRegistry.Instance.AddWorkStation(this);
-        TaskManager.Instance.TrySetTask();
     }
 
     public void CreateItem(ItemData itemData,Worker worker)

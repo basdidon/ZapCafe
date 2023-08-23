@@ -12,13 +12,6 @@ public class Bar : WorkStation
     [field: SerializeField] public Vector3Int ServiceCellLocal { get; private set; }
     public Vector3Int ServiceCell => CellPosition + ServiceCellLocal;
 
-    // Mono
-    private void Start()
-    {
-        WorkStationRegistry.Instance.AddWorkStation(this);
-        TaskManager.Instance.TrySetTask();
-    }
-
     public void CustomerLeave()
     {
         if (Customer == null)

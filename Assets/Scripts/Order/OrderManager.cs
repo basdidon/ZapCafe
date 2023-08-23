@@ -28,4 +28,9 @@ public class OrderManager : MonoBehaviour
         Orders.Add(newOrder);
         newOrder.StartMakingOrder();
     }
+
+    public void RemoveOrder(Order order)
+    {
+        Orders.Remove(order);
+    }
 }

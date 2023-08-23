@@ -10,12 +10,12 @@ public class GetItemTask:BaseTask
     [field: SerializeField] public ItemData ItemData { get; private set; }
     public ReadOnlyCollection<ItemData> Ingredients => ItemData.Ingredients;
     public WorkStationData WorkStationData => ItemData.WorkStation;
-    [field: SerializeField] public BaseTask NextTask { get; private set; }
+    //[field: SerializeField] public BaseTask NextTask { get; private set; }
 
     public List<BaseTask> Tasks { get; private set; }
     public ItemFactory ItemFactory { get; private set; }
 
-    public GetItemTask(ItemData itemData)
+    public GetItemTask(ItemData itemData,int parentDepth):base(parentDepth)
     {
         //Debug.Log($"getItemtask:{itemData.name} was created");
         ItemData = itemData;
@@ -28,20 +28,22 @@ public class GetItemTask:BaseTask
         if (WorkStationData == null)
             Debug.LogError("ItemData.WorkStationData Can't be null");
 
+        ITask[] tasks = null;
         if (Ingredients != null && Ingredients.Count > 0)
         {
-            PrepareTasks = new ITask[Ingredients.Count];
-            for(int i =0;i<Ingredients.Count;i++)
+            tasks = Ingredients.Select((ingredient, idx) =>
             {
-                var _task = new AddItemToTask(this, Ingredients[i]);
-                PrepareTasks[i] = _task;
-                _task.Pending += delegate
+                var task = new AddItemToTask(this, Ingredients[idx],Depth);
+
+                task.Pending += delegate
                 {
                     if (WorkStation == null)
-                        WorkStation = _task.WorkStation;
+                        WorkStation = task.WorkStation;
                 };
-            }
+                return task;
+            }).ToArray();
         }
+        SetDependencyTasks(tasks);
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
@@ -54,9 +56,7 @@ public class GetItemTask:BaseTask
         }
 
         var workStations = WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation);
-        Debug.Log(workStations.Count);
         workStations = workStations.ReadyToUse();
-        Debug.Log(workStations.Count);
         workStation = workStations.FindClosest(worker);
         if (workStation != null)
             return true;

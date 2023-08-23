@@ -14,9 +14,11 @@ public class WorkStations : IEnumerable<IWorkStation>
     public WorkStations(List<IWorkStation> workStations) { this.workStations = workStations; }
     public WorkStations(IEnumerable<IWorkStation> workStations) { this.workStations = new(workStations);}
 
-    public void Add(IWorkStation workStation) { workStations.Add(workStation); }
-    public WorkStations Where(System.Func<IWorkStation,bool> match) => new(workStations.Where(match));
+    public void Add(IWorkStation workStation) => workStations.Add(workStation);
+    public void Remove(IWorkStation workStation) => workStations.Remove(workStation);
 
+    // Query
+    public WorkStations Where(System.Func<IWorkStation,bool> match) => new(workStations.Where(match));
     public WorkStations ReadyToUse() => Where(workStation => workStation.IsAvailable);
     public IWorkStation FindClosest(BoardObject boardObject)
     {
@@ -51,19 +53,6 @@ public class WorkStations : IEnumerable<IWorkStation>
 public class WorkStationRegistry : SerializedMonoBehaviour
 {
     public static WorkStationRegistry Instance { get; private set; }
-    
-    // WorkingCell
-    bool isShowWorkingCells;
-    public bool IsShowWorkingCells {
-        get => isShowWorkingCells;
-        set
-        {
-            isShowWorkingCells = value;
-        } 
-    }
-    [field: SerializeField] public GameObject WorkingCellOverlayPrefab { get; set; }
-    [field: SerializeField] public int WorkingCellOverlayPoolSize { get; set; }
-    List<GameObject> WorkingCellOverlayPool { get; set; }
 
     [OdinSerialize] WorkStations workStations;
 
@@ -79,23 +68,21 @@ public class WorkStationRegistry : SerializedMonoBehaviour
         }
 
         workStations = new();
-        for (int i = 0; i < WorkingCellOverlayPoolSize; i++)
-        {
-            var clone = Instantiate(WorkingCellOverlayPrefab,transform);
-            clone.SetActive(false);
-            WorkingCellOverlayPool.Add(clone);
-        }
     }
-    public void AddWorkStation(IWorkStation workStation) { workStations.Add(workStation); }
-    public WorkStations GetWorkStations(WorkStationData workStationData) => workStations.Where(workStation => workStation.WorkStationData == workStationData);
 
+    // add & remove
+    public void AddWorkStation(IWorkStation workStation) => workStations.Add(workStation);
+    public void RemoveWorkStation(IWorkStation workStation) => workStations.Remove(workStation);
+
+    // WorkStation Getter
+    public WorkStations GetWorkStations(WorkStationData workStationData) => workStations.Where(workStation => workStation.WorkStationData == workStationData);
     public IEnumerable<T> GetWorkStationsByType<T>() where T : IWorkStation
         => workStations.OfType<T>();
 
     // WorkStationCell
     IEnumerable<Vector3Int> WorkStationCells => workStations.SelectMany(workStation => workStation.WorldCellsPos);
     public bool IsWorkStationCell(Vector3Int cellPos) => WorkStationCells.Contains(cellPos);
-
+    // WorkingCell
     IEnumerable<Vector3Int> WorkingCells => workStations.Select(workStation => workStation.WorkingCell);
     public bool IsWorkingCell(Vector3Int cellPos) => WorkingCells.Contains(cellPos); 
 }

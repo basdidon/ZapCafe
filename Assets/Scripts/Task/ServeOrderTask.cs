@@ -14,17 +14,17 @@ public class ServeOrderTaskInverse : BaseTask
         Order = order;
         ItemData = itemData;
 
-        var GetItemTask = new GetItemTask(ItemData);
-        PrepareTasks = new ITask[] { GetItemTask };
-
         Performed += delegate {
             Customer.OrderSprite = null;
             Customer.HoldingItem = Worker.HoldingItem;
             Worker.HoldingItem = null;
             LevelManager.Instance.Coin += itemData.Price;
+            OrderManager.Instance.RemoveOrder(order);
             TextSpawner.Instance.SpawnText($"+ {itemData.Price}", Customer.transform.position + Vector3.up * 2);
             (WorkStation as Bar).CustomerLeave();
         };
+
+        SetDependencyTasks(new ITask[] { new GetItemTask(ItemData,Depth+1) });
     }
 
     public override float Duration => 1f;

@@ -18,6 +18,8 @@ public class GetOrderTask : BaseTask
         {
             Worker.Animator.SetBool("IsTalking", false);
         };
+
+        SetDependencyTasks();
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)

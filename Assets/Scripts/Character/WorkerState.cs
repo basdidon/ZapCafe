@@ -22,22 +22,12 @@ namespace WorkerState
     public class MoveState : MoveState<Worker>
     {
         public IState NextState { get; set; }
-        public MoveState(Worker worker, List<Vector3Int> waypoints, IState nextState = null) : base(worker, waypoints)
-        {
-            NextState = nextState;
-        }
+        public MoveState(Worker worker, List<Vector3Int> waypoints, IState nextState = null) : base(worker, waypoints) 
+            => NextState = nextState;
 
         public override void SetNextState()
         {
-            if (WayPoints.Count == 0)
-            {
-                Charecter.CurrentState = NextState;
-            }
-            else
-            {
-                // self transition
-                Charecter.CurrentState = new MoveState(Charecter, WayPoints, NextState);
-            }
+            Charecter.CurrentState = WayPoints.Count == 0 ? NextState : new MoveState(Charecter, WayPoints, NextState);
         }
     }
 
@@ -45,7 +35,7 @@ namespace WorkerState
     {
         Worker Worker { get; }
         float timeElapsed;
-        float duration;
+        float duration = 1f;
 
         public ExecutingTask(Worker worker)
         {
@@ -53,15 +43,18 @@ namespace WorkerState
         }
 
         public void EnterState()
-        {
+        {/*
             Worker.TaskProgress.SetActive(true);
             Worker.ProgressImg.fillAmount = 0f;
+            if (Worker == null) Debug.Log("worker");
+            if (Worker.CurrentTask == null) Debug.Log("Task");
+            
             duration = Worker.CurrentTask.Duration;
             timeElapsed = 0f;
 
             var dir = Worker.CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position);
             Worker.FacingDir = dir.y > 0 ? FacingDirs.Up : dir.x > 0 ? FacingDirs.Right : dir.x < 0 ? FacingDirs.Left : FacingDirs.Down;
-
+            */
             Worker.StartCoroutine(StartTask());
         }
 

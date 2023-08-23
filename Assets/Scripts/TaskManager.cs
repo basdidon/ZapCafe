@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using UnityEngine;
+using System.Linq;
 
 public class TaskManager : SerializedMonoBehaviour
 {
@@ -10,6 +10,7 @@ public class TaskManager : SerializedMonoBehaviour
 
     [OdinSerialize] public List<ITask> Tasks { get; private set; }
     [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
+    [OdinSerialize] public List<ITask> AvailableTasks { get; set; }
 
     private void Awake()
     {
@@ -24,6 +25,8 @@ public class TaskManager : SerializedMonoBehaviour
 
         Tasks = new();
         AvailableWorker = new();
+        AvailableTasks = new();
+
     }
 
     public void AddTask(ITask newTask)
@@ -51,22 +54,19 @@ public class TaskManager : SerializedMonoBehaviour
         if (Tasks.Count <= 0)
             return;
 
-        UpdateAvailableTasks();
-        foreach(var _task in availableTasks)
+        var orderedTasks = AvailableTasks
+            .Where(task=>task.TaskState == TaskStates.Created)
+            .OrderBy(task => task.CreateAt)
+            .ThenByDescending(task => task.Depth);
+
+        foreach(var _task in orderedTasks)
         {
             if (AvailableWorker.Count < 0)
                 break;
 
+            Debug.Log("asadafa");
             _task.SetTask(AvailableWorker.ToArray());
             
         }
-    }
-
-    public List<ITask> availableTasks = new();
-    public List<ITask> UpdateAvailableTasks()
-    {
-        availableTasks.Clear();
-        Tasks.ForEach(task => task.GetSubTasks(availableTasks));
-        return availableTasks;
     }
 }

@@ -3047,7 +3047,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9038010281675803033, guid: 1a970f8d931bb0147a7bd9a376128485, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3192,7 +3192,7 @@ MonoBehaviour:
     - Name: AvailableWorker
       Entry: 6
       Data: 
-    - Name: availableTasks
+    - Name: AvailableTasks
       Entry: 7
       Data: 1|System.Collections.Generic.List`1[[ITask, Assembly-CSharp]], mscorlib
     - Name: 
@@ -3228,8 +3228,6 @@ MonoBehaviour:
     - Name: workStations
       Entry: 6
       Data: 
-  <WorkingCellOverlayPrefab>k__BackingField: {fileID: 0}
-  <WorkingCellOverlayPoolSize>k__BackingField: 0
 --- !u!114 &482486550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5404,7 +5402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9038010281675803033, guid: 1a970f8d931bb0147a7bd9a376128485, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

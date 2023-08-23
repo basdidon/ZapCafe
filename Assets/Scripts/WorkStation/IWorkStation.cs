@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 
 public interface IWorkStation : IBoardObject
 {
@@ -82,5 +78,17 @@ public class WorkStation : BoardObject, IWorkStation
         {
             Initialize(WorkStationData, Direction);
         }
+    }
+
+    private void OnEnable()
+    {
+        WorkStationRegistry.Instance.AddWorkStation(this);
+        TaskManager.Instance.TrySetTask();
+    }
+    private void OnDisable()
+    {
+        WorkStationRegistry.Instance.RemoveWorkStation(this);
+        
+        Debug.Log("OnDisable()");
     }
 }

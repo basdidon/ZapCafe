@@ -10,18 +10,20 @@ public interface ITask
     public IWorkStation WorkStation { get; }
     public List<Vector3Int> Waypoints { get; }
 
+    float CreateAt { get; }
+    int Depth { get; }
+
     float Duration { get; }
 
     bool TryGetWorkStation(Worker worker,out IWorkStation workStation);
 
     public Action Pending { get; set; }
     public Action Started { get; set; }
+    public Action Cancled { get; set; }
     public Action Performed { get; set; }
 
     TaskStates TaskState { get; }
     void SetTask(Worker[] workers);
-
-    int GetSubTasks(List<ITask> tasks);
 }
 
 public abstract class BaseTask : ITask
@@ -31,20 +33,74 @@ public abstract class BaseTask : ITask
     List<Vector3Int> waypoints;
     public List<Vector3Int> Waypoints { get => waypoints; }
 
+    public float CreateAt { get; }
+    public int Depth { get; }
+
+    ITask[] DependencyTasks { get; set; }
+
     public BaseTask()
     {
+        CreateAt = Time.time;
+        Depth = 0;
+
         Started += delegate {
             WorkStation.Worker = Worker;
             TaskState = TaskStates.Started;
         };
+
+        Cancled += delegate
+        {
+            Worker.CurrentTask = null;
+            Worker.CurrentState = Worker.IdleState;
+            Worker = null;
+            WorkStation.Worker = null;
+            WorkStation = null;
+            TaskState = TaskStates.Created;
+
+        };
+
         Performed += delegate {
             WorkStation.Worker = null;
             TaskState = TaskStates.Performed;
-            if (TaskManager.Instance.Tasks.Remove(this))
-            {
-                // Debug.Log($"{this.GetType()} was removed");
-            }
+            TaskManager.Instance.Tasks.Remove(this);
+            TaskManager.Instance.AvailableTasks.Remove(this);
         };
+    }
+
+    public BaseTask(int parentDepth):this()
+    {
+        Depth = parentDepth+1;
+    }
+
+    //protected abstract void SetDependencyTasks();
+    protected void SetDependencyTasks(ITask[] tasks =null)
+    {
+        DependencyTasks = tasks;
+        if (DependencyTasks == null || DependencyTasks.Length <= 0)
+        {
+            TaskManager.Instance.AvailableTasks.Add(this);
+        }
+        else
+        {
+            foreach (var task in DependencyTasks)
+            {
+                task.Performed += delegate
+                {
+                    if (DependencyTasks.All(_task => _task.TaskState == TaskStates.Performed))
+                    {
+                        if (TryGetWorkStation(task.Worker, out IWorkStation workStation))
+                        {
+                            SetTask(task.Worker, workStation);
+                        }
+                        else
+                        {
+                            TaskManager.Instance.AvailableTasks.Add(this);
+                        }
+
+                    }
+                };
+            }
+        }
     }
 
     public abstract float Duration { get; }
@@ -52,9 +108,10 @@ public abstract class BaseTask : ITask
 
     public Action Pending { get; set; }
     public Action Started { get; set; }
+    public Action Cancled { get; set; }
     public Action Performed { get; set; }
 
-    [field:SerializeField] public TaskStates TaskState { get; private set; }
+    [field: SerializeField] public TaskStates TaskState { get; private set; }
 
     public abstract IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs);
     public abstract bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs);
@@ -90,7 +147,7 @@ public abstract class BaseTask : ITask
             })
             .Where(pair => pair != null && pair.WorkStation != null);
 
-        if(TryCheckCondition(ref pairs))
+        if (TryCheckCondition(ref pairs))
         {
             var result = pairs
                 .OrderBy(pair => pair.Distance)
@@ -101,52 +158,6 @@ public abstract class BaseTask : ITask
 
             SetTask(result.Worker, result.WorkStation);
         }
-
-
-    }
-
-    // inverse decorator pattern
-    public bool IsAllPrepareTasksDone { get; private set; }
-    [SerializeReference] ITask[] prepareTasks;
-    public ITask[] PrepareTasks 
-    {
-        get => prepareTasks;
-        set
-        {
-            prepareTasks = value;
-        }
-    }
-
-    public int GetSubTasks(List<ITask> tasks)
-    {
-        if (new TaskStates[] { TaskStates.Pending,TaskStates.Started,TaskStates.Performed }.Contains(TaskState))// != TaskStates.Created || TaskState != TaskStates.Assigned)
-            return 0;
-
-        if (PrepareTasks == null || PrepareTasks.Length == 0)
-        {
-            tasks.Add(this);
-            return 1;
-        }
-
-        int n = 0;
-
-        IsAllPrepareTasksDone = true;
-        foreach (var _task in PrepareTasks)
-        {
-            n += _task.GetSubTasks(tasks);
-
-            if (_task.TaskState != TaskStates.Performed)
-                IsAllPrepareTasksDone = false;
-        }
-
-        if (n == 0 && IsAllPrepareTasksDone)
-        {
-            tasks.Add(this);
-            n++;
-        }
-
-        return n;
-        
     }
 }
 
@@ -171,3 +182,15 @@ public class WorkerWorkStationPair
         Distance = distance;
     }
 }
+/*
+public class DependentTasks
+{
+    public ITask SuccessorTask { get; set; }
+    public ITask[] ProcedecessorTasks { get; set; }
+
+    public DependentTasks(ITask successorTask,ITask[] )
+    {
+        ProcedecessorTask = procedecessorTask;
+        DependencyTasks = dependencyTasks;
+    }
+}*/
