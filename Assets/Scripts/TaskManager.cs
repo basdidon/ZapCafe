@@ -40,9 +40,10 @@ public class TaskManager : SerializedMonoBehaviour
         Tasks.Remove(task);
     }
 
+    
     public bool IsWorkstationAvailable(IWorkStation workStation)
     {
-        return !Tasks.All(task => task.TaskState == TaskStates.Started && task.WorkStation == workStation);
+        return !Tasks.Any(task => (task.TaskState == TaskStates.Started || task.TaskState == TaskStates.Pending) && task.WorkStation == workStation);
     } 
 
     public void AddAvaliableWorker(Worker worker)

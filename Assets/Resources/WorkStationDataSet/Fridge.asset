@@ -27,7 +27,7 @@ MonoBehaviour:
   <Description>k__BackingField: Grandma's Fridge, a legendary artifact, holds enchanted
     ingredients and quirky consumables. It occasionally transports adventurers to
     a whimsical food-themed dimension. Use wisely!
-  <Price>k__BackingField: 0
+  <Price>k__BackingField: 500
   localCellsPos:
   - {x: 0, y: 0, z: 0}
   <WorkingCellLocalDefault>k__BackingField: {x: 0, y: 1, z: 0}

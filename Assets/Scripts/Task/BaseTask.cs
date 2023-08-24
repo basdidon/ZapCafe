@@ -157,7 +157,7 @@ public abstract class BaseTask : ITask
     public void SetTask(Worker[] workers)
     {
         Debug.Log($"-- {this.GetType()}.SetTask() workers.Length = {workers.Length}");
-        var pairs = workers.Select(
+        IEnumerable<WorkerWorkStationPair> pairs = workers.Select(
             worker =>
             {
                 if (TryGetWorkStation(worker, out IWorkStation workStation))
@@ -171,11 +171,6 @@ public abstract class BaseTask : ITask
             })
             .Where(pair => pair != null && pair.WorkStation != null);
 
-        if (pairs.Count(i => true) <= 0)
-        {
-            Debug.Log("pair is empty");
-        }
-
         if (TryCheckCondition(ref pairs))
         {
             var result = pairs
@@ -183,7 +178,10 @@ public abstract class BaseTask : ITask
                 .First();
 
             if (result == null)
+            {
+                Debug.LogWarning("no one met conditions");
                 return;
+            }
 
             SetTask(result.Worker, result.WorkStation);
         }
