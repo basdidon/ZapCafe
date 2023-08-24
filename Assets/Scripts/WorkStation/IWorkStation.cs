@@ -5,17 +5,16 @@ public interface IWorkStation : IBoardObject
 {
     // Data
     WorkStationData WorkStationData { get; }
-    Worker Worker { get; set; }
+    //Worker Worker { get; set; }
     // WorkStationPos
     public Vector3Int[] LocalCellsPos { get; }
     public Vector3Int[] WorldCellsPos { get; }
 
-    public bool IsAvailable { get => Worker == null; }
+    public bool IsAvailable => TaskManager.Instance.IsWorkstationAvailable(this);
 
     // WorkingCell
     Vector3Int WorkingCellLocal { get; }
     Vector3Int WorkingCell => CellPosition + WorkingCellLocal;
-
 
     // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
     // both method need to use square root for get the result
@@ -30,7 +29,6 @@ public class WorkStation : BoardObject, IWorkStation
     SpriteRenderer SpriteRenderer { get; set; }
 
     [field: SerializeField] public WorkStationData WorkStationData { get; set; }
-    public Worker Worker { get; set; }
 
     public Vector3Int[] LocalCellsPos => WorkStationData.LocalCellsPos;
     public Vector3Int[] WorldCellsPos => LocalCellsPos.Select(cell => CellPosition + cell).ToArray();

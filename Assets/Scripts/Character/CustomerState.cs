@@ -23,7 +23,8 @@ namespace CustomerState
                     Charecter.Bar.Customer = Charecter;
                     var newTask = new GetOrderTask(Charecter.Bar);
                     newTask.Performed += Charecter.GetOrder;
-                    TaskManager.Instance.AddTask(newTask);
+                    /*Debug.Log("a");
+                    TaskManager.Instance.AddTask(newTask);*/
                 }
 
                 Charecter.CurrentState = Charecter.IdleState;

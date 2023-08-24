@@ -4,16 +4,15 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.ObjectModel;
 
-public class GetItemTask:BaseTask
+public class GetItemTask:BaseTask,IDependentTask
 {
     public override float Duration => 5f;
     [field: SerializeField] public ItemData ItemData { get; private set; }
     public ReadOnlyCollection<ItemData> Ingredients => ItemData.Ingredients;
     public WorkStationData WorkStationData => ItemData.WorkStation;
-    //[field: SerializeField] public BaseTask NextTask { get; private set; }
 
-    public List<BaseTask> Tasks { get; private set; }
     public ItemFactory ItemFactory { get; private set; }
+    public ITask[] DependencyTasks { get; set; }
 
     public GetItemTask(ItemData itemData,int parentDepth):base(parentDepth)
     {
@@ -28,12 +27,11 @@ public class GetItemTask:BaseTask
         if (WorkStationData == null)
             Debug.LogError("ItemData.WorkStationData Can't be null");
 
-        ITask[] tasks = null;
         if (Ingredients != null && Ingredients.Count > 0)
         {
-            tasks = Ingredients.Select((ingredient, idx) =>
+            ITask[] tasks = Ingredients.Select((ingredient, idx) =>
             {
-                var task = new AddItemToTask(this, Ingredients[idx],Depth);
+                var task = new AddItemToTask(this,Ingredients[idx],Depth);
 
                 task.Pending += delegate
                 {
@@ -42,26 +40,20 @@ public class GetItemTask:BaseTask
                 };
                 return task;
             }).ToArray();
+
+            (this as IDependentTask).SetDependencyTasks(tasks);
         }
-        SetDependencyTasks(tasks);
+        else
+        {
+            TaskManager.Instance.AddTask(this);
+        }
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
     {
-        Debug.Log("TryGetWorkStation");
-        if (WorkStation != null)
-        {
-            workStation = WorkStation;
-            return true;
-        }
-
-        var workStations = WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation);
-        workStations = workStations.ReadyToUse();
-        workStation = workStations.FindClosest(worker);
-        if (workStation != null)
-            return true;
-
-        return false;
+        WorkStation ??= WorkStationRegistry.Instance.GetWorkStations(ItemData.WorkStation).ReadyToUse().FindClosest(worker);
+        workStation = WorkStation;
+        return workStation != null;
     }
 
     public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class ServeOrderTaskInverse : BaseTask
+public class ServeOrderTask : BaseTask,IDependentTask
 {
     Order Order { get; }
     Customer Customer => Order.OrderBy;
-    ItemData ItemData { get; }
+    [field: SerializeField] public ItemData ItemData { get; private set; }
+    public ITask[] DependencyTasks { get; set; }
 
-    public ServeOrderTaskInverse(Order order,ItemData itemData)
+    public ServeOrderTask(Order order,ItemData itemData)
     {
         Order = order;
         ItemData = itemData;
@@ -24,7 +25,7 @@ public class ServeOrderTaskInverse : BaseTask
             (WorkStation as Bar).CustomerLeave();
         };
 
-        SetDependencyTasks(new ITask[] { new GetItemTask(ItemData,Depth+1) });
+        (this as IDependentTask).SetDependencyTasks(new GetItemTask(ItemData,Depth+1));
     }
 
     public override float Duration => 1f;

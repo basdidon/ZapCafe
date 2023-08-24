@@ -22,6 +22,6 @@ public class Order
 
     public void StartMakingOrder()
     {
-        Menus.ForEach(menu => TaskManager.Instance.AddTask(new ServeOrderTaskInverse(this,menu)));
+        Menus.ForEach(menu => TaskManager.Instance.AddTask(new ServeOrderTask(this,menu)));
     }
 }

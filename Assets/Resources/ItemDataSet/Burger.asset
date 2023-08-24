@@ -16,5 +16,5 @@ MonoBehaviour:
   <WorkStation>k__BackingField: {fileID: 11400000, guid: 7046183aa1d36ba4f8c88c17a1ddd850, type: 2}
   <Price>k__BackingField: 120
   ingredients:
-  - {fileID: 11400000, guid: b157d0a0b65f6df4590f865694e97f2b, type: 2}
   - {fileID: 11400000, guid: 65292ec9b368ea04ea46d275f3747fa0, type: 2}
+  - {fileID: 11400000, guid: b157d0a0b65f6df4590f865694e97f2b, type: 2}

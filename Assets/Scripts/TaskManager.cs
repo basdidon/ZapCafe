@@ -8,9 +8,8 @@ public class TaskManager : SerializedMonoBehaviour
 {
     public static TaskManager Instance { get; private set; }
 
-    [OdinSerialize] public List<ITask> Tasks { get; private set; }
     [OdinSerialize] public List<Worker> AvailableWorker { get; private set; }
-    [OdinSerialize] public List<ITask> AvailableTasks { get; set; }
+    [OdinSerialize] List<ITask> Tasks { get; set; }
 
     private void Awake()
     {
@@ -25,26 +24,43 @@ public class TaskManager : SerializedMonoBehaviour
 
         Tasks = new();
         AvailableWorker = new();
-        AvailableTasks = new();
-
     }
 
     public void AddTask(ITask newTask)
     {
         if (newTask == null)
             return;
-
+        Debug.Log("addtask");
         Tasks.Add(newTask);
         TrySetTask();
     }
+
+    public void RemoveTask(ITask task)
+    {
+        Tasks.Remove(task);
+    }
+
+    public bool IsWorkstationAvailable(IWorkStation workStation)
+    {
+        return !Tasks.All(task => task.TaskState == TaskStates.Started && task.WorkStation == workStation);
+    } 
 
     public void AddAvaliableWorker(Worker worker)
     {
         if (worker == null)
             return;
 
-        AvailableWorker.Add(worker);
-        TrySetTask();
+        ITask assignedTask = Tasks.Find(task => task.TaskState == TaskStates.Assigned && task.Worker == worker);
+
+        if (assignedTask != null && assignedTask.TryGetWorkStation(worker, out IWorkStation workStation))
+        {
+            assignedTask.SetTask(worker,workStation);
+        }
+        else
+        {
+            AvailableWorker.Add(worker);
+            TrySetTask();
+        }
     }
 
     public void TrySetTask()
@@ -54,7 +70,7 @@ public class TaskManager : SerializedMonoBehaviour
         if (Tasks.Count <= 0)
             return;
 
-        var orderedTasks = AvailableTasks
+        var orderedTasks = Tasks
             .Where(task=>task.TaskState == TaskStates.Created)
             .OrderBy(task => task.CreateAt)
             .ThenByDescending(task => task.Depth);
@@ -64,7 +80,6 @@ public class TaskManager : SerializedMonoBehaviour
             if (AvailableWorker.Count < 0)
                 break;
 
-            Debug.Log("asadafa");
             _task.SetTask(AvailableWorker.ToArray());
             
         }

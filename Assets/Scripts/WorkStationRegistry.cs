@@ -19,7 +19,11 @@ public class WorkStations : IEnumerable<IWorkStation>
 
     // Query
     public WorkStations Where(System.Func<IWorkStation,bool> match) => new(workStations.Where(match));
-    public WorkStations ReadyToUse() => Where(workStation => workStation.IsAvailable);
+    public WorkStations ReadyToUse() { 
+        var _workstations = Where(workStation => workStation.IsAvailable);
+        Debug.Log($"ReadyToUse => {_workstations.Count}");
+        return _workstations;
+    }
     public IWorkStation FindClosest(BoardObject boardObject)
     {
         if (workStations == null || workStations.Count == 0)
@@ -75,7 +79,12 @@ public class WorkStationRegistry : SerializedMonoBehaviour
     public void RemoveWorkStation(IWorkStation workStation) => workStations.Remove(workStation);
 
     // WorkStation Getter
-    public WorkStations GetWorkStations(WorkStationData workStationData) => workStations.Where(workStation => workStation.WorkStationData == workStationData);
+    public WorkStations GetWorkStations(WorkStationData workStationData)
+    {
+        var _workstations = workStations.Where(workStation => workStation.WorkStationData == workStationData);
+        Debug.Log($"GetWorkStations => {_workstations.Count}");
+        return _workstations;
+    }
     public IEnumerable<T> GetWorkStationsByType<T>() where T : IWorkStation
         => workStations.OfType<T>();
 

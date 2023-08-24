@@ -34,33 +34,35 @@ namespace WorkerState
     public class ExecutingTask : ISelfExitState
     {
         Worker Worker { get; }
+        ITask CurrentTask { get; }
         float timeElapsed;
         float duration = 1f;
 
-        public ExecutingTask(Worker worker)
+        public ExecutingTask(Worker worker,ITask currentTask)
         {
             Worker = worker;
+            CurrentTask = currentTask;
         }
 
         public void EnterState()
-        {/*
+        {
             Worker.TaskProgress.SetActive(true);
             Worker.ProgressImg.fillAmount = 0f;
             if (Worker == null) Debug.Log("worker");
-            if (Worker.CurrentTask == null) Debug.Log("Task");
+            if (CurrentTask == null) Debug.Log("Task");
             
-            duration = Worker.CurrentTask.Duration;
+            duration = CurrentTask.Duration;
             timeElapsed = 0f;
 
-            var dir = Worker.CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position);
+            var dir = CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position);
             Worker.FacingDir = dir.y > 0 ? FacingDirs.Up : dir.x > 0 ? FacingDirs.Right : dir.x < 0 ? FacingDirs.Left : FacingDirs.Down;
-            */
+            
             Worker.StartCoroutine(StartTask());
         }
 
         IEnumerator StartTask()
         {
-            Worker.CurrentTask.Started?.Invoke();
+            CurrentTask.Started?.Invoke();
             while (timeElapsed < duration)
             {
                 Worker.ProgressImg.fillAmount = timeElapsed / duration;
@@ -68,8 +70,8 @@ namespace WorkerState
                 yield return null;
             }
 
-            Debug.Log($"{Worker.name} performed {Worker.CurrentTask}");
-            Worker.CurrentTask.Performed?.Invoke();
+            Debug.Log($"{Worker.name} performed {CurrentTask}");
+            CurrentTask.Performed?.Invoke();
 
             SetNextState();
         }
@@ -77,7 +79,6 @@ namespace WorkerState
         public void ExitState()
         {
             Worker.TaskProgress.SetActive(false);
-            Worker.CurrentTask = null;
         }
 
         public void SetNextState()

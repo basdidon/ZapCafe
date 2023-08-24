@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class AddItemToTask : BaseTask
+public class AddItemToTask : BaseTask,IDependentTask
 {
     public override float Duration => .5f;
     [field:SerializeField] public ItemData ItemData { get; private set; }
     public ITask NextTask { get; }
+    public ITask[] DependencyTasks { get; set; }
 
     public AddItemToTask(ITask nextTask,ItemData itemData,int parentDepth):base(parentDepth)
     {
@@ -23,7 +24,7 @@ public class AddItemToTask : BaseTask
             }
         };
 
-        SetDependencyTasks(new ITask[] { new GetItemTask(ItemData,Depth) });
+        (this as IDependentTask).SetDependencyTasks(new GetItemTask(ItemData, Depth));
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)

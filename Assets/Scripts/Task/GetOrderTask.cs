@@ -16,10 +16,11 @@ public class GetOrderTask : BaseTask
         };
         Performed += delegate
         {
+            TaskManager.Instance.RemoveTask(this);
             Worker.Animator.SetBool("IsTalking", false);
         };
 
-        SetDependencyTasks();
+        TaskManager.Instance.AddTask(this);
     }
 
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
