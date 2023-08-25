@@ -8,7 +8,7 @@ public class AddItemToTask : BaseTask,IDependentTask
     public override float Duration => .5f;
     [field:SerializeField] public ItemData ItemData { get; private set; }
     public ITask NextTask { get; }
-    public ITask[] DependencyTasks { get; set; }
+    public IEnumerable<ITask> DependencyTasks { get; set; }
 
     public AddItemToTask(ITask nextTask,ItemData itemData,int parentDepth):base(parentDepth)
     {
@@ -30,11 +30,6 @@ public class AddItemToTask : BaseTask,IDependentTask
     public override bool TryGetWorkStation(Worker worker, out IWorkStation workStation)
     {
         return NextTask.TryGetWorkStation(worker, out workStation);
-    }
-
-    public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        return pairs.Where(pair => pair.Worker.HoldingItem.Name == ItemData.name);
     }
 
     public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)

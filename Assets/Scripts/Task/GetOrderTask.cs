@@ -16,7 +16,6 @@ public class GetOrderTask : BaseTask
         };
         Performed += delegate
         {
-            TaskManager.Instance.RemoveTask(this);
             Worker.Animator.SetBool("IsTalking", false);
         };
 
@@ -27,11 +26,6 @@ public class GetOrderTask : BaseTask
     {
         workStation = Bar;
         return true;
-    }
-
-    public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        return pairs.Where(pair => pair.Worker.HoldingItem == null);
     }
 
     public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)

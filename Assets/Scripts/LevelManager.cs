@@ -37,6 +37,7 @@ public class LevelManager : MonoBehaviour
     {
         if(value > Coin)
         {
+            Debug.LogWarning("Coin not enough.");
             return false;
         }
         else

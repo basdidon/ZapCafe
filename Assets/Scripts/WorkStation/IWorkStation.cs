@@ -4,7 +4,7 @@ using System.Linq;
 public interface IWorkStation : IBoardObject
 {
     // Data
-    WorkStationData WorkStationData { get; }
+    WorkStationData WorkStationData { get; set; }
     //Worker Worker { get; set; }
     // WorkStationPos
     public Vector3Int[] LocalCellsPos { get; }
@@ -16,6 +16,9 @@ public interface IWorkStation : IBoardObject
     Vector3Int WorkingCellLocal { get; }
     Vector3Int WorkingCell => CellPosition + WorkingCellLocal;
 
+    // sprite
+    SpriteDirection SpriteDirection { get; set; }
+
     // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
     // both method need to use square root for get the result
     // but in this function, distance is no matter
@@ -26,7 +29,7 @@ public interface IWorkStation : IBoardObject
 public class WorkStation : BoardObject, IWorkStation
 {
     // component
-    SpriteRenderer SpriteRenderer { get; set; }
+    public SpriteRenderer SpriteRenderer { get; private set; }
 
     [field: SerializeField] public WorkStationData WorkStationData { get; set; }
 
@@ -35,47 +38,66 @@ public class WorkStation : BoardObject, IWorkStation
 
     public Vector3Int WorkingCellLocal => WorkStationData.GetWorkingCellLocal(Direction);
 
-    public override IsometricDirections Direction {
-        get => base.Direction;
-        set 
-        { 
-            base.Direction = value;
-            var sprite = WorkStationData.GetSprite(Direction);
+    public override Directions Direction { 
+        get => base.Direction; 
+        set
+        {
+            if (Direction == value)
+                return;
 
-            if (sprite != null)
-                SpriteRenderer.sprite = sprite;
-        } 
+            Direction = value;
+            UpdateSprite();
+        }
+    }
+
+    SpriteDirection spriteDirection;
+    public SpriteDirection SpriteDirection {
+        get => spriteDirection;
+        set
+        {
+            spriteDirection = value;
+            UpdateSprite();
+        }
+    }
+
+    void UpdateSprite()
+    {
+        var sprite = SpriteDirection.GetSprite(Direction);
+        if (sprite != null)
+        {
+            SpriteRenderer.sprite = sprite;
+        }
+        else
+        {
+            Debug.Log("spriteDirection is null, but render default sprite instead.");
+        }
     }
 
     // OdinCallback
+    /*
     private void OnDirectionChanged()
     {
-        var sprite = WorkStationData.GetSprite(Direction);
+        var sprite = WorkStationData;
         if (sprite != null)
             if(TryGetComponent(out SpriteRenderer renderer))
                 renderer.sprite = sprite;
-    }
+    }*/
 
-    public void Initialize(WorkStationData data, IsometricDirections dir)
+    private void Awake()
     {
         if (TryGetComponent(out SpriteRenderer renderer))
         {
             SpriteRenderer = renderer;
-            WorkStationData = data;
-            Direction = dir;
+            if (WorkStationData != null)
+            {
+                WorkStationData.Initialize(this);
+            }
         }
         else
         {
             Debug.LogError($"SpriteRenderer are required. ({gameObject.name})");
         }
-    }
 
-    private void Awake()
-    {
-        if (WorkStationData != null)
-        {
-            Initialize(WorkStationData, Direction);
-        }
     }
 
     private void OnEnable()
@@ -86,7 +108,5 @@ public class WorkStation : BoardObject, IWorkStation
     private void OnDisable()
     {
         WorkStationRegistry.Instance.RemoveWorkStation(this);
-        
-        Debug.Log("OnDisable()");
     }
 }

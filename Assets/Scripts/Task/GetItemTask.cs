@@ -6,17 +6,16 @@ using System.Collections.ObjectModel;
 
 public class GetItemTask:BaseTask,IDependentTask
 {
-    public override float Duration => 5f;
+    public override float Duration => ItemData.BaseDuration;
     [field: SerializeField] public ItemData ItemData { get; private set; }
     public ReadOnlyCollection<ItemData> Ingredients => ItemData.Ingredients;
     public WorkStationData WorkStationData => ItemData.WorkStation;
 
     public ItemFactory ItemFactory { get; private set; }
-    public ITask[] DependencyTasks { get; set; }
+    public IEnumerable<ITask> DependencyTasks { get; set; }
 
     public GetItemTask(ItemData itemData,int parentDepth):base(parentDepth)
     {
-        //Debug.Log($"getItemtask:{itemData.name} was created");
         ItemData = itemData;
 
         Performed += delegate {
@@ -29,18 +28,7 @@ public class GetItemTask:BaseTask,IDependentTask
 
         if (Ingredients != null && Ingredients.Count > 0)
         {
-            ITask[] tasks = Ingredients.Select((ingredient, idx) =>
-            {
-                var task = new AddItemToTask(this,Ingredients[idx],Depth);
-
-                task.Pending += delegate
-                {
-                    if (WorkStation == null)
-                        WorkStation = task.WorkStation;
-                };
-                return task;
-            }).ToArray();
-
+            ITask[] tasks = Ingredients.Select((ingredient, idx) => new AddItemToTask(this,Ingredients[idx],Depth)).ToArray();
             (this as IDependentTask).SetDependencyTasks(tasks);
         }
         else
@@ -56,16 +44,9 @@ public class GetItemTask:BaseTask,IDependentTask
         return workStation != null;
     }
 
-    public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        return pairs.Where(pair => pair.Worker.HoldingItem == null);
-    }
-
     public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)
     {
         pairs = pairs.Where(pair => pair.Worker.HoldingItem == null);
-        if (pairs.Count() > 0)
-            return true;
-        return false;
+        return pairs.Count() > 0;
     }
 }

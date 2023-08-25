@@ -8,7 +8,7 @@ public class ServeOrderTask : BaseTask,IDependentTask
     Order Order { get; }
     Customer Customer => Order.OrderBy;
     [field: SerializeField] public ItemData ItemData { get; private set; }
-    public ITask[] DependencyTasks { get; set; }
+    public IEnumerable<ITask> DependencyTasks { get; set; }
 
     public ServeOrderTask(Order order,ItemData itemData)
     {
@@ -44,11 +44,6 @@ public class ServeOrderTask : BaseTask,IDependentTask
 
         return false;
         
-    }
-
-    public override IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        return pairs.Where(pair => pair.Worker.HoldingItem.Name == ItemData.name);
     }
 
     public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)

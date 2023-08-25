@@ -8,6 +8,7 @@ public class ItemData : ScriptableObject
 {
     [field: SerializeField] public Sprite Sprite { get; private set; }
     [field: SerializeField] public WorkStationData WorkStation { get; private set; }
+    [field: SerializeField] public float BaseDuration { get; set; }
     [field: SerializeField] public int Price { get; set; }
 
     [BoxGroup("Ingredients")]

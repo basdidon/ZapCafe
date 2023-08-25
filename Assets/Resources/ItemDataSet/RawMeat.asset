@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Sprite>k__BackingField: {fileID: 21300000, guid: 3903e6eb30b2c1241aeecfe0dd345bde, type: 3}
   <WorkStation>k__BackingField: {fileID: 11400000, guid: 8cf457be858ba6c4487bea43dd687a4f, type: 2}
+  <BaseDuration>k__BackingField: 1
+  <Price>k__BackingField: 0
   ingredients: []

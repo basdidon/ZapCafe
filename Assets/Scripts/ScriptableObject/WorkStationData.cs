@@ -1,24 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-[System.Serializable]
-public struct Sprite4Dir
-{
-    public Sprite negativeX;
-    public Sprite positiveX;
-    public Sprite negativeY;
-    public Sprite positiveY;
-} 
+using UnityEngine.Rendering;
 
 [CreateAssetMenu(menuName = "ScriptableObject/WorkStation")]
 public class WorkStationData : ScriptableObject
 {
-    [field: SerializeField] Sprite4Dir PreviewSprites { get; set; }
-    [field: SerializeField] Sprite4Dir Sprites { get; set; }
+    [field: SerializeField] public SpriteDirection PreviewSprites { get;private set; }
+    [field: SerializeField] public SpriteDirection Sprites { get;private set; }
     [field: SerializeField] public Sprite Sprite { get; private set; }
-    [field: SerializeField] public GameObject Prefab { get; private set; }
-    [field: SerializeField] public string Description { get; set; }
+    [field: SerializeField] public string Description { get; private set; }
     [field: SerializeField] public float Price { get; private set; }
     [SerializeField] Vector3Int[] localCellsPos = new Vector3Int[] { Vector3Int.zero };
     public Vector3Int[] LocalCellsPos
@@ -29,40 +18,42 @@ public class WorkStationData : ScriptableObject
 
     [field: SerializeField] Vector3Int WorkingCellLocalDefault { get; set; }
 
-    public Sprite GetSprite(IsometricDirections direction)
+    public void Instantiate(Vector3 position, Transform parent)
     {
-        return direction switch
+        var go = new GameObject(name);
+        go.transform.position = position;
+        go.transform.parent = parent;
+        go.AddComponent<SpriteRenderer>();
+        var sortingGroup = go.AddComponent<SortingGroup>();
+        sortingGroup.sortingLayerName = "Object";
+
+        if (name != "Bar")
         {
-            IsometricDirections.NegativeX => Sprites.negativeX,
-            IsometricDirections.PositiveX => Sprites.positiveX,
-            IsometricDirections.NegativeY => Sprites.negativeY,
-            IsometricDirections.PositiveY => Sprites.positiveY,
-            _ => null,
-        };
+            var itemFactory = go.AddComponent<ItemFactory>();
+            Initialize(itemFactory);
+        }
+        else
+        {
+            throw new System.NotImplementedException();
+        }
+
     }
 
-    public Sprite GetPreviewSprite(IsometricDirections direction)
+    public void Initialize(IWorkStation workStation)
     {
-        return direction switch
-        {
-            IsometricDirections.NegativeX => PreviewSprites.negativeX,
-            IsometricDirections.PositiveX => PreviewSprites.positiveX,
-            IsometricDirections.NegativeY => PreviewSprites.negativeY,
-            IsometricDirections.PositiveY => PreviewSprites.positiveY,
-            _ => null,
-        };
+        workStation.SpriteDirection = Sprites;
+        workStation.WorkStationData = this;
     }
-
-    public Vector3Int GetWorkingCellLocal(IsometricDirections direction)
+    
+    public Vector3Int GetWorkingCellLocal(Directions direction)
     {
         var cell = WorkingCellLocalDefault;
         return direction switch
         {
-            IsometricDirections.NegativeX => new(-cell.y,cell.x,0),
-            IsometricDirections.NegativeY => -cell,
-            IsometricDirections.PositiveX => new(cell.y,-cell.x,0),
-            IsometricDirections.PositiveY => cell,
-            _ => Vector3Int.zero,
+            Directions.LeftDown => new (-cell.y,cell.x,0),
+            Directions.RightDown => -cell,
+            Directions.RightUp => new(cell.y,-cell.x,0),
+            _ => cell,
         };
     }
 }

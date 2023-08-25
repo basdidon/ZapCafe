@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using System;
@@ -13,7 +12,7 @@ public class BuildModeUiController : PanelControl
     public UIDocument uIDoc;
     VisualElement root;
 
-    IsometricDirections direction = IsometricDirections.NegativeX;
+    Directions Direction { get; set; }
 
     [SerializeField] Transform buildPreview;
     SpriteRenderer SpriteRenderer { get; set; }
@@ -34,7 +33,7 @@ public class BuildModeUiController : PanelControl
         set
         {
             workStationData = value;
-            SpriteRenderer.sprite = WorkStationData.GetPreviewSprite(direction);
+            SpriteRenderer.sprite = WorkStationData.PreviewSprites.GetSprite(Direction);
         }
     }
 
@@ -94,7 +93,6 @@ public class BuildModeUiController : PanelControl
                 SpriteRenderer.color = BoardManager.Instance.IsBuildableCell(previewCell) ? Color.green : Color.red;
                 WorkingCellRenderer.color = BoardManager.Instance.IsBuildableCell(WorkingCell)?Color.green:Color.red;
 
-                //confirmBtn.style.display = IsBuildable ? DisplayStyle.Flex : DisplayStyle.None;
                 confirmBtn.SetEnabled(IsBuildable);
 
                 buildPreview.position = MainGrid.GetCellCenterWorld(PreviewCell);
@@ -112,7 +110,7 @@ public class BuildModeUiController : PanelControl
         }
     }
 
-    Vector3Int WorkingCell => previewCell + WorkStationData.GetWorkingCellLocal(direction);
+    Vector3Int WorkingCell => previewCell + WorkStationData.GetWorkingCellLocal(Direction);
 
     private void SetPreviewPosition(InputAction.CallbackContext ctx)
     {
@@ -140,7 +138,7 @@ public class BuildModeUiController : PanelControl
         TileOverlay.Instance.Active();
         TouchPosAction.Enable();
         TouchPosAction.performed += SetPreviewPosition;
-        direction = IsometricDirections.NegativeX;
+        Direction = Directions.LeftDown;
     }
 
     protected override void Hide()
@@ -157,45 +155,27 @@ public class BuildModeUiController : PanelControl
     {
         if (!LevelManager.Instance.TrySpend(WorkStationData.Price))
         {
-            Debug.LogWarning("Coin not enough.");
             return;
         }
 
         Hide();
         Debug.Log("confirm");
-        var go = new GameObject(workStationData.name);
-        go.transform.position = buildPreview.position;
-        go.transform.parent = WorkStationsTransform;
-        go.AddComponent<SpriteRenderer>();
-        var sortingGroup = go.AddComponent<SortingGroup>();
-        sortingGroup.sortingLayerName = "Object";
-
-        if (WorkStationData.name != "Bar")
-        {
-            var itemFactory = go.AddComponent<ItemFactory>();
-            itemFactory.Initialize(WorkStationData, direction);
-        }
-        else
-        {
-            throw new System.NotImplementedException();
-        }
-
+        WorkStationData.Instantiate(buildPreview.position, WorkStationsTransform);
         UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
     }
 
     public void OnRatate(ClickEvent clickEvent)
     {
-        direction += 1;
-        if (Enum.GetNames(typeof(IsometricDirections)).Length <= (int)direction)
+        Direction += 1;
+        if (Enum.GetNames(typeof(IsometricDirections)).Length <= (int)Direction)
         {
-            direction = 0;
+            Direction = 0;
         }
 
-        SpriteRenderer.sprite = WorkStationData.GetPreviewSprite(direction);
+        SpriteRenderer.sprite = WorkStationData.PreviewSprites.GetSprite(Direction);
         WorkingCellRenderer.color = BoardManager.Instance.IsBuildableCell(WorkingCell) ? Color.green : Color.red;
         workingCellPreview.position = MainGrid.GetCellCenterWorld(WorkingCell);
 
-        //confirmBtn.style.display = IsBuildable ? DisplayStyle.Flex : DisplayStyle.None;
         confirmBtn.SetEnabled(IsBuildable);
 
         Debug.Log("rotate");

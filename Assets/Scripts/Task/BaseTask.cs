@@ -31,7 +31,7 @@ public interface ITask
 
 public interface IDependentTask : ITask
 {
-    ITask[] DependencyTasks { get; set; }
+    IEnumerable<ITask> DependencyTasks { get; set; }
 
     public void SetDependencyTasks(ITask task)
     {
@@ -62,14 +62,8 @@ public interface IDependentTask : ITask
                 if (TryGetWorkStation(task.Worker, out IWorkStation workStation))
                 {
                     this.AssignWorker(task.Worker);
-                    TaskManager.Instance.AddTask(this);
-                    //SetTask(task.Worker, workStation);
                 }
-                else
-                {
-                    TaskManager.Instance.AddTask(this);
-                }
-
+                TaskManager.Instance.AddTask(this);
             }
         };
     }
@@ -90,9 +84,9 @@ public abstract class BaseTask : ITask
         CreateAt = Time.time;
         Depth = 0;
 
-        Started += delegate {
-            TaskState = TaskStates.Started;
-        };
+        Assigned += delegate { TaskState = TaskStates.Assigned; };
+        Pending += delegate { TaskState = TaskStates.Pending; };
+        Started += delegate { TaskState = TaskStates.Started; };
 
         Cancled += delegate
         {
@@ -100,7 +94,6 @@ public abstract class BaseTask : ITask
             Worker = null;
             WorkStation = null;
             TaskState = TaskStates.Created;
-
         };
 
         Performed += delegate {
@@ -117,6 +110,7 @@ public abstract class BaseTask : ITask
     public abstract float Duration { get; }
     public abstract bool TryGetWorkStation(Worker worker, out IWorkStation workStation);
 
+    public Action Assigned { get; set; }
     public Action Pending { get; set; }
     public Action Started { get; set; }
     public Action Cancled { get; set; }
@@ -124,13 +118,12 @@ public abstract class BaseTask : ITask
 
     [field: SerializeField] public TaskStates TaskState { get; private set; }
 
-    public abstract IEnumerable<WorkerWorkStationPair> GetTaskCondition(IEnumerable<WorkerWorkStationPair> pairs);
     public abstract bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs);
 
     public void AssignWorker(Worker worker)
     {
         Worker = worker;
-        TaskState = TaskStates.Assigned;
+        Assigned?.Invoke();
     }
 
     public void SetTask(Worker worker, IWorkStation workStation)
@@ -150,7 +143,7 @@ public abstract class BaseTask : ITask
             TaskManager.Instance.AvailableWorker.Remove(Worker);
             WorkStation = workStation;
             Worker.CurrentState = new MoveState(worker, Waypoints, new ExecutingTask(worker,this));
-            TaskState = TaskStates.Pending;
+            Pending?.Invoke();
         }
     }
 

@@ -7150,7 +7150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6828532762592861826, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
       propertyPath: direction
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6828532762592861826, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
       propertyPath: <Recipes>k__BackingField.Array.size
@@ -7183,7 +7183,7 @@ PrefabInstance:
     - target: {fileID: 9088215014415696478, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 362179904, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
+      objectReference: {fileID: 1236838490, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
