@@ -1,0 +1,35 @@
+:root {
+    --color-main: rgb(205, 196, 145);
+    --color-progress-background: rgb(146, 124, 98);
+    --color-border: rgb(76, 60, 48);
+}
+
+.unity-progress-bar {
+}
+
+.unity-progress-bar__container {
+    max-height: 50px;
+    min-height: 50px;
+}
+
+.unity-progress-bar__background {
+    background-color: var(--color-progress-background);
+    border-color: var(--color-border);
+    border-width: 8px 8px 8px 0;
+    border-radius: 0 16px 16px 0;
+}
+
+.unity-progress-bar__progress {
+    background-color: var(--color-main);
+    margin : 0px;
+}
+
+.level-text-container {
+    background-color: var(--color-main);
+    border-color: var(--color-border);
+    border-width: 8px;
+    border-radius: 16px 0 16px 16px;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}

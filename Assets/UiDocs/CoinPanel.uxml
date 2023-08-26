@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UiDocs/LevelPanel.uss?fileID=7433441132597879392&amp;guid=1cb72631e979449429207ae7dc869db1&amp;type=3#LevelPanel" />
+    <ui:VisualElement style="background-color: rgb(205, 196, 145); flex-grow: 1; flex-direction: row; align-items: center; padding-left: 12px; padding-right: 12px; border-left-color: rgb(76, 60, 48); border-right-color: rgb(76, 60, 48); border-top-color: rgb(76, 60, 48); border-bottom-color: rgb(76, 60, 48); border-left-width: 8px; border-right-width: 8px; border-top-width: 8px; border-bottom-width: 8px;">
+        <ui:Label tabindex="-1" text="45651" display-tooltip-when-elided="true" name="coin-txt" style="margin-left: auto; font-size: 48px; -unity-font-style: bold;" />
+        <ui:Label tabindex="-1" text="C" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 48px; margin-left: 2px; -unity-text-align: middle-center; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -7,19 +7,56 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
 
-    [SerializeField] float coin;
-    public float Coin
+    [SerializeField] int coin;
+    public int Coin
     {
         get => coin;
         set
         {
             coin = value;
-            OnCoinChanged?.Invoke(Coin);
+            CoinChangedEvent?.Invoke(Coin);
         }
     }
 
-    public delegate void CoinChangedEvent(float newCoinValue);
-    public CoinChangedEvent OnCoinChanged;
+    [SerializeField] int level = 1;
+    public int Level
+    {
+        get => level;
+        private set
+        {
+            level = value;
+            LevelChangedEvent?.Invoke(Level, maxExp[Level - 1]);
+        }
+    }
+
+    readonly int[] maxExp = new[] { 100, 250, 800, 1500 };
+    public int MaxExpLvl_1 => maxExp[0];
+
+    [SerializeField] int exp = 0;
+    public int Exp
+    {
+        get => exp;
+        set
+        {
+            exp = value;
+            if(Level-1 < maxExp.Length && exp >= maxExp[Level - 1])
+            {
+                exp -= maxExp[Level - 1];
+                Level++;
+            }
+            ExpChangedEvent?.Invoke(exp);
+            Debug.Log("exp changed");
+        }
+    }
+
+    public delegate void IntChangedEventHandler(int newInt);
+    // Event
+    public event IntChangedEventHandler CoinChangedEvent;
+    public event IntChangedEventHandler ExpChangedEvent;
+
+    public delegate void LevelChangedEventHandler(int newExp,int maxExp);
+    public event LevelChangedEventHandler LevelChangedEvent;
+    
 
     private void Awake()
     {
@@ -33,7 +70,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public bool TrySpend(float value)
+    public bool TrySpend(int value)
     {
         if(value > Coin)
         {

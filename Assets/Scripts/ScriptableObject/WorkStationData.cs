@@ -8,7 +8,7 @@ public class WorkStationData : ScriptableObject
     [field: SerializeField] public SpriteDirection Sprites { get;private set; }
     [field: SerializeField] public Sprite Sprite { get; private set; }
     [field: SerializeField] public string Description { get; private set; }
-    [field: SerializeField] public float Price { get; private set; }
+    [field: SerializeField] public int Price { get; private set; }
     [SerializeField] Vector3Int[] localCellsPos = new Vector3Int[] { Vector3Int.zero };
     public Vector3Int[] LocalCellsPos
     {

@@ -1,6 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; background-color: rgb(184, 236, 112); width: 40%; height: 100px; flex-direction: row; margin-left: auto; max-height: 100px; min-height: 100px; max-width: 600px; min-width: 480px;">
-        <ui:Label tabindex="-1" text="999999" display-tooltip-when-elided="true" name="CoinText" style="width: 80%; -unity-text-align: middle-right; font-size: 36px; align-self: auto; padding-left: 12px; padding-right: 12px; padding-top: 8px; padding-bottom: 8px; -unity-font-style: bold;" />
-        <ui:Label tabindex="-1" text="C" display-tooltip-when-elided="true" style="width: 80px; -unity-text-align: middle-center; font-size: 48px; -unity-font-style: bold; padding-left: 12px; padding-right: 12px; padding-top: 8px; padding-bottom: 8px; background-image: none;" />
-    </ui:VisualElement>
-</ui:UXML>

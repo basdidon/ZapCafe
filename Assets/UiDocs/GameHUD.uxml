@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="LevelProgress" src="project://database/Assets/UiDocs/LevelProgress.uxml?fileID=9197481963319205126&amp;guid=d9a0936381a885540bddc06b9137531f&amp;type=3#LevelProgress" />
+    <ui:Template name="CoinPanel" src="project://database/Assets/UiDocs/CoinPanel.uxml?fileID=9197481963319205126&amp;guid=7381ceccb178efe4388157e9861168d3&amp;type=3#CoinPanel" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row;">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; height: 100px; justify-content: space-between;">
+            <ui:Instance template="LevelProgress" name="LevelProgress" style="max-width: 45%; flex-grow: 1;" />
+            <ui:Instance template="CoinPanel" name="CoinPanel" style="flex-grow: 1; width: 45%; max-width: 45%;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -20,6 +20,7 @@ public class ServeOrderTask : BaseTask,IDependentTask
             Customer.HoldingItem = Worker.HoldingItem;
             Worker.HoldingItem = null;
             LevelManager.Instance.Coin += itemData.Price;
+            LevelManager.Instance.Exp += 50;
             OrderManager.Instance.RemoveOrder(order);
             TextSpawner.Instance.SpawnText($"+ {itemData.Price}", Customer.transform.position + Vector3.up * 2);
             (WorkStation as Bar).CustomerLeave();

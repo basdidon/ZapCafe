@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
@@ -90,6 +89,12 @@ public class BuildModeUiController : PanelControl
             {
                 previewCell = value;
 
+                if (buildPreview.gameObject.activeSelf == false)
+                    buildPreview.gameObject.SetActive(true);
+
+                if (workingCellPreview.gameObject.activeSelf == false)
+                    workingCellPreview.gameObject.SetActive(true);
+
                 SpriteRenderer.color = BoardManager.Instance.IsBuildableCell(previewCell) ? Color.green : Color.red;
                 WorkingCellRenderer.color = BoardManager.Instance.IsBuildableCell(WorkingCell)?Color.green:Color.red;
 
@@ -101,11 +106,6 @@ public class BuildModeUiController : PanelControl
                 CenterOffset = -new Vector2(buildMenuPanel.resolvedStyle.width, buildMenuPanel.resolvedStyle.height) / 2 + Offset;
                 buildMenuPanel.transform.position = RuntimePanelUtils.CameraTransformWorldToPanel(root.panel, buildPreview.position, Camera.main) + CenterOffset;
 
-                if (buildPreview.gameObject.activeSelf == false)
-                    buildPreview.gameObject.SetActive(true);
-
-                if (workingCellPreview.gameObject.activeSelf == false)
-                    workingCellPreview.gameObject.SetActive(true);
             }
         }
     }

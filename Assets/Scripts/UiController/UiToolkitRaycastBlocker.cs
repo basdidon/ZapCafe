@@ -49,6 +49,7 @@ public class UItoolkitRayCastBlocker : MonoBehaviour
         {
             if (blocker.IsPointerOverBlocker(mousePosWorld))
             {
+                Debug.Log(blocker.name);
                 return true;
             }
         }

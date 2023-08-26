@@ -31,9 +31,22 @@
 .build-menu-entry-btn {
 }
 
-.unity-collection-view__item{
-    color: rgb(0,0,0); /* repalce "color : white" */
+.unity-collection-view__item {
+    color: rgb(0, 0, 0);
 }
 
 .unity-list-view {
+}
+
+.unity-progress-bar {
+}
+
+.unity-progress-bar__container {
+    max-height: 50px;
+    min-height: 50px;
+}
+
+.unity-progress-bar__background {
+    background-color: rgb(9, 177, 236);
+    border-width: 5px;
 }
