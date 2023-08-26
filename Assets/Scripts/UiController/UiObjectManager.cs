@@ -46,7 +46,6 @@ public class UiObjectManager : MonoBehaviour
             var touchPos = inputs.Gameplay.TouchPosition.ReadValue<Vector2>();
             if (UItoolkitRayCastBlocker.IsPointerOverBlockers(touchPos))
             {
-                Debug.Log("raycast blocked");
                 return;
             }
             var ray = Camera.main.ScreenPointToRay(touchPos);

@@ -45,7 +45,7 @@ public class WorkStation : BoardObject, IWorkStation
             if (Direction == value)
                 return;
 
-            Direction = value;
+            base.Direction = value;
             UpdateSprite();
         }
     }
@@ -60,8 +60,22 @@ public class WorkStation : BoardObject, IWorkStation
         }
     }
 
+    public void SetSpriteDirection(SpriteDirection _spriteDirection)
+    {
+        spriteDirection = _spriteDirection;
+    }
+
+    public void SetSpriteDirection(SpriteDirection spriteDirection, Directions direction)
+    {
+        SetSpriteDirection(spriteDirection);
+        Direction = direction;
+    }
+
     void UpdateSprite()
     {
+        if (SpriteDirection == null)
+            return;
+
         var sprite = SpriteDirection.GetSprite(Direction);
         if (sprite != null)
         {

@@ -23,7 +23,6 @@ MonoBehaviour:
     <RightUpSprite>k__BackingField: {fileID: -371621661, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
     <RightDownSprite>k__BackingField: {fileID: 362179904, guid: 612a0e343e400604682190b55a1ced0c, type: 3}
   <Sprite>k__BackingField: {fileID: 21300000, guid: 7a7b91275b86350428a6cfee34667662, type: 3}
-  <Prefab>k__BackingField: {fileID: 2284181946192601432, guid: 1b5fcf0018743784fbf4f046ceaf9621, type: 3}
   <Description>k__BackingField: Grandma's Fridge, a legendary artifact, holds enchanted
     ingredients and quirky consumables. It occasionally transports adventurers to
     a whimsical food-themed dimension. Use wisely!

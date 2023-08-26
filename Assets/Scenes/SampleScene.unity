@@ -184,7 +184,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: bd13bdcbf2ff9ef458fd590f13fe856c, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 38fca3993d3d4e348a59051ccba0aeec, type: 3}
-  m_SortingOrder: 5
+  m_SortingOrder: 0
 --- !u!1 &14641886
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14641886}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ee8d49054640ea4eaa9d53bfb8e2169, type: 3}
   m_Name: 
@@ -3182,14 +3182,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010f00000041007600610069006c00610062006c00650057006f0072006b00650072000101050000005400610073006b0073002f000000000145000000530079007300740065006d002e0043006f006c006c0065006300740069006f006e0073002e00470065006e0065007200690063002e004c00690073007400600031005b005b0049005400610073006b002c00200041007300730065006d0062006c0079002d004300530068006100720070005d005d002c0020006d00730063006f0072006c0069006200000000000600000000000000000705
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: AvailableWorker
+      Entry: 6
+      Data: 
+    - Name: Tasks
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[ITask, Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!114 &482486547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3203,14 +3218,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 0
-    SerializedBytes: 2d010c00000077006f0072006b00530074006100740069006f006e007300
+    SerializedFormat: 2
+    SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: workStations
+      Entry: 6
+      Data: 
 --- !u!114 &482486550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3223,7 +3241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2349d8f3783b824888af5d2efb5585b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coin: 1000
+  coin: 5000
   level: 1
   exp: 0
 --- !u!114 &482486551

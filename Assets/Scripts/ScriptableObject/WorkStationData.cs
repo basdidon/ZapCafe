@@ -18,7 +18,7 @@ public class WorkStationData : ScriptableObject
 
     [field: SerializeField] Vector3Int WorkingCellLocalDefault { get; set; }
 
-    public void Instantiate(Vector3 position, Transform parent)
+    public void Instantiate(Vector3 position,Directions direction, Transform parent)
     {
         var go = new GameObject(name);
         go.transform.position = position;
@@ -30,13 +30,13 @@ public class WorkStationData : ScriptableObject
         if (name != "Bar")
         {
             var itemFactory = go.AddComponent<ItemFactory>();
+            itemFactory.Direction = direction;
             Initialize(itemFactory);
         }
         else
         {
             throw new System.NotImplementedException();
         }
-
     }
 
     public void Initialize(IWorkStation workStation)

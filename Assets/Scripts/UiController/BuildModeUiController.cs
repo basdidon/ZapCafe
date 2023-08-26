@@ -104,6 +104,13 @@ public class BuildModeUiController : PanelControl
                 workingCellPreview.position = MainGrid.GetCellCenterWorld(WorkingCell);
 
                 CenterOffset = -new Vector2(buildMenuPanel.resolvedStyle.width, buildMenuPanel.resolvedStyle.height) / 2 + Offset;
+
+                if (buildMenuPanel == null)
+                    Debug.Log("here");
+
+                if(root.panel == null)
+                    Debug.Log("here");
+
                 buildMenuPanel.transform.position = RuntimePanelUtils.CameraTransformWorldToPanel(root.panel, buildPreview.position, Camera.main) + CenterOffset;
 
             }
@@ -160,7 +167,7 @@ public class BuildModeUiController : PanelControl
 
         Hide();
         Debug.Log("confirm");
-        WorkStationData.Instantiate(buildPreview.position, WorkStationsTransform);
+        WorkStationData.Instantiate(buildPreview.position, Direction,WorkStationsTransform);
         UiEvents.instance.DisplayUiTriggerEvent("MenuGameplay");
     }
 
