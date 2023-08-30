@@ -19,11 +19,7 @@ public interface IWorkStation : IBoardObject
     // sprite
     SpriteDirection SpriteDirection { get; set; }
 
-    // *** Vector3.Distance(a,b) is the same as (a-b).magnitude ***
-    // both method need to use square root for get the result
-    // but in this function, distance is no matter
-    // so i just use Vector3.sqrMagnitude find which object is closer
-    public float SqrMagnitude (BoardObject boardObject)=> (boardObject.CellCenterWorld - CellCenterWorld).sqrMagnitude;
+    public int RangeFrom(BoardObject boardObject) => Mathf.Abs(boardObject.CellPosition.x - WorkingCell.x) + Mathf.Abs(boardObject.CellPosition.y - WorkingCell.y);
 }
 
 public class WorkStation : BoardObject, IWorkStation

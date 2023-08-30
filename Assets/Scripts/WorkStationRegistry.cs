@@ -32,15 +32,16 @@ public class WorkStations : IEnumerable<IWorkStation>
         }
 
         var workStation = workStations[0];
-        var minSqrMagnitude = workStation.SqrMagnitude(boardObject);
+        var minRange = workStation.RangeFrom(boardObject);
 
         for (int i = 1; i < workStations.Count; i++)
         {
-            var sqrMagnitude = workStations[i].SqrMagnitude(boardObject);
-            if (sqrMagnitude < minSqrMagnitude)
+            var range = workStations[i].RangeFrom(boardObject);
+
+            if (range < minRange)
             {
                 workStation = workStations[i];
-                minSqrMagnitude = sqrMagnitude;
+                minRange = range;
             }
         }
 

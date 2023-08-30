@@ -34,8 +34,8 @@ public class LevelProgressUiController : MonoBehaviour
             LevelProgressTxt.text = maxLevel.ToString();
             // if highValue is 0 equal low value progressbar show at 0%
             // so we just set highValue and value with same number that more than 0
-            LevelProgressBar.highValue = 1;
-            LevelProgressBar.value = 1;
+            LevelProgressBar.highValue = 100;
+            LevelProgressBar.value = 100;
         };
     }
 }

@@ -156,7 +156,7 @@ public abstract class BaseTask : ITask
                 if (TryGetWorkStation(worker, out IWorkStation workStation))
                 {
                     Debug.Log($"{worker.name} was accepted");
-                    var distance = workStation.SqrMagnitude(worker);
+                    var distance = workStation.RangeFrom(worker);
                     return new WorkerWorkStationPair(worker, workStation, distance);
                 }
                 Debug.Log($"{worker.name} was rejected");

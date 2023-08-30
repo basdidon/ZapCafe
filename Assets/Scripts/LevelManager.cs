@@ -29,6 +29,7 @@ public class LevelManager : MonoBehaviour
             if(maxExp.Length == Level - 1)
             {
                 OnMaxLevelEvent?.Invoke(Level);
+                Debug.Log("onMaxLevel");
             }
             else
             {
@@ -56,6 +57,8 @@ public class LevelManager : MonoBehaviour
             {
                 exp -= maxExp[Level - 1];
                 Level++;
+                if (maxExp.Length == Level - 1) // on max level at first time
+                    return;
             }
             ExpChangedEvent?.Invoke(exp);
             Debug.Log("exp changed");
