@@ -5,7 +5,7 @@
             <ui:Label tabindex="-1" text="12" display-tooltip-when-elided="true" name="level-txt" style="-unity-text-align: middle-center; white-space: nowrap; font-size: 56%; -unity-font-style: bold; text-overflow: ellipsis; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; position: absolute;" />
         </ui:VisualElement>
         <ui:VisualElement style="flex-grow: 4; background-color: rgba(0, 0, 0, 0);">
-            <ui:ProgressBar value="25" name="level-progress" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+            <ui:ProgressBar value="25" name="level-progress" high-value="100" low-value="0" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -28,5 +28,14 @@ public class LevelProgressUiController : MonoBehaviour
             Debug.Log($"exp changed : {newExp}");
             LevelProgressBar.value = newExp;
         };
+
+        LevelManager.Instance.OnMaxLevelEvent += (maxLevel) =>
+        {
+            LevelProgressTxt.text = maxLevel.ToString();
+            // if highValue is 0 equal low value progressbar show at 0%
+            // so we just set highValue and value with same number that more than 0
+            LevelProgressBar.highValue = 1;
+            LevelProgressBar.value = 1;
+        };
     }
 }

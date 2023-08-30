@@ -25,7 +25,16 @@ public class LevelManager : MonoBehaviour
         private set
         {
             level = value;
-            LevelChangedEvent?.Invoke(Level, maxExp[Level - 1]);
+            
+            if(maxExp.Length == Level - 1)
+            {
+                OnMaxLevelEvent?.Invoke(Level);
+            }
+            else
+            {
+                LevelChangedEvent?.Invoke(Level, maxExp[Level - 1]);
+            }
+            
         }
     }
 
@@ -39,6 +48,10 @@ public class LevelManager : MonoBehaviour
         set
         {
             exp = value;
+
+            if(maxExp.Length == Level-1) // on max level
+                return;
+
             if(Level-1 < maxExp.Length && exp >= maxExp[Level - 1])
             {
                 exp -= maxExp[Level - 1];
@@ -53,9 +66,11 @@ public class LevelManager : MonoBehaviour
     // Event
     public event IntChangedEventHandler CoinChangedEvent;
     public event IntChangedEventHandler ExpChangedEvent;
+    public event IntChangedEventHandler OnMaxLevelEvent;
 
     public delegate void LevelChangedEventHandler(int newExp,int maxExp);
     public event LevelChangedEventHandler LevelChangedEvent;
+
     
 
     private void Awake()
