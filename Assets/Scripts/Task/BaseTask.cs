@@ -24,7 +24,7 @@ public interface ITask
     public Action Performed { get; set; }
 
     TaskStates TaskState { get;}
-    void SetTask(Worker[] workers);
+    void SetTask(IEnumerable<Worker> workers);
     void SetTask(Worker worker,IWorkStation workStation);
     void AssignWorker(Worker worker);
 }
@@ -118,7 +118,7 @@ public abstract class BaseTask : ITask
 
     [field: SerializeField] public TaskStates TaskState { get; private set; }
 
-    public abstract bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs);
+    public abstract bool TryCheckCondition(Worker worker,IWorkStation workStation);
 
     public void AssignWorker(Worker worker)
     {
@@ -147,37 +147,26 @@ public abstract class BaseTask : ITask
         }
     }
 
-    public void SetTask(Worker[] workers)
+    public void SetTask(IEnumerable<Worker> workers)
     {
-        Debug.Log($"-- {this.GetType()}.SetTask() workers.Length = {workers.Length}");
-        IEnumerable<WorkerWorkStationPair> pairs = workers.Select(
-            worker =>
-            {
-                if (TryGetWorkStation(worker, out IWorkStation workStation))
+        WorkerWorkStationPair result = workers.Select(
+                worker =>
                 {
-                    Debug.Log($"{worker.name} was accepted");
-                    var distance = workStation.RangeFrom(worker);
-                    return new WorkerWorkStationPair(worker, workStation, distance);
-                }
-                Debug.Log($"{worker.name} was rejected");
-                return null;
-            })
-            .Where(pair => pair != null && pair.WorkStation != null);
+                    if (TryGetWorkStation(worker, out IWorkStation workStation) && TryCheckCondition(worker, workStation))
+                    {
+                        var distance = workStation.RangeFrom(worker);
+                        return new WorkerWorkStationPair(worker, workStation, distance);
+                    }
+                    return null;
+                })
+            .SkipWhile(pair => pair == null || pair.WorkStation == null)
+            .OrderBy(pair => pair.Distance)
+            .FirstOrDefault();
 
-        if (TryCheckCondition(ref pairs))
-        {
-            var result = pairs
-                .OrderBy(pair => pair.Distance)
-                .First();
+        if (result == null)
+            return;
 
-            if (result == null)
-            {
-                Debug.LogWarning("no one met conditions");
-                return;
-            }
-
-            SetTask(result.Worker, result.WorkStation);
-        }
+        SetTask(result.Worker, result.WorkStation);
     }
 }
 
@@ -193,9 +182,9 @@ public class WorkerWorkStationPair
 {
     public Worker Worker { get; }
     public IWorkStation WorkStation { get; }
-    public float? Distance { get; }
+    public float Distance { get; }
 
-    public WorkerWorkStationPair(Worker worker, IWorkStation workStation, float? distance)
+    public WorkerWorkStationPair(Worker worker, IWorkStation workStation, float distance)
     {
         Worker = worker;
         WorkStation = workStation;

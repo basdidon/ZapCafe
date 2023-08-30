@@ -43,9 +43,5 @@ public class GetItemTask:BaseTask,IDependentTask
         return workStation != null;
     }
 
-    public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        pairs = pairs.Where(pair => pair.Worker.HoldingItem == null);
-        return pairs.Count() > 0;
-    }
+    public override bool TryCheckCondition(Worker worker, IWorkStation workStation) => worker.HoldingItem == null;
 }

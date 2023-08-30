@@ -32,11 +32,5 @@ public class AddItemToTask : BaseTask,IDependentTask
         return NextTask.TryGetWorkStation(worker, out workStation);
     }
 
-    public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        pairs = pairs.Where(pair => pair.Worker.HoldingItem?.Name == ItemData.name);
-        if (pairs.Count() > 0)
-            return true;
-        return false;
-    }
+    public override bool TryCheckCondition(Worker worker, IWorkStation workStation) => worker.HoldingItem?.Name == ItemData.name;
 }

@@ -27,11 +27,5 @@ public class GetOrderTask : BaseTask
         return true;
     }
 
-    public override bool TryCheckCondition(ref IEnumerable<WorkerWorkStationPair> pairs)
-    {
-        pairs = pairs.Where(pair => pair.Worker.HoldingItem == null);
-        if (pairs.Count() > 0)
-            return true;
-        return false;
-    }
+    public override bool TryCheckCondition(Worker worker, IWorkStation workStation) => worker.HoldingItem == null;
 }

@@ -30,7 +30,7 @@ public class TaskManager : SerializedMonoBehaviour
     {
         if (newTask == null)
             return;
-        Debug.Log("addtask");
+        Debug.Log($"Task '{newTask}' added.");
         Tasks.Add(newTask);
         TrySetTask();
     }
@@ -40,7 +40,6 @@ public class TaskManager : SerializedMonoBehaviour
         Tasks.Remove(task);
     }
 
-    
     public bool IsWorkstationAvailable(IWorkStation workStation)
     {
         return !Tasks.Any(task => (task.TaskState == TaskStates.Started || task.TaskState == TaskStates.Pending) && task.WorkStation == workStation);
@@ -81,8 +80,7 @@ public class TaskManager : SerializedMonoBehaviour
             if (AvailableWorker.Count < 0)
                 break;
 
-            _task.SetTask(AvailableWorker.ToArray());
-            
+            _task.SetTask(AvailableWorker);
         }
     }
 }
