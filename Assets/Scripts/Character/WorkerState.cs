@@ -10,13 +10,9 @@ namespace WorkerState
 
         public override void EnterState()
         {
-            Debug.Log("Player Idle");
-            Charecter.Animator.SetBool("IsWalking", false);
-            Charecter.Animator.SetBool("IsTalking", false);
+            base.EnterState();
             TaskManager.Instance.AddAvaliableWorker(Charecter);
         }
-
-        public override void ExitState() { }
     }
 
     public class MoveState : MoveState<Worker>
@@ -54,9 +50,8 @@ namespace WorkerState
             duration = CurrentTask.Duration;
             timeElapsed = 0f;
 
-            var dir = CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position);
-            Worker.FacingDir = dir.y > 0 ? FacingDirs.Up : dir.x > 0 ? FacingDirs.Right : dir.x < 0 ? FacingDirs.Left : FacingDirs.Down;
-            
+            Worker.SetDirection(CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position));
+
             Worker.StartCoroutine(StartTask());
         }
 

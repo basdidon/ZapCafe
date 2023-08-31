@@ -11,12 +11,14 @@ public class GetOrderTask : BaseTask
         Bar = bar;
         Started += delegate
         {
-            Worker.Animator.SetBool("IsTalking", true);
+            Worker.Animator.Play(AnimationHash.TalkingFront);
+            //Worker.Animator.SetBool("IsTalking", true);
         };
+        /*
         Performed += delegate
         {
             Worker.Animator.SetBool("IsTalking", false);
-        };
+        };*/
 
         TaskManager.Instance.AddTask(this);
     }

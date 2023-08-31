@@ -4,33 +4,37 @@ using UnityEngine;
 
 public enum FacingDirs { Up, Down, Left, Right }
 
+public static class AnimationHash
+{
+    public static int IdleFront => Animator.StringToHash("idle-front");
+    public static int IdleBack => Animator.StringToHash("idle-back");
+    public static int MoveFront => Animator.StringToHash("walk-front");
+    public static int MoveBack => Animator.StringToHash("walk-back");
+    public static int TalkingFront => Animator.StringToHash("talking-front");
+}
+
 public abstract class Charecter : BoardObject,PathFinder.IMoveable
 {
     public readonly List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
 
-    [SerializeField] FacingDirs facingDir;
-    public FacingDirs FacingDir
+    public override Directions Direction
     {
-        get => facingDir;
+        get => base.Direction;
         set
         {
-            facingDir = value;
-            
+            base.Direction = value;
+
             if (Animator != null)
             {
-                Animator.SetBool("IsFront", FacingDir == FacingDirs.Down ||FacingDir == FacingDirs.Left);
-                if (FacingDir == FacingDirs.Right || FacingDir == FacingDirs.Down)
-                {
-                    SpriteRenderer.flipX = true;
-                    //transform.localScale = new Vector3(-1, 1, 1);
-                }
-                else
-                {
-                    SpriteRenderer.flipX = false;
-                    //transform.localScale = Vector3.one;
-                }
+                SpriteRenderer.flipX = Direction == Directions.RightUp || Direction == Directions.RightDown;
             }
         }
+    }
+
+    public void SetDirection(Vector3Int dir)
+    {
+        Direction = dir.y > 0 ? Directions.LeftUp : dir.x > 0 ? Directions.RightUp : dir.x < 0 ? Directions.LeftDown : Directions.RightDown;
+        //Debug.Log(Direction);
     }
 
     public abstract bool CanMoveTo(Vector3Int cellPos);
@@ -42,21 +46,15 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
     // Animator
     [field :SerializeField] public Animator Animator { get; private set; }
 
-    [SerializeField] Item holdingItem = null;
+    Item holdingItem;  // don't add [SerializeField] to this, it make this always not null after first update.
     public Item HoldingItem
     {
         get => holdingItem;
         set
         {
             holdingItem = value;
-            if (HoldingItem == null)
-            {
-                ItemSpriteRenderer.sprite = null;
-            }
-            else
-            {
-                ItemSpriteRenderer.sprite = HoldingItem.Sprite;
-            }
+
+            ItemSpriteRenderer.sprite = HoldingItem?.Sprite;
         }
     }
 
@@ -95,7 +93,7 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
     }
 }
 
-public class IdleState<T> : IState
+public class IdleState<T> : IState where T : Charecter
 {
     protected T Charecter { get; }
 
@@ -104,7 +102,9 @@ public class IdleState<T> : IState
         Charecter = charecter;
     }
 
-    public virtual void EnterState(){}
+    public virtual void EnterState(){
+        Charecter.Animator.Play(AnimationHash.IdleFront);
+    }
     public virtual void ExitState(){}
 }
 
@@ -127,12 +127,12 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
 
     public virtual void EnterState()
     {
-        var dir = WayPoints[0] - BoardManager.Instance.GetCellPos(Charecter.transform.position);
-        Charecter.FacingDir = dir.y > 0 ? FacingDirs.Up : dir.x > 0 ? FacingDirs.Right : dir.x < 0 ? FacingDirs.Left : FacingDirs.Down;
+        Charecter.SetDirection(WayPoints[0] - BoardManager.Instance.GetCellPos(Charecter.transform.position));
 
-        if(Charecter.Animator != null)
+        if (Charecter.Animator != null)
         {
-            Charecter.Animator.SetBool("IsWalking", true);
+            Charecter.Animator.Play(AnimationHash.MoveFront);
+            //Charecter.Animator.SetBool("IsWalking", true);
             //Charecter.Animator.SetBool("IsFront", Charecter.FacingDir == FacingDirs.Down || Charecter.FacingDir == FacingDirs.Left);
         }
 
@@ -143,7 +143,8 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
     {
         if (Charecter.Animator != null)
         {
-            Charecter.Animator.SetBool("IsWalking", false);
+            Charecter.Animator.Play(AnimationHash.IdleFront);
+            //Charecter.Animator.SetBool("IsWalking", false);
         }
     }
 

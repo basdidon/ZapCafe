@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class Item
 {
-    public Sprite Sprite { get; set; }
-    public string Name { get; set; }
+    [field: SerializeField] public Sprite Sprite { get; set; }
+    [field: SerializeField] public string Name { get; set; }
 
     public Item(string name, Sprite sprite)
     {

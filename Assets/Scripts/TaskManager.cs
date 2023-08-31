@@ -61,6 +61,8 @@ public class TaskManager : SerializedMonoBehaviour
             AvailableWorker.Add(worker);
             TrySetTask();
         }
+
+        Debug.Log($" AddAvaliableWorker -> {worker.HoldingItem == null}");
     }
 
     public void TrySetTask()
@@ -80,7 +82,7 @@ public class TaskManager : SerializedMonoBehaviour
             if (AvailableWorker.Count < 0)
                 break;
 
-            _task.SetTask(AvailableWorker);
+            _task.SelectWorker(AvailableWorker);
         }
     }
 }

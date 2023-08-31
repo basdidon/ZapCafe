@@ -12,38 +12,6 @@ public class Worker : Charecter
     // task progress
     public GameObject TaskProgress;
     public Image ProgressImg;
-    /*
-    public override IsometricDirections Direction
-    {
-        get => base.Direction;
-        set
-        {
-            base.Direction = value;
-            var sprite = WorkStationData.GetSprite(Direction);
-
-            if (sprite != null)
-                SpriteRenderer.sprite = sprite;
-        }
-    }*/
-
-    // OdinCallback
-    private void OnDirectionChanged(){}
-    /*
-    // Task
-    [SerializeReference] ITask currentTask;
-    public ITask CurrentTask
-    {
-        get => currentTask;
-        set
-        {
-            currentTask = value;
-            if(CurrentTask != null)
-            {
-                CurrentState = new MoveState(this, currentTask.Waypoints, new ExecutingTask(this));
-                CurrentTask.Pending?.Invoke();
-            }
-        }
-    }*/
 
     public bool TryGetWaypoint(Vector3Int targetCellPos,out List<Vector3Int> waypoints)
     {

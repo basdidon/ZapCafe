@@ -24,7 +24,7 @@ public interface ITask
     public Action Performed { get; set; }
 
     TaskStates TaskState { get;}
-    void SetTask(IEnumerable<Worker> workers);
+    void SelectWorker(IEnumerable<Worker> workers);
     void SetTask(Worker worker,IWorkStation workStation);
     void AssignWorker(Worker worker);
 }
@@ -147,26 +147,30 @@ public abstract class BaseTask : ITask
         }
     }
 
-    public void SetTask(IEnumerable<Worker> workers)
+    public void SelectWorker(IEnumerable<Worker> workers)
     {
-        WorkerWorkStationPair result = workers.Select(
+        var result = workers.Select(
                 worker =>
                 {
-                    if (TryGetWorkStation(worker, out IWorkStation workStation) && TryCheckCondition(worker, workStation))
+                    var s_1 = TryGetWorkStation(worker, out IWorkStation workStation);
+                    var s_2 = TryCheckCondition(worker, workStation);
+                    var success = s_1 && s_2;
+                    //Debug.Log($"{s_1} && {s_2} : {worker.name} {worker.HoldingItem == null} {worker.HoldingItem.Name}");
+                    float distance = 0f;
+                    if (success)
                     {
-                        var distance = workStation.RangeFrom(worker);
-                        return new WorkerWorkStationPair(worker, workStation, distance);
+                        distance = workStation.RangeFrom(worker);
                     }
-                    return null;
+                    return new { worker, workStation, distance, success };
                 })
-            .SkipWhile(pair => pair == null || pair.WorkStation == null)
-            .OrderBy(pair => pair.Distance)
+            .SkipWhile(item => !item.success)
+            .OrderBy(item => item.distance)
             .FirstOrDefault();
 
-        if (result == null)
-            return;
-
-        SetTask(result.Worker, result.WorkStation);
+        if (result != null)
+            SetTask(result.worker, result.workStation);
+        else
+            Debug.Log("e");
     }
 }
 
@@ -176,18 +180,4 @@ public enum TaskStates {
     Pending,        // already set workstation and worker.
     Started,        // when worker started execute task.
     Performed      // when this task finish.
-}
-
-public class WorkerWorkStationPair
-{
-    public Worker Worker { get; }
-    public IWorkStation WorkStation { get; }
-    public float Distance { get; }
-
-    public WorkerWorkStationPair(Worker worker, IWorkStation workStation, float distance)
-    {
-        Worker = worker;
-        WorkStation = workStation;
-        Distance = distance;
-    }
 }

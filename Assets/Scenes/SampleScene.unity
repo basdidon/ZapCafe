@@ -2998,6 +2998,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 708d1554501d03c438400d192d22a68d, type: 3}
+    - target: {fileID: 7164775023998771057, guid: 1a970f8d931bb0147a7bd9a376128485, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ac25324b2d8605248ad1b1ad2ca02ca3, type: 2}
     - target: {fileID: 7429892290760628801, guid: 1a970f8d931bb0147a7bd9a376128485, type: 3}
       propertyPath: serializationData.Prefab
       value: 
@@ -5069,7 +5073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9038010281675803033, guid: 1a970f8d931bb0147a7bd9a376128485, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5405,7 +5409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9038010281675803033, guid: 1a970f8d931bb0147a7bd9a376128485, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
