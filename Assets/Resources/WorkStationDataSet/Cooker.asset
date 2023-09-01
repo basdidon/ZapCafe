@@ -13,19 +13,18 @@ MonoBehaviour:
   m_Name: Cooker
   m_EditorClassIdentifier: 
   <PreviewSprites>k__BackingField:
-    negativeX: {fileID: 0}
-    positiveX: {fileID: 0}
-    negativeY: {fileID: 0}
-    positiveY: {fileID: 0}
+    <LeftDownSprite>k__BackingField: {fileID: 251474158, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+    <LeftUpSprite>k__BackingField: {fileID: 20107931, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+    <RightUpSprite>k__BackingField: {fileID: -2056918184, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+    <RightDownSprite>k__BackingField: {fileID: -888294851, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
   <Sprites>k__BackingField:
-    negativeX: {fileID: 0}
-    positiveX: {fileID: 0}
-    negativeY: {fileID: 0}
-    positiveY: {fileID: 0}
-  <Sprite>k__BackingField: {fileID: 0}
-  <Prefab>k__BackingField: {fileID: 3919638321625872095, guid: aab80df68ea438b4abd11e7a8ec337d7, type: 3}
+    <LeftDownSprite>k__BackingField: {fileID: 2038902024, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+    <LeftUpSprite>k__BackingField: {fileID: -1386847610, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+    <RightUpSprite>k__BackingField: {fileID: 1824128521, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+    <RightDownSprite>k__BackingField: {fileID: 756045112, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
+  <Sprite>k__BackingField: {fileID: 2038902024, guid: 28fd8b357a9808f46911c39446447a9d, type: 3}
   <Description>k__BackingField: 
-  <Price>k__BackingField: 0
+  <Price>k__BackingField: 1000
   localCellsPos:
   - {x: 0, y: 0, z: 0}
   <WorkingCellLocalDefault>k__BackingField: {x: 0, y: -1, z: 0}

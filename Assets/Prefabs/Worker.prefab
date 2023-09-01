@@ -248,7 +248,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -295457123
   m_SortingOrder: 0
@@ -411,7 +411,7 @@ Transform:
   - {fileID: 5611205186485462598}
   - {fileID: 1725159842932326975}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &294396037298030047
 SpriteRenderer:
@@ -477,15 +477,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c27bef2674219804a94e457eb828aff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  facingDir: 0
+  direction: 0
+  <SpriteRenderer>k__BackingField: {fileID: 0}
   ItemSpriteRenderer: {fileID: 1032248039696072073}
+  <Animator>k__BackingField: {fileID: 0}
   currentState:
     rid: -2
   <PathTilemap>k__BackingField: {fileID: 0}
   TaskProgress: {fileID: 3443686350559499114}
   ProgressImg: {fileID: 7077148475174387303}
-  currentTask:
-    rid: -2
   references:
     version: 2
     RefIds:
@@ -501,7 +501,7 @@ Animator:
   m_GameObject: {fileID: 9038010281675803033}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 67b43db763daac84ba969f373d8ea7c6, type: 2}
+  m_Controller: {fileID: 9100000, guid: ac25324b2d8605248ad1b1ad2ca02ca3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

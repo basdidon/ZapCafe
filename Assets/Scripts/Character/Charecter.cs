@@ -10,7 +10,7 @@ public static class AnimationHash
     public static int IdleBack => Animator.StringToHash("idle-back");
     public static int MoveFront => Animator.StringToHash("walk-front");
     public static int MoveBack => Animator.StringToHash("walk-back");
-    public static int TalkingFront => Animator.StringToHash("talking-front");
+    public static int TalkFront => Animator.StringToHash("talk-front");
 }
 
 public abstract class Charecter : BoardObject,PathFinder.IMoveable
@@ -131,22 +131,22 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
 
         if (Charecter.Animator != null)
         {
-            Charecter.Animator.Play(AnimationHash.MoveFront);
-            //Charecter.Animator.SetBool("IsWalking", true);
-            //Charecter.Animator.SetBool("IsFront", Charecter.FacingDir == FacingDirs.Down || Charecter.FacingDir == FacingDirs.Left);
+            Charecter.Animator.StopPlayback();
+            if(Charecter.Direction == Directions.RightDown || Charecter.Direction == Directions.LeftDown)
+            {
+                Charecter.Animator.Play(AnimationHash.MoveFront);
+            }
+            else
+            {
+                Debug.Log("back");
+                Charecter.Animator.Play(AnimationHash.MoveBack);
+            }
         }
 
         Charecter.StartCoroutine(MoveRoutine());
     }
 
-    public virtual void ExitState()
-    {
-        if (Charecter.Animator != null)
-        {
-            Charecter.Animator.Play(AnimationHash.IdleFront);
-            //Charecter.Animator.SetBool("IsWalking", false);
-        }
-    }
+    public virtual void ExitState(){}
 
     IEnumerator MoveRoutine()
     {

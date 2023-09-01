@@ -11,7 +11,7 @@ public class GetOrderTask : BaseTask
         Bar = bar;
         Started += delegate
         {
-            Worker.Animator.Play(AnimationHash.TalkingFront);
+            Worker.Animator.Play(AnimationHash.TalkFront);
             //Worker.Animator.SetBool("IsTalking", true);
         };
         /*

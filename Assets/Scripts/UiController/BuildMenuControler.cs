@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Linq;
 
 public class BuildMenuControler : PanelControl
 {
@@ -22,7 +23,11 @@ public class BuildMenuControler : PanelControl
     {
         base.Awake();
         WorkStationDataSet = new();
-        WorkStationDataSet.AddRange(Resources.LoadAll<WorkStationData>("WorkStationDataSet"));
+        WorkStationDataSet.AddRange(
+            Resources.LoadAll<WorkStationData>("WorkStationDataSet")
+            .OrderByDescending(item=>item.Price)
+            .ThenBy(item=>item.name)
+        );
 
         closeBtn = Root.Q<Button>("close-btn");
         closeBtn.RegisterCallback<ClickEvent>(evt => BackToMainMenu());
