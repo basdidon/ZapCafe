@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BasDidon.Direction;
+using BasDidon.PathFinder;
 
 public class Bar : WorkStation
 {
@@ -17,9 +19,9 @@ public class Bar : WorkStation
         if (Customer == null)
             Debug.Log("Customer null");
 
-        if (PathFinder.TryFindWaypoint(Customer, ServiceCell, ExitCell, Customer.dirs, out List<Vector3Int> waypoints))
+        if (GridPathFinder.TryFindPath(Customer, ServiceCell, ExitCell, Directions.Cardinal, out PathTraced pathTraced))
         {
-            Customer.CurrentState = new CustomerState.MoveToExitState(Customer, waypoints);
+            Customer.CurrentState = new CustomerState.MoveToExitState(Customer, pathTraced.ToWayPoint());
         }
         else
         {

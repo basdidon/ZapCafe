@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum FacingDirs { Up, Down, Left, Right }
+using BasDidon.PathFinder;
+using BasDidon.Direction;
 
 public static class AnimationHash
 {
@@ -13,28 +13,27 @@ public static class AnimationHash
     public static int TalkFront => Animator.StringToHash("talk-front");
 }
 
-public abstract class Charecter : BoardObject,PathFinder.IMoveable
+public abstract class Charecter : BoardObject,IMoveable
 {
-    public readonly List<Vector3Int> dirs = new() { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-
-    public override Directions Direction
+    public override Directions FacingDirection
     {
-        get => base.Direction;
+        get => base.FacingDirection;
         set
         {
-            base.Direction = value;
+            base.FacingDirection = value;
 
             if (Animator != null)
             {
-                SpriteRenderer.flipX = Direction == Directions.RightUp || Direction == Directions.RightDown;
+                SpriteRenderer.flipX = (FacingDirection & (Directions.Down |Directions.Right)) == 0;
             }
         }
     }
 
     public void SetDirection(Vector3Int dir)
     {
-        Direction = dir.y > 0 ? Directions.LeftUp : dir.x > 0 ? Directions.RightUp : dir.x < 0 ? Directions.LeftDown : Directions.RightDown;
-        //Debug.Log(Direction);
+        if (dir == Vector3Int.zero)
+            return;
+        FacingDirection = Direction.Vector3IntToDirection(dir);
     }
 
     public abstract bool CanMoveTo(Vector3Int cellPos);
@@ -72,6 +71,8 @@ public abstract class Charecter : BoardObject,PathFinder.IMoveable
             CurrentState.EnterState();
         }
     }
+
+    public Vector3Int CellPos => CellPosition;
 
     protected virtual void Awake()
     {
@@ -132,7 +133,7 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
         if (Charecter.Animator != null)
         {
             Charecter.Animator.StopPlayback();
-            if(Charecter.Direction == Directions.RightDown || Charecter.Direction == Directions.LeftDown)
+            if ((Charecter.FacingDirection & (Directions.Down | Directions.Left)) != 0)
             {
                 Charecter.Animator.Play(AnimationHash.MoveFront);
             }

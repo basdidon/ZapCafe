@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Linq;
+using BasDidon.Direction;
 
 public interface IWorkStation : IBoardObject
 {
@@ -32,16 +33,16 @@ public class WorkStation : BoardObject, IWorkStation
     public Vector3Int[] LocalCellsPos => WorkStationData.LocalCellsPos;
     public Vector3Int[] WorldCellsPos => LocalCellsPos.Select(cell => CellPosition + cell).ToArray();
 
-    public Vector3Int WorkingCellLocal => WorkStationData.GetWorkingCellLocal(Direction);
+    public Vector3Int WorkingCellLocal => WorkStationData.GetWorkingCellLocal(FacingDirection);
 
-    public override Directions Direction { 
-        get => base.Direction; 
+    public override Directions FacingDirection { 
+        get => base.FacingDirection; 
         set
         {
-            if (Direction == value)
+            if (FacingDirection == value)
                 return;
 
-            base.Direction = value;
+            base.FacingDirection = value;
             UpdateSprite();
         }
     }
@@ -64,7 +65,7 @@ public class WorkStation : BoardObject, IWorkStation
     public void SetSpriteDirection(SpriteDirection spriteDirection, Directions direction)
     {
         SetSpriteDirection(spriteDirection);
-        Direction = direction;
+        FacingDirection = direction;
     }
 
     void UpdateSprite()
@@ -72,7 +73,7 @@ public class WorkStation : BoardObject, IWorkStation
         if (SpriteDirection == null)
             return;
 
-        var sprite = SpriteDirection.GetSprite(Direction);
+        var sprite = SpriteDirection.GetSprite(FacingDirection);
         if (sprite != null)
         {
             SpriteRenderer.sprite = sprite;

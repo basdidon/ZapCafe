@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using System;
+using BasDidon.Direction;
 
 public class BuildModeUiController : PanelControl
 {
@@ -145,7 +146,7 @@ public class BuildModeUiController : PanelControl
         TileOverlay.Instance.Active();
         TouchPosAction.Enable();
         TouchPosAction.performed += SetPreviewPosition;
-        Direction = Directions.LeftDown;
+        Direction = Directions.Left;
     }
 
     protected override void Hide()

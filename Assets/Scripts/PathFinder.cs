@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class PathFinder
 {
     public interface IMoveable
@@ -126,4 +126,4 @@ public class PathFinder
             return false;
         }
     }
-}
+}*/

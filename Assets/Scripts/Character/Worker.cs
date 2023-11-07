@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using WorkerState;
+using BasDidon.PathFinder;
+using BasDidon.Direction;
 
 public class Worker : Charecter
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
+
 
     // task progress
     public GameObject TaskProgress;
@@ -15,7 +18,16 @@ public class Worker : Charecter
 
     public bool TryGetWaypoint(Vector3Int targetCellPos,out List<Vector3Int> waypoints)
     {
-        return PathFinder.TryFindWaypoint(this, CellPosition, targetCellPos, dirs, out waypoints);
+        if(GridPathFinder.TryFindPath(this, CellPosition, targetCellPos, Directions.Cardinal, out PathTraced pathTraced))
+        {
+            waypoints = pathTraced.ToWayPoint();
+            return true;
+        }
+        else
+        {
+            waypoints = null;
+            return false;
+        }
     }
 
     // State

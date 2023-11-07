@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using BasDidon.Direction;
 
 [CreateAssetMenu(menuName = "ScriptableObject/WorkStation")]
 public class WorkStationData : ScriptableObject
@@ -30,7 +31,7 @@ public class WorkStationData : ScriptableObject
         if (name != "Bar")
         {
             var itemFactory = go.AddComponent<ItemFactory>();
-            itemFactory.Direction = direction;
+            itemFactory.FacingDirection = direction;
             Initialize(itemFactory);
         }
         else
@@ -50,9 +51,9 @@ public class WorkStationData : ScriptableObject
         var cell = WorkingCellLocalDefault;
         return direction switch
         {
-            Directions.LeftDown => new (-cell.y,cell.x,0),
-            Directions.RightDown => -cell,
-            Directions.RightUp => new(cell.y,-cell.x,0),
+            Directions.Left => new (-cell.y,cell.x,0),
+            Directions.Down => -cell,
+            Directions.Right => new(cell.y,-cell.x,0),
             _ => cell,
         };
     }

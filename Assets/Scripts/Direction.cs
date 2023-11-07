@@ -2,14 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
-public enum Directions
-{
-    LeftDown,
-    LeftUp,
-    RightUp,
-    RightDown,
-}
+using BasDidon.Direction;
 
 [Serializable]
 public class SpriteDirection
@@ -25,10 +18,10 @@ public class SpriteDirection
     {
         return direction switch
         {
-            Directions.LeftDown => LeftDownSprite,
-            Directions.LeftUp => LeftUpSprite,
-            Directions.RightUp => RightUpSprite,
-            Directions.RightDown => RightDownSprite,
+            Directions.Left => LeftDownSprite,
+            Directions.Up => LeftUpSprite,
+            Directions.Right => RightUpSprite,
+            Directions.Down => RightDownSprite,
             _ => null,
         };
     }

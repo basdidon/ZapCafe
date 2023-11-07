@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using Sirenix.Serialization;
 using Sirenix.OdinInspector;
+using BasDidon.Direction;
 
 public enum IsometricDirections
 {
@@ -27,7 +28,7 @@ public class BoardObject : MonoBehaviour, IBoardObject
 
     //[OdinSerialize, OnValueChanged("OnDirectionChanged")]
     [SerializeField] Directions direction;
-    public virtual Directions Direction { get => direction; set => direction = value; }
+    public virtual Directions FacingDirection { get => direction; set => direction = value; }
 
 
     public Vector3Int CellPosition => BoardManager.GetCellPos(transform.position);

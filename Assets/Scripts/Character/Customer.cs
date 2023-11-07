@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using CustomerState;
+using BasDidon.Direction;
+using BasDidon.PathFinder;
 
 public class Customer : Charecter
 {
@@ -30,6 +32,7 @@ public class Customer : Charecter
         }
     }
 
+
     public void Initialized(Bar bar,Tilemap pathTilemap)
     {
         Bar = bar;
@@ -37,9 +40,14 @@ public class Customer : Charecter
         PathTilemap = pathTilemap;
         HoldingItem = null;
 
-        if (PathFinder.TryFindWaypoint(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, dirs, out List<Vector3Int> waypoints))
+        if (GridPathFinder.TryFindPath(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, Directions.Cardinal, out PathTraced pathTrace))
         {
-            CurrentState = new MoveState(this, waypoints);
+
+            foreach (var waypoint in pathTrace.ToWayPoint())
+            {
+                Debug.Log(waypoint);
+            }
+            CurrentState = new MoveState(this, pathTrace.ToWayPoint());
         }
         else
         {
@@ -54,10 +62,9 @@ public class Customer : Charecter
         IdleState = new IdleState();
         OrderSprite = null;
     }
-    
 
     public override bool CanMoveTo(Vector3Int cellPos) => PathTilemap.HasTile(cellPos);
-
+    
     public List<ItemData> Orders;
     public void GetOrder()
     {
