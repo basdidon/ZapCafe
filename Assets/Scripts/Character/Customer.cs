@@ -54,7 +54,7 @@ public class Customer : Charecter
     protected override void Awake()
     {
         base.Awake();
-        IdleState = new IdleState();
+        IdleState = new IdleState(this);
         OrderSprite = null;
     }
 

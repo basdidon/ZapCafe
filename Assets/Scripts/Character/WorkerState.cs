@@ -51,25 +51,26 @@ namespace WorkerState
             timeElapsed = 0f;
 
             Worker.SetDirection(CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position));
-            Worker.StartCoroutine(StartTask());
+
+            CurrentTask.Started?.Invoke();
         }
 
-        IEnumerator StartTask()
+        public void UpdateState()
         {
-            CurrentTask.Started?.Invoke();
-            while (timeElapsed < duration)
+            if (timeElapsed < duration)
             {
                 Worker.ProgressImg.fillAmount = timeElapsed / duration;
                 timeElapsed += Time.deltaTime;
-                yield return null;
             }
+            else
+            {
+                Debug.Log($"{Worker.name} performed {CurrentTask}");
+                CurrentTask.Performed?.Invoke();
 
-            Debug.Log($"{Worker.name} performed {CurrentTask}");
-            CurrentTask.Performed?.Invoke();
-
-            SetNextState();
+                SetNextState();
+            }
         }
-
+        
         public void ExitState()
         {
             Worker.TaskProgress.SetActive(false);
@@ -79,5 +80,7 @@ namespace WorkerState
         {
             Worker.CurrentState = Worker.IdleState;
         }
+
+
     }
 }

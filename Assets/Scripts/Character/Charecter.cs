@@ -58,7 +58,7 @@ public abstract class Charecter : BoardObject,IMoveable,IAnimationManipulated
         {
             CurrentState?.ExitState();
             currentState = value ?? IdleState;
-            OnStateChangedEvent?.Invoke(CurrentState);
+            OnStateChangedEvent?.Invoke(CurrentState);  // invoke stateChangedEvent before it start
             CurrentState.EnterState();
         }
     }
@@ -83,6 +83,11 @@ public abstract class Charecter : BoardObject,IMoveable,IAnimationManipulated
         transform.position = BoardManager.Instance.GetCellCenterWorld(CellPos);
     }
 
+    private void Update()
+    {
+        CurrentState?.UpdateState();
+    }
+
     public void PlayAnimation(int animationHash)
     {
         if (AnimationManipulator == null)
@@ -102,8 +107,9 @@ public class IdleState<T> : IState where T : Charecter
         Charecter = charecter;
     }
 
-    public virtual void EnterState(){}
-    public virtual void ExitState(){}
+    public virtual void EnterState() { }
+    public virtual void UpdateState() { }
+    public virtual void ExitState() { }
 }
 
 public abstract class MoveState<T> : ISelfExitState where T : Charecter
@@ -126,13 +132,8 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
     public virtual void EnterState()
     {
         Charecter.SetDirection(WayPoints[0] - BoardManager.Instance.GetCellPos(Charecter.transform.position));
-        Charecter.StartCoroutine(MoveRoutine());
-    }
 
-    public virtual void ExitState(){}
-
-    IEnumerator MoveRoutine()
-    {
+        // setup
         startPos = Charecter.transform.position;
         targetPos = BoardManager.Instance.GetCellCenterWorld(WayPoints[0]);
         WayPoints.RemoveAt(0);
@@ -141,18 +142,24 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
         distance = Vector3.Distance(startPos, targetPos);
         duration = distance / speed;
         timeElapsed = 0;
+    }
 
-        while (timeElapsed < duration)
+    public void UpdateState()
+    {
+        if(timeElapsed < duration)
         {
             Charecter.transform.position = Vector3.Lerp(startPos, targetPos, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
-            yield return null;
         }
+        else
+        {
+            Charecter.transform.position = targetPos;
 
-        Charecter.transform.position = targetPos;
-
-        SetNextState();
+            SetNextState();
+        }
     }
+
+    public virtual void ExitState(){}
 
     public abstract void SetNextState();
 }

@@ -20,13 +20,6 @@ public class WorkerAnimationManipulator : CharacterAnimationManipulator
                 Animator.Play(AnimationHash.MoveBack);
             }
         }
-        else if(Charecter.CurrentState is ExecutingTask)
-        {
-            if(Charecter is Charecter charecter && TaskManager.Instance)
-            {
-                
-            }
-        }
         else
         {
             if (IsFront)

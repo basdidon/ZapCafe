@@ -4,10 +4,12 @@ using UnityEngine;
 
 namespace CustomerState
 {
-    public class IdleState : IState
+    public class IdleState : IdleState<Customer>
     {
-        public void EnterState() { }
-        public void ExitState() { }
+        public IdleState(Customer customer) : base(customer) { }
+        public override void EnterState() { }
+        public override void ExitState() { }
+        public override void UpdateState() { }
     }
 
     public class MoveState : MoveState<Customer>
