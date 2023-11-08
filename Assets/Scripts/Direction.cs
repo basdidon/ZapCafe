@@ -14,14 +14,14 @@ public class SpriteDirection
 
     //public Action<Sprite> OnDirectionChanged;
 
-    public Sprite GetSprite(Directions direction)
+    public Sprite GetSprite(Direction direction)
     {
         return direction switch
         {
-            Directions.Left => LeftDownSprite,
-            Directions.Up => LeftUpSprite,
-            Directions.Right => RightUpSprite,
-            Directions.Down => RightDownSprite,
+            Direction.Left => LeftDownSprite,
+            Direction.Up => LeftUpSprite,
+            Direction.Right => RightUpSprite,
+            Direction.Down => RightDownSprite,
             _ => null,
         };
     }

@@ -18,7 +18,7 @@ public class Worker : Charecter
 
     public bool TryGetWaypoint(Vector3Int targetCellPos,out List<Vector3Int> waypoints)
     {
-        if(GridPathFinder.TryFindPath(this, CellPosition, targetCellPos, Directions.Cardinal, out PathTraced pathTraced))
+        if(GridPathFinder.TryFindPath(this, CellPosition, targetCellPos, DirectionGroup.Cardinal, out PathTraced pathTraced))
         {
             waypoints = pathTraced.ToWayPoint();
             return true;

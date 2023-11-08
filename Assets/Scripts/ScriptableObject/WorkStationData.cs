@@ -19,7 +19,7 @@ public class WorkStationData : ScriptableObject
 
     [field: SerializeField] Vector3Int WorkingCellLocalDefault { get; set; }
 
-    public void Instantiate(Vector3 position,Directions direction, Transform parent)
+    public void Instantiate(Vector3 position,Direction direction, Transform parent)
     {
         var go = new GameObject(name);
         go.transform.position = position;
@@ -46,14 +46,14 @@ public class WorkStationData : ScriptableObject
         workStation.WorkStationData = this;
     }
     
-    public Vector3Int GetWorkingCellLocal(Directions direction)
+    public Vector3Int GetWorkingCellLocal(Direction direction)
     {
         var cell = WorkingCellLocalDefault;
         return direction switch
         {
-            Directions.Left => new (-cell.y,cell.x,0),
-            Directions.Down => -cell,
-            Directions.Right => new(cell.y,-cell.x,0),
+            Direction.Left => new (-cell.y,cell.x,0),
+            Direction.Down => -cell,
+            Direction.Right => new(cell.y,-cell.x,0),
             _ => cell,
         };
     }

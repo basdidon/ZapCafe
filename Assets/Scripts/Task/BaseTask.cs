@@ -169,8 +169,6 @@ public abstract class BaseTask : ITask
 
         if (result != null)
             SetTask(result.worker, result.workStation);
-        else
-            Debug.Log("e");
     }
 }
 

@@ -35,7 +35,7 @@ public class WorkStation : BoardObject, IWorkStation
 
     public Vector3Int WorkingCellLocal => WorkStationData.GetWorkingCellLocal(FacingDirection);
 
-    public override Directions FacingDirection { 
+    public override Direction FacingDirection {
         get => base.FacingDirection; 
         set
         {
@@ -62,7 +62,7 @@ public class WorkStation : BoardObject, IWorkStation
         spriteDirection = _spriteDirection;
     }
 
-    public void SetSpriteDirection(SpriteDirection spriteDirection, Directions direction)
+    public void SetSpriteDirection(SpriteDirection spriteDirection, Direction direction)
     {
         SetSpriteDirection(spriteDirection);
         FacingDirection = direction;

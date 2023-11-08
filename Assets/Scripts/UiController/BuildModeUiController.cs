@@ -12,7 +12,7 @@ public class BuildModeUiController : PanelControl
     public UIDocument uIDoc;
     VisualElement root;
 
-    Directions Direction { get; set; }
+    Direction Direction { get; set; }
 
     [SerializeField] Transform buildPreview;
     SpriteRenderer SpriteRenderer { get; set; }
@@ -146,7 +146,7 @@ public class BuildModeUiController : PanelControl
         TileOverlay.Instance.Active();
         TouchPosAction.Enable();
         TouchPosAction.performed += SetPreviewPosition;
-        Direction = Directions.Left;
+        Direction = Direction.Left;
     }
 
     protected override void Hide()

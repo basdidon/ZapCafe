@@ -40,13 +40,8 @@ public class Customer : Charecter
         PathTilemap = pathTilemap;
         HoldingItem = null;
 
-        if (GridPathFinder.TryFindPath(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, Directions.Cardinal, out PathTraced pathTrace))
+        if (GridPathFinder.TryFindPath(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, DirectionGroup.Cardinal, out PathTraced pathTrace))
         {
-
-            foreach (var waypoint in pathTrace.ToWayPoint())
-            {
-                Debug.Log(waypoint);
-            }
             CurrentState = new MoveState(this, pathTrace.ToWayPoint());
         }
         else

@@ -1,31 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using BasDidon.PathFinder;
 using BasDidon.Direction;
 
-public static class AnimationHash
+public abstract class Charecter : BoardObject,IMoveable,IAnimationManipulated
 {
-    public static int IdleFront => Animator.StringToHash("idle-front");
-    public static int IdleBack => Animator.StringToHash("idle-back");
-    public static int MoveFront => Animator.StringToHash("walk-front");
-    public static int MoveBack => Animator.StringToHash("walk-back");
-    public static int TalkFront => Animator.StringToHash("talk-front");
-}
-
-public abstract class Charecter : BoardObject,IMoveable
-{
-    public override Directions FacingDirection
+    public override Direction FacingDirection
     {
         get => base.FacingDirection;
         set
         {
             base.FacingDirection = value;
-
-            if (Animator != null)
-            {
-                SpriteRenderer.flipX = (FacingDirection & (Directions.Down |Directions.Right)) == 0;
-            }
+            OnDirectionChangedEvent?.Invoke(base.FacingDirection);
         }
     }
 
@@ -33,17 +21,19 @@ public abstract class Charecter : BoardObject,IMoveable
     {
         if (dir == Vector3Int.zero)
             return;
-        FacingDirection = Direction.Vector3IntToDirection(dir);
+        FacingDirection = GridDirection.Vector3IntToDirection(dir);
     }
 
     public abstract bool CanMoveTo(Vector3Int cellPos);
 
-    // SpriteRender
-    [field: SerializeField] public SpriteRenderer SpriteRenderer { get; private set; }
+    // IAnimationManipulated
+    public event Action<Direction> OnDirectionChangedEvent;
+    public event Action<IState> OnStateChangedEvent;
+
     // Hold Item
     [SerializeField] SpriteRenderer ItemSpriteRenderer;
-    // Animator
-    [field :SerializeField] public Animator Animator { get; private set; }
+
+    public CharacterAnimationManipulator AnimationManipulator { get;private set; }
 
     Item holdingItem;  // don't add [SerializeField] to this, it make this always not null after first update.
     public Item HoldingItem
@@ -68,6 +58,7 @@ public abstract class Charecter : BoardObject,IMoveable
         {
             CurrentState?.ExitState();
             currentState = value ?? IdleState;
+            OnStateChangedEvent?.Invoke(CurrentState);
             CurrentState.EnterState();
         }
     }
@@ -76,13 +67,9 @@ public abstract class Charecter : BoardObject,IMoveable
 
     protected virtual void Awake()
     {
-        if(TryGetComponent(out Animator animator)){
-            Animator = animator;
-        }
-        
-        if(TryGetComponent(out SpriteRenderer spriteRenderer))
+        if (TryGetComponent(out CharacterAnimationManipulator animationManipulator))
         {
-            SpriteRenderer = spriteRenderer;
+            AnimationManipulator = animationManipulator;
         }
     }
 
@@ -91,6 +78,18 @@ public abstract class Charecter : BoardObject,IMoveable
     {
         CurrentState = IdleState;
         HoldingItem = null;
+
+        // snap to grid
+        transform.position = BoardManager.Instance.GetCellCenterWorld(CellPos);
+    }
+
+    public void PlayAnimation(int animationHash)
+    {
+        if (AnimationManipulator == null)
+            return;
+
+        Debug.Log("s");
+        AnimationManipulator.Play(animationHash);
     }
 }
 
@@ -103,9 +102,7 @@ public class IdleState<T> : IState where T : Charecter
         Charecter = charecter;
     }
 
-    public virtual void EnterState(){
-        Charecter.Animator.Play(AnimationHash.IdleFront);
-    }
+    public virtual void EnterState(){}
     public virtual void ExitState(){}
 }
 
@@ -129,21 +126,6 @@ public abstract class MoveState<T> : ISelfExitState where T : Charecter
     public virtual void EnterState()
     {
         Charecter.SetDirection(WayPoints[0] - BoardManager.Instance.GetCellPos(Charecter.transform.position));
-
-        if (Charecter.Animator != null)
-        {
-            Charecter.Animator.StopPlayback();
-            if ((Charecter.FacingDirection & (Directions.Down | Directions.Left)) != 0)
-            {
-                Charecter.Animator.Play(AnimationHash.MoveFront);
-            }
-            else
-            {
-                Debug.Log("back");
-                Charecter.Animator.Play(AnimationHash.MoveBack);
-            }
-        }
-
         Charecter.StartCoroutine(MoveRoutine());
     }
 

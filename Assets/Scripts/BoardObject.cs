@@ -27,8 +27,8 @@ public class BoardObject : MonoBehaviour, IBoardObject
     protected BoardManager BoardManager { get { return BoardManager.Instance; } }
 
     //[OdinSerialize, OnValueChanged("OnDirectionChanged")]
-    [SerializeField] Directions direction;
-    public virtual Directions FacingDirection { get => direction; set => direction = value; }
+    [SerializeField] Direction direction;
+    public virtual Direction FacingDirection { get => direction; set => direction = value; }
 
 
     public Vector3Int CellPosition => BoardManager.GetCellPos(transform.position);

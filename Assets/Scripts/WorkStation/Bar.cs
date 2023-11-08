@@ -19,7 +19,7 @@ public class Bar : WorkStation
         if (Customer == null)
             Debug.Log("Customer null");
 
-        if (GridPathFinder.TryFindPath(Customer, ServiceCell, ExitCell, Directions.Cardinal, out PathTraced pathTraced))
+        if (GridPathFinder.TryFindPath(Customer, ServiceCell, ExitCell, DirectionGroup.Cardinal, out PathTraced pathTraced))
         {
             Customer.CurrentState = new CustomerState.MoveToExitState(Customer, pathTraced.ToWayPoint());
         }

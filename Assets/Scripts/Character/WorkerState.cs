@@ -44,14 +44,13 @@ namespace WorkerState
         {
             Worker.TaskProgress.SetActive(true);
             Worker.ProgressImg.fillAmount = 0f;
-            if (Worker == null) Debug.Log("worker");
-            if (CurrentTask == null) Debug.Log("Task");
+            if (Worker == null) Debug.Log("worker == null");
+            if (CurrentTask == null) Debug.Log("Task == null");
             
             duration = CurrentTask.Duration;
             timeElapsed = 0f;
 
             Worker.SetDirection(CurrentTask.WorkStation.CellPosition - BoardManager.Instance.GetCellPos(Worker.transform.position));
-
             Worker.StartCoroutine(StartTask());
         }
 
