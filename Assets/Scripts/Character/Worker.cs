@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
-using WorkerState;
+using CharacterState.WorkerState;
 using BasDidon.PathFinder;
 using BasDidon.Direction;
 
-public class Worker : Charecter
+public class Worker : Character
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
 

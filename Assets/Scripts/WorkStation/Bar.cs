@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CharacterState.CustomerState;
 using BasDidon.Direction;
 using BasDidon.PathFinder;
 
@@ -21,7 +22,7 @@ public class Bar : WorkStation
 
         if (GridPathFinder.TryFindPath(Customer, ServiceCell, ExitCell, DirectionGroup.Cardinal, out PathTraced pathTraced))
         {
-            Customer.CurrentState = new CustomerState.MoveToExitState(Customer, pathTraced.ToWayPoint());
+            Customer.CurrentState = new MoveToExitState(Customer, pathTraced.ToWayPoint());
         }
         else
         {

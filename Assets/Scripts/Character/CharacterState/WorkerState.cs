@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WorkerState
+namespace CharacterState.WorkerState
 {
     public class IdleState : IdleState<Worker>
     {

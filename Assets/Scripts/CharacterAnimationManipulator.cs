@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using BasDidon.Direction;
 using System;
-using WorkerState;
+using CharacterState;
 
 public static class AnimationHash
 {
@@ -21,7 +19,7 @@ public interface IAnimationManipulated
     IState CurrentState { get; }
 }
 
-[RequireComponent(typeof(Charecter))]
+[RequireComponent(typeof(Character))]
 public abstract class CharacterAnimationManipulator : MonoBehaviour
 {
     protected IAnimationManipulated Charecter;
@@ -44,7 +42,7 @@ public abstract class CharacterAnimationManipulator : MonoBehaviour
 
     private void Awake()
     {
-        Charecter = GetComponent<Charecter>();
+        Charecter = GetComponent<Character>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
         Animator = GetComponent<Animator>();
     }
@@ -57,13 +55,12 @@ public abstract class CharacterAnimationManipulator : MonoBehaviour
 
     private void OnStateChangedHandle(IState newState)
     {
-        Debug.Log($"StateChanged: {newState}");
         OnPlayAnimation();
     }
 
     private void OnDirectionChangedHandle(Direction newDirection)
     {
-        Debug.Log($"DirectionChanged: {newDirection}");
+        //Debug.Log($"DirectionChanged: {newDirection}");
         if (SpriteRenderer == null)
             return;
 
@@ -79,7 +76,6 @@ public abstract class CharacterAnimationManipulator : MonoBehaviour
         if (Animator == null)
             return;
 
-        Debug.Log(" e");
         Animator.Play(animationHash);
     }
 }

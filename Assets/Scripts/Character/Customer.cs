@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using CustomerState;
+using CharacterState.CustomerState;
 using BasDidon.Direction;
 using BasDidon.PathFinder;
 
-public class Customer : Charecter
+public class Customer : Character
 {
     [field: SerializeField] public Tilemap PathTilemap { get; set; }
     [field: SerializeField] public Bar Bar { get; set; }
@@ -42,6 +42,7 @@ public class Customer : Charecter
 
         if (GridPathFinder.TryFindPath(this, BoardManager.Instance.GetCellPos(transform.position), Bar.ServiceCell, DirectionGroup.Cardinal, out PathTraced pathTrace))
         {
+            Debug.Log($"{pathTrace.ToWayPoint().Count}");
             CurrentState = new MoveState(this, pathTrace.ToWayPoint());
         }
         else

@@ -52,6 +52,7 @@ public class CustomerSpawner : MonoBehaviour
                 customerGO.transform.position = BoardManager.Instance.GetCellCenterWorld(SpawnCell);
                 if (customerGO.TryGetComponent(out Customer customer))
                 {
+                    Debug.Log("initialized");
                     customer.Initialized(availableBar[Random.Range(0, availableBar.Count)], PathTile);
                 }
                 else

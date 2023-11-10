@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CustomerState
+namespace CharacterState.CustomerState
 {
     public class IdleState : IdleState<Customer>
     {
@@ -27,6 +27,7 @@ namespace CustomerState
                     newTask.Performed += Charecter.GetOrder;
                 }
 
+                Debug.Log("sad");
                 Charecter.CurrentState = Charecter.IdleState;
             }
             else

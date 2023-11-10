@@ -1,15 +1,14 @@
 using UnityEngine;
-using WorkerState;
+using CharacterState.WorkerState;
 
 public class WorkerAnimationManipulator : CharacterAnimationManipulator
 {
     protected override void OnPlayAnimation()
     {
-        Debug.Log($" OnPlayAnimation()");
         if (Animator == null)
             return;
 
-        if (Charecter.CurrentState is MoveState<Worker>)
+        if (Charecter.CurrentState is MoveState)
         {
             if (IsFront)
             {

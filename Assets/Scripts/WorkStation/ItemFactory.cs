@@ -39,7 +39,6 @@ public sealed class ItemFactory : WorkStation
 
     public void CreateItem(ItemData itemData,Worker worker)
     {
-        Debug.Log("createItem");
         var recipe = Recipes.Find(recipe => recipe.name == itemData.name);
         if (recipe != null)
         {
