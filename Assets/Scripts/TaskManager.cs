@@ -54,7 +54,7 @@ public class TaskManager : SerializedMonoBehaviour
 
         if (assignedTask != null && assignedTask.TryGetWorkStation(worker, out IWorkStation workStation))
         {
-            assignedTask.SetTask(worker,workStation);
+            assignedTask.StartTask(worker,workStation);
         }
         else
         {

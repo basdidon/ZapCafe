@@ -23,7 +23,7 @@ public class AddItemToTask : BaseTask,IDependentTask
                 Worker.HoldingItem = null;
             }
         };
-
+        
         (this as IDependentTask).SetDependencyTasks(new GetItemTask(ItemData, Depth));
     }
 

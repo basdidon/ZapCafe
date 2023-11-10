@@ -9,7 +9,6 @@ public interface ITask
 {
     public Worker Worker { get; }
     public IWorkStation WorkStation { get; }
-    public List<Vector3Int> Waypoints { get; }
 
     float CreateAt { get; }
     int Depth { get; }
@@ -25,8 +24,8 @@ public interface ITask
 
     TaskStates TaskState { get;}
     void SelectWorker(IEnumerable<Worker> workers);
-    void SetTask(Worker worker,IWorkStation workStation);
     void AssignWorker(Worker worker);
+    void StartTask(Worker worker,IWorkStation workStation);
 }
 
 public interface IDependentTask : ITask
@@ -38,6 +37,7 @@ public interface IDependentTask : ITask
         DependencyTasks = new ITask[] { task };
         SetupDependencyTask(task);
     }
+
     public void SetDependencyTasks(ITask[] tasks)
     {
         if(tasks == null || tasks.Length <= 0)
@@ -73,16 +73,14 @@ public abstract class BaseTask : ITask
 {
     [field: SerializeField] public Worker Worker { get; private set; }
     [field: SerializeField] public IWorkStation WorkStation { get; set; }
-    List<Vector3Int> waypoints;
-    public List<Vector3Int> Waypoints { get => waypoints; }
 
     public float CreateAt { get; }
     public int Depth { get; }
 
-    public BaseTask()
+    public BaseTask(int parentDepth = 0)
     {
         CreateAt = Time.time;
-        Depth = 0;
+        Depth = parentDepth;
 
         Assigned += delegate { TaskState = TaskStates.Assigned; };
         Pending += delegate { TaskState = TaskStates.Pending; };
@@ -102,13 +100,7 @@ public abstract class BaseTask : ITask
         };
     }
 
-    public BaseTask(int parentDepth):this()
-    {
-        Depth = parentDepth+1;
-    }
-
     public abstract float Duration { get; }
-    public abstract bool TryGetWorkStation(Worker worker, out IWorkStation workStation);
 
     public Action Assigned { get; set; }
     public Action Pending { get; set; }
@@ -118,6 +110,7 @@ public abstract class BaseTask : ITask
 
     [field: SerializeField] public TaskStates TaskState { get; private set; }
 
+    public abstract bool TryGetWorkStation(Worker worker, out IWorkStation workStation);
     public abstract bool TryCheckCondition(Worker worker,IWorkStation workStation);
 
     public void AssignWorker(Worker worker)
@@ -126,7 +119,7 @@ public abstract class BaseTask : ITask
         Assigned?.Invoke();
     }
 
-    public void SetTask(Worker worker, IWorkStation workStation)
+    public void StartTask(Worker worker, IWorkStation workStation)
     {
         if (worker == null || workStation == null)
         {
@@ -136,13 +129,12 @@ public abstract class BaseTask : ITask
 
         Debug.Log($"SetTask to : {worker.name} + {workStation.WorkStationData.name}");
 
-        if (worker.TryGetWaypoint(workStation.WorkingCell, out List<Vector3Int> _waypoints))
+        if (worker.TryGetWaypoint(workStation.WorkingCell, out List<Vector3Int> waypoints))
         {
-            waypoints = _waypoints;
             Worker = worker;
             TaskManager.Instance.AvailableWorker.Remove(Worker);
             WorkStation = workStation;
-            Worker.CurrentState = new MoveState(worker, Waypoints, new ExecutingTask(worker,this));
+            Worker.CurrentState = new MoveState(worker, waypoints, new ExecutingTask(worker,this));
             Pending?.Invoke();
         }
     }
@@ -152,15 +144,9 @@ public abstract class BaseTask : ITask
         var result = workers.Select(
                 worker =>
                 {
-                    var s_1 = TryGetWorkStation(worker, out IWorkStation workStation);
-                    var s_2 = TryCheckCondition(worker, workStation);
-                    var success = s_1 && s_2;
-                    //Debug.Log($"{s_1} && {s_2} : {worker.name} {worker.HoldingItem == null} {worker.HoldingItem.Name}");
-                    float distance = 0f;
-                    if (success)
-                    {
-                        distance = workStation.RangeFrom(worker);
-                    }
+                    var success = TryGetWorkStation(worker, out IWorkStation workStation) && TryCheckCondition(worker, workStation);
+                    float distance = success ? workStation.RangeFrom(worker) : 0f;
+
                     return new { worker, workStation, distance, success };
                 })
             .SkipWhile(item => !item.success)
@@ -168,7 +154,7 @@ public abstract class BaseTask : ITask
             .FirstOrDefault();
 
         if (result != null)
-            SetTask(result.worker, result.workStation);
+            StartTask(result.worker, result.workStation);
     }
 }
 

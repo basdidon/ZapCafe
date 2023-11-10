@@ -10,8 +10,8 @@ public class BoardManager : MonoBehaviour
 
     public static BoardManager Instance { get; private set; }
 
-    [field: SerializeField] public Grid MainGrid { get; set; }
-    [field: SerializeField] public Tilemap WorkerArea { get; set; }
+    [field: SerializeField] public Grid MainGrid { get; private set; }
+    [field: SerializeField] public Tilemap WorkerArea { get; private set; }
 
     private void Awake()
     {
