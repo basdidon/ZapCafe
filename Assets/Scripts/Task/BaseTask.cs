@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using CharacterState.WorkerState;
 
-public interface ITask
+public interface ITask 
 {
     public Worker Worker { get; }
     public IWorkStation WorkStation { get; }
@@ -22,7 +22,8 @@ public interface ITask
     public Action Cancled { get; set; }
     public Action Performed { get; set; }
 
-    TaskStates TaskState { get;}
+    TaskStates TaskState { get; }
+
     void SelectWorker(IEnumerable<Worker> workers);
     void AssignWorker(Worker worker);
     void StartTask(Worker worker,IWorkStation workStation);
@@ -61,8 +62,9 @@ public interface IDependentTask : ITask
             {
                 if (TryGetWorkStation(task.Worker, out IWorkStation workStation))
                 {
-                    this.AssignWorker(task.Worker);
+                    AssignWorker(task.Worker);
                 }
+
                 TaskManager.Instance.AddTask(this);
             }
         };
@@ -72,7 +74,7 @@ public interface IDependentTask : ITask
 public abstract class BaseTask : ITask
 {
     [field: SerializeField] public Worker Worker { get; private set; }
-    [field: SerializeField] public IWorkStation WorkStation { get; set; }
+    [field: SerializeField] public IWorkStation WorkStation { get; protected set; }
 
     public float CreateAt { get; }
     public int Depth { get; }

@@ -15,6 +15,8 @@ public class ServeOrderTask : BaseTask,IDependentTask
         Order = order;
         ItemData = itemData;
 
+        (this as IDependentTask).SetDependencyTasks(new GetItemTask(ItemData, Depth + 1));
+
         Performed += delegate {
             Customer.OrderSprite = null;
             Customer.HoldingItem = Worker.HoldingItem;
@@ -23,10 +25,9 @@ public class ServeOrderTask : BaseTask,IDependentTask
             LevelManager.Instance.Exp += 50;
             OrderManager.Instance.RemoveOrder(order);
             TextSpawner.Instance.SpawnText($"+ {itemData.Price}", Customer.transform.position + Vector3.up * 2);
+            TaskManager.Instance.RemoveTask(this);
             (WorkStation as Bar).CustomerLeave();
         };
-
-        (this as IDependentTask).SetDependencyTasks(new GetItemTask(ItemData,Depth+1));
     }
 
     public override float Duration => 1f;

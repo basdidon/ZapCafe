@@ -19,8 +19,7 @@ public class AddItemToTask : BaseTask,IDependentTask
         {
             if (WorkStation is ItemFactory itemFactory)
             {
-                itemFactory.Items.Add(Worker.HoldingItem);
-                Worker.HoldingItem = null;
+                itemFactory.AddItemFromWorker(Worker);
             }
         };
         

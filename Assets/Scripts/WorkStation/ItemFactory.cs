@@ -3,9 +3,12 @@ using UnityEngine;
 
 public sealed class ItemFactory : WorkStation
 {
-    [field: SerializeField] public List<ItemData> Recipes { get; set; }
-    [field: SerializeField] public List<Item> Items { get; set; }
-    [field: SerializeField] public List<Item> ToUsed { get; set; }
+    [SerializeField] List<ItemData> recipes;
+    public IReadOnlyList<ItemData> Recipes => recipes;
+    [SerializeField] List<Item> items;
+    public IReadOnlyList<Item> Items => items;
+    [SerializeField] List<Item> toUsed;
+    public IReadOnlyList<Item> ToUsed => toUsed;
 
     int level = 1;
     public int Level
@@ -24,22 +27,31 @@ public sealed class ItemFactory : WorkStation
 
     private void Start()
     {
-        Items = new();
-        Recipes = new();
-        ToUsed = new();
+        items = new();
+        recipes = new();
+        toUsed = new();
         foreach(var itemData in Resources.LoadAll<ItemData>("ItemDataSet"))
         {
             if(itemData.WorkStation == WorkStationData)
             {
-                Recipes.Add(itemData);
+                recipes.Add(itemData);
             }
         }
         //UpdateFactoryData();
     }
 
+    public void AddItemFromWorker(Worker worker)
+    {
+        if (worker.HoldingItem == null)
+            return;
+
+        items.Add(worker.HoldingItem);
+        worker.HoldingItem = null;
+    }
+
     public void CreateItem(ItemData itemData,Worker worker)
     {
-        var recipe = Recipes.Find(recipe => recipe.name == itemData.name);
+        var recipe = recipes.Find(recipe => recipe.name == itemData.name);
         if (recipe != null)
         {
             //check ingredeints
@@ -47,22 +59,22 @@ public sealed class ItemFactory : WorkStation
             {
                 Debug.Log(requiredIngredeint.name);
 
-                var _item = Items.Find(item => item.Name == requiredIngredeint.name);
+                var _item = items.Find(item => item.Name == requiredIngredeint.name);
                 if(_item != null)
                 {
-                    Items.Remove(_item);
-                    ToUsed.Add(_item);
+                    items.Remove(_item);
+                    toUsed.Add(_item);
                 }
                 else
                 {
-                    Items.AddRange(ToUsed);
-                    ToUsed.Clear();
+                    items.AddRange(ToUsed);
+                    toUsed.Clear();
                     Debug.LogError("ingredient not found");
                     return;
                 }
             }
 
-            ToUsed.Clear();
+            toUsed.Clear();
             worker.HoldingItem = new Item(recipe.name, recipe.Sprite);
         }
         else

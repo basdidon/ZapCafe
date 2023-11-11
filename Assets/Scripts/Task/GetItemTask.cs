@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System.Collections.ObjectModel;
 
 public class GetItemTask:BaseTask,IDependentTask
 {
     public override float Duration => ItemData.BaseDuration;
     [field: SerializeField] public ItemData ItemData { get; private set; }
-    public ReadOnlyCollection<ItemData> Ingredients => ItemData.Ingredients;
+    public IReadOnlyList<ItemData> Ingredients => ItemData.Ingredients;
     public WorkStationData WorkStationData => ItemData.WorkStation;
 
     public ItemFactory ItemFactory { get; private set; }
